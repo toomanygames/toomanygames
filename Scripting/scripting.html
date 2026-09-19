@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create a Game • DougHub</title>
+<link rel="icon" href="../DougHub.ico" type="image/x-icon">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Inter, Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(99,102,241,.18), transparent 32%),
+        radial-gradient(circle at 85% 85%, rgba(168,85,247,.14), transparent 32%),
+        #02040a;
+}
+
+body {
+    padding: 28px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .13;
+    background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+
+.container {
+    width: min(1150px, 100%);
+    margin: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 950;
+    letter-spacing: -1.5px;
+}
+
+.logo .doug {
+    color: #6366f1;
+}
+
+.logo .hub {
+    color: white;
+}
+
+.subtitle {
+    color: #858ca1;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.back-link {
+    color: #a78bfa;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.back-link:hover {
+    color: #c4b5fd;
+    text-decoration: underline;
+}
+
+.hero {
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.hero p {
+    margin: 7px 0 0;
+    color: #858ca1;
+    font-size: 14px;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 16px;
+}
+
+.card {
+    border: 1px solid rgba(255,255,255,.09);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.065),
+            rgba(255,255,255,.025)
+        );
+    border-radius: 22px;
+    padding: 20px;
+    box-shadow: 0 18px 45px rgba(0,0,0,.22);
+    backdrop-filter: blur(15px);
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.card-title h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.status {
+    color: #858ca1;
+    font-size: 12px;
+}
+
+.editor {
+    display: flex;
+    width: 100%;
+    height: 360px;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: #050711;
+}
+
+.line-numbers {
+    width: 45px;
+    flex-shrink: 0;
+    padding: 14px 8px;
+    overflow: hidden;
+    text-align: right;
+    color: #555d75;
+    background: #03050c;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    user-select: none;
+}
+
+#codeEditor {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    overflow: auto;
+    outline: none;
+    border: none;
+    padding: 14px;
+    color: #e8eaff;
+    background: #050711;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    tab-size: 4;
+}
+
+#codeEditor::placeholder {
+    color: #555d75;
+}
+
+.toolbar {
+    display: flex;
+    gap: 9px;
+    margin-top: 12px;
+}
+
+.button {
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 11px;
+    padding: 10px 15px;
+    color: white;
+    background: rgba(255,255,255,.055);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.button:hover {
+    background: rgba(99,102,241,.18);
+    border-color: rgba(99,102,241,.45);
+}
+
+.run-button {
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #8b5cf6
+    );
+    border: none;
+}
+
+.run-button:hover {
+    background: linear-gradient(
+        135deg,
+        #7073ff,
+        #9b6cff
+    );
+}
+
+.preview {
+    width: 100%;
+    height: 360px;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: #000;
+    position: relative;
+}
+
+#gamePreview {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+}
+
+.placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #666d82;
+    background: #050711;
+    pointer-events: none;
+}
+
+.placeholder.hidden {
+    display: none;
+}
+
+.info {
+    margin-top: 16px;
+}
+
+.info h2 {
+    margin: 0 0 14px;
+    font-size: 18px;
+}
+
+.field {
+    margin-bottom: 12px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    color: #9da4b8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 11px;
+    padding: 11px 12px;
+    outline: none;
+    color: white;
+    background: rgba(2,4,10,.65);
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: rgba(99,102,241,.55);
+}
+
+.field textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.field select option {
+    background: #0d1127;
+}
+
+.publish {
+    margin-top: 16px;
+}
+
+.publish-button {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #a855f7
+    );
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.publish-button:hover {
+    filter: brightness(1.12);
+}
+
+.message {
+    min-height: 20px;
+    margin-top: 10px;
+    color: #858ca1;
+    font-size: 12px;
+}
+
+.published {
+    display: none;
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(124,219,139,.2);
+    background: rgba(124,219,139,.06);
+}
+
+.published.show {
+    display: block;
+}
+
+.published h3 {
+    margin: 0 0 7px;
+}
+
+.published p {
+    margin: 5px 0;
+    color: #9da4b8;
+    font-size: 13px;
+}
+
+.footer {
+    margin-top: 30px;
+    padding: 20px 0;
+    color: #666d82;
+    font-size: 12px;
+    text-align: center;
+}
+
+@media (max-width: 800px) {
+    body {
+        padding: 16px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .editor,
+    .preview {
+        height: 320px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="topbar">
+
+        <div>
+            <div class="logo">
+                <span class="doug">Doug</span><span class="hub">Hub</span>
+            </div>
+
+            <div class="subtitle">
+                Games, projects & stuff
+            </div>
+        </div>
+
+        <a class="back-link" href="../index.html">
+            ← Back to DougHub
+        </a>
+
+    </div>
+
+
+    <div class="hero">
+        <h1>Create a Game</h1>
+        <p>Write your game, test it, and publish it to DougHub.</p>
+    </div>
+
+
+    <div class="workspace">
+
+        <div class="card">
+
+            <div class="card-title">
+                <h2>Game Code</h2>
+                <div class="status" id="characterCount">
+                    0 characters
+                </div>
+            </div>
+
+            <div class="editor">
+
+                <div
+                    class="line-numbers"
+                    id="lineNumbers"
+                >1</div>
+
+                <textarea
+                    id="codeEditor"
+                    spellcheck="false"
+                    placeholder="Write your HTML, CSS, and JavaScript here..."
+                ></textarea>
+
+            </div>
+
+            <div class="toolbar">
+
+                <button
+                    class="button run-button"
+                    id="runButton"
+                    type="button"
+                >
+                    ▶ Run
+                </button>
+
+                <button
+                    class="button"
+                    id="clearButton"
+                    type="button"
+                >
+                    Clear
+                </button>
+
+                <div
+                    class="status"
+                    id="previewStatus"
+                >
+                    Waiting
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                <h2>Preview</h2>
+                <div class="status">
+                    Live Preview
+                </div>
+            </div>
+
+            <div class="preview">
+
+                <div
+                    class="placeholder"
+                    id="placeholder"
+                >
+                    <div>
+                        Your game preview will appear here.
+                        <br>
+                        Click Run to test it.
+                    </div>
+                </div>
+
+                <iframe
+                    id="gamePreview"
+                    title="Game Preview"
+                    sandbox="allow-scripts"
+                ></iframe>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card info">
+
+        <h2>Game Information</h2>
+
+        <div class="field">
+
+            <label for="gameTitle">
+                Game Title
+            </label>
+
+            <input
+                id="gameTitle"
+                type="text"
+                placeholder="My Awesome Game"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="gameDescription">
+                Description
+            </label>
+
+            <textarea
+                id="gameDescription"
+                placeholder="What is your game about?"
+            ></textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="gameAuthor">
+                Creator
+            </label>
+
+            <input
+                id="gameAuthor"
+                type="text"
+                placeholder="Your name"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="gameCategory">
+                Category
+            </label>
+
+            <select id="gameCategory">
+
+                <option value="Arcade">
+                    Arcade
+                </option>
+
+                <option value="Puzzle">
+                    Puzzle
+                </option>
+
+                <option value="Racing">
+                    Racing
+                </option>
+
+                <option value="Clicker">
+                    Clicker
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="publish">
+
+            <button
+                class="publish-button"
+                id="publishButton"
+                type="button"
+            >
+                Publish Game
+            </button>
+
+            <div
+                class="message"
+                id="publishMessage"
+            ></div>
+
+        </div>
+
+
+        <div
+            class="published"
+            id="published"
+        >
+
+            <h3 id="resultTitle">
+                Game
+            </h3>
+
+            <p id="resultDescription">
+                Description
+            </p>
+
+            <p>
+                Creator:
+                <span id="resultAuthor"></span>
+            </p>
+
+            <p>
+                Category:
+                <span id="resultCategory"></span>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        DougHub • Built by Doug
+    </div>
+
+</div>
+
+
+<script src="scripting.js"></script>
+
+</body>
+</html>

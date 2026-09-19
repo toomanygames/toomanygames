@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="DougHub.ico" type="image/x-icon">
+
+<title>DougHub Games</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at top left, rgba(99,102,241,0.18), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.14), transparent 35%),
+        #02040a;
+}
+
+header {
+    width: 100%;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: rgba(2,4,10,0.72);
+    backdrop-filter: blur(18px);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    box-shadow: 0 8px 30px rgba(99,102,241,0.28);
+}
+
+.brand h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.brand p {
+    margin: 3px 0 0;
+    color: #8d93a8;
+    font-size: 13px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.create-link {
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 11px 16px;
+    border-radius: 11px;
+    background: rgba(99,102,241,0.18);
+    border: 1px solid rgba(99,102,241,0.35);
+    transition: 0.2s;
+}
+
+.create-link:hover {
+    background: rgba(99,102,241,0.3);
+    transform: translateY(-1px);
+}
+
+.online {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #a7acbd;
+    font-size: 13px;
+}
+
+.online-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 12px rgba(34,197,94,0.7);
+}
+
+main {
+    width: min(1200px, calc(100% - 36px));
+    margin: 0 auto;
+    padding: 45px 0 80px;
+}
+
+.hero {
+    margin-bottom: 32px;
+}
+
+.hero h2 {
+    margin: 0;
+    font-size: 34px;
+    letter-spacing: -1px;
+}
+
+.hero p {
+    margin: 10px 0 0;
+    color: #858ba0;
+    font-size: 15px;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.game-card {
+    min-height: 190px;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(
+        145deg,
+        rgba(17,20,39,0.88),
+        rgba(8,10,21,0.88)
+    );
+    box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.22s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(99,102,241,0.45);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.3);
+}
+
+.game-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 29px;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.25);
+}
+
+.game-card h3 {
+    margin: 17px 0 5px;
+    font-size: 20px;
+}
+
+.game-card p {
+    margin: 0;
+    color: #858ba0;
+    font-size: 14px;
+}
+
+.play-button {
+    align-self: flex-start;
+    margin-top: 20px;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 16px;
+    color: white;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.play-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+}
+
+/* COMMUNITY */
+
+.community-section {
+    margin-top: 48px;
+}
+
+.community-divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.community-divider-line {
+    height: 1px;
+    flex: 1;
+    background: rgba(255,255,255,0.1);
+}
+
+.community-divider-text {
+    white-space: nowrap;
+    color: #aeb4c8;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.community-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 16px;
+}
+
+.community-subtitle {
+    color: #73798d;
+    font-size: 13px;
+}
+
+.search-box {
+    width: 280px;
+    max-width: 100%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.09);
+    outline: none;
+    color: white;
+    background: rgba(13,17,39,0.8);
+    font-size: 14px;
+}
+
+.search-box:focus {
+    border-color: rgba(99,102,241,0.6);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+}
+
+.community-window {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 5px 3px 18px;
+    scrollbar-width: thin;
+    scrollbar-color: #444b72 transparent;
+}
+
+.community-window::-webkit-scrollbar {
+    height: 9px;
+}
+
+.community-window::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.04);
+    border-radius: 20px;
+}
+
+.community-window::-webkit-scrollbar-thumb {
+    background: #444b72;
+    border-radius: 20px;
+}
+
+.community-games {
+    display: flex;
+    gap: 16px;
+    width: max-content;
+}
+
+.community-card {
+    width: 310px;
+    min-width: 310px;
+    min-height: 190px;
+    padding: 21px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(
+        145deg,
+        rgba(17,20,39,0.9),
+        rgba(8,10,21,0.9)
+    );
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.community-card:hover {
+    border-color: rgba(168,85,247,0.5);
+    transform: translateY(-3px);
+}
+
+.community-category {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 5px 9px;
+    border-radius: 7px;
+    background: rgba(99,102,241,0.14);
+    color: #aeb5ff;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.community-card h3 {
+    margin: 0 0 7px;
+    font-size: 19px;
+}
+
+.community-description {
+    color: #858ba0;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 40px;
+}
+
+.community-author {
+    margin-top: auto;
+    padding-top: 14px;
+    color: #656b7f;
+    font-size: 12px;
+}
+
+.community-play {
+    margin-top: 13px;
+    width: 100%;
+}
+
+.empty-community {
+    width: 100%;
+    padding: 45px 20px;
+    text-align: center;
+    color: #676d80;
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: 17px;
+    background: rgba(13,17,39,0.35);
+}
+
+.loading-community {
+    width: 100%;
+    padding: 45px 20px;
+    text-align: center;
+    color: #73798d;
+}
+
+/* PLAYER */
+
+.player-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(10px);
+}
+
+.player-box {
+    width: min(1100px, 100%);
+    height: min(760px, 92vh);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #070912;
+    box-shadow: 0 30px 100px rgba(0,0,0,0.55);
+    display: flex;
+    flex-direction: column;
+}
+
+.player-box.community-player {
+    width: min(1500px, 98vw);
+    height: min(900px, 96vh);
+}
+
+.player-top {
+    height: 58px;
+    flex-shrink: 0;
+    padding: 0 15px 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.player-title {
+    font-weight: 800;
+}
+
+.close-player {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 10px;
+    color: white;
+    background: rgba(255,255,255,0.07);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.close-player:hover {
+    background: rgba(255,255,255,0.13);
+}
+
+#gameFrame {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border: 0;
+    background: white;
+}
+
+@media (max-width: 750px) {
+    header {
+        padding: 18px;
+    }
+
+    .header-right .online {
+        display: none;
+    }
+
+    main {
+        width: min(100% - 24px, 1200px);
+        padding-top: 30px;
+    }
+
+    .hero h2 {
+        font-size: 28px;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .community-tools {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .community-card {
+        width: 280px;
+        min-width: 280px;
+    }
+
+    .player-overlay {
+        padding: 5px;
+    }
+
+    .player-box,
+    .player-box.community-player {
+        width: 100%;
+        height: 98vh;
+        border-radius: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">
+        <div class="logo">D</div>
+
+        <div>
+            <h1>DougHub</h1>
+            <p>Games &amp; Projects</p>
+        </div>
+    </div>
+
+    <div class="header-right">
+        <a class="create-link" href="Scripting/scripting.html">
+            ✨ Create a Game
+        </a>
+
+        <div class="online">
+            <span class="online-dot"></span>
+            Online
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <h2>Games</h2>
+        <p>Play DougHub games and discover games made by the community.</p>
+    </section>
+
+    <section class="games-grid">
+
+        <div class="game-card">
+            <div>
+                <div class="game-icon">🐷</div>
+                <h3>Pig Clicker</h3>
+                <p>Click the pig, earn coins, and keep growing your score.</p>
+            </div>
+
+            <button class="play-button" onclick="openGame('Pig Clicker', 'Games/pig.html')">
+                Play Game
+            </button>
+        </div>
+
+        <div class="game-card">
+            <div>
+                <div class="game-icon">🔄</div>
+                <h3>Rebirth Clicker</h3>
+                <p>Build up your power and rebirth to become even stronger.</p>
+            </div>
+
+            <button class="play-button" onclick="openGame('Rebirth Clicker', 'Games/rebirth.html')">
+                Play Game
+            </button>
+        </div>
+
+        <div class="game-card">
+            <div>
+                <div class="game-icon">🏎️</div>
+                <h3>Doug Racing</h3>
+                <p>Race around the track and try to beat your best time.</p>
+            </div>
+
+            <button class="play-button" onclick="openGame('Doug Racing', 'Games/racing.html')">
+                Play Game
+            </button>
+        </div>
+
+        <div class="game-card">
+            <div>
+                <div class="game-icon">⚡</div>
+                <h3>Doug Puzzle</h3>
+                <p>Think fast and solve the Circuit Shift puzzles.</p>
+            </div>
+
+            <button class="play-button" onclick="openGame('Doug Puzzle', 'Games/puzzle.html')">
+                Play Game
+            </button>
+        </div>
+
+    </section>
+
+    <section class="community-section">
+
+        <div class="community-divider">
+            <div class="community-divider-line"></div>
+
+            <div class="community-divider-text">
+                Community Games
+            </div>
+
+            <div class="community-divider-line"></div>
+        </div>
+
+        <div class="community-tools">
+
+            <div class="community-subtitle">
+                Games published by DougHub creators
+            </div>
+
+            <input
+                id="communitySearch"
+                class="search-box"
+                type="search"
+                placeholder="Search community games..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <div class="community-window">
+            <div id="communityGames" class="community-games">
+
+                <div class="loading-community">
+                    Loading community games...
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<div id="playerOverlay" class="player-overlay">
+
+    <div id="playerBox" class="player-box">
+
+        <div class="player-top">
+
+            <div id="playerTitle" class="player-title">
+                Game
+            </div>
+
+            <button
+                class="close-player"
+                onclick="closeGame()"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <iframe
+            id="gameFrame"
+            sandbox="allow-scripts"
+            title="DougHub Game"
+        ></iframe>
+
+    </div>
+
+</div>
+
+<script>
+const SUPABASE_URL =
+    "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const playerOverlay =
+    document.getElementById("playerOverlay");
+
+const playerBox =
+    document.getElementById("playerBox");
+
+const playerTitle =
+    document.getElementById("playerTitle");
+
+const gameFrame =
+    document.getElementById("gameFrame");
+
+const communityGames =
+    document.getElementById("communityGames");
+
+const communitySearch =
+    document.getElementById("communitySearch");
+
+let allCommunityGames = [];
+
+
+/* =========================
+   NORMAL GAMES
+========================= */
+
+function openGame(title, source) {
+
+    playerTitle.textContent = title;
+
+    playerBox.classList.remove("community-player");
+
+    gameFrame.removeAttribute("srcdoc");
+
+    gameFrame.src = source;
+
+    playerOverlay.style.display = "flex";
+
+    document.body.style.overflow = "hidden";
+}
+
+
+/* =========================
+   COMMUNITY GAME PLAYER
+========================= */
+
+function openCommunityGame(game) {
+
+    playerTitle.textContent =
+        game.title || "Community Game";
+
+    playerBox.classList.add("community-player");
+
+    let code = game.code || "";
+
+    /*
+        This is the script that automatically shrinks
+        oversized Community Games to fit the player.
+    */
+
+    const fitScript = `
+<script>
+(function() {
+
+    function fitCommunityGame() {
+
+        const body = document.body;
+        const html = document.documentElement;
+
+        if (!body || !html) {
+            return;
+        }
+
+        body.style.margin = "0";
+
+        const contentWidth = Math.max(
+            body.scrollWidth,
+            html.scrollWidth,
+            body.offsetWidth,
+            html.offsetWidth
+        );
+
+        const contentHeight = Math.max(
+            body.scrollHeight,
+            html.scrollHeight,
+            body.offsetHeight,
+            html.offsetHeight
+        );
+
+        if (!contentWidth || !contentHeight) {
+            return;
+        }
+
+        const scaleX =
+            window.innerWidth / contentWidth;
+
+        const scaleY =
+            window.innerHeight / contentHeight;
+
+        const scale =
+            Math.min(scaleX, scaleY, 1);
+
+        body.style.transformOrigin =
+            "top left";
+
+        body.style.transform =
+            "scale(" + scale + ")";
+
+        body.style.width =
+            (100 / scale) + "%";
+
+        body.style.height =
+            (100 / scale) + "%";
+    }
+
+    window.addEventListener(
+        "load",
+        function() {
+
+            setTimeout(
+                fitCommunityGame,
+                100
+            );
+
+            setTimeout(
+                fitCommunityGame,
+                500
+            );
+
+            setTimeout(
+                fitCommunityGame,
+                1000
+            );
+        }
+    );
+
+    window.addEventListener(
+        "resize",
+        fitCommunityGame
+    );
+
+})();
+`;
+
+    const scriptEnd =
+        "<" + "/script>";
+
+    const completeFitScript =
+        fitScript + scriptEnd;
+
+    if (/<\/body>/i.test(code)) {
+
+        code = code.replace(
+            /<\/body>/i,
+            completeFitScript + "</body>"
+        );
+
+    } else {
+
+        code += completeFitScript;
+    }
+
+    gameFrame.src = "about:blank";
+
+    gameFrame.srcdoc = code;
+
+    playerOverlay.style.display = "flex";
+
+    document.body.style.overflow = "hidden";
+}
+
+
+/* =========================
+   CLOSE PLAYER
+========================= */
+
+function closeGame() {
+
+    playerOverlay.style.display = "none";
+
+    playerBox.classList.remove(
+        "community-player"
+    );
+
+    gameFrame.src = "about:blank";
+
+    gameFrame.srcdoc = "";
+
+    document.body.style.overflow = "";
+}
+
+
+playerOverlay.addEventListener(
+    "click",
+    function(event) {
+
+        if (event.target === playerOverlay) {
+            closeGame();
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+            closeGame();
+        }
+
+    }
+);
+
+
+/* =========================
+   LOAD COMMUNITY GAMES
+========================= */
+
+async function loadCommunityGames() {
+
+    communityGames.innerHTML = `
+        <div class="loading-community">
+            Loading community games...
+        </div>
+    `;
+
+    try {
+
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/community_games?select=id,title,description,author,category,code,created_at&order=created_at.desc`,
+            {
+                method: "GET",
+
+                headers: {
+                    "apikey": SUPABASE_KEY,
+
+                    "Authorization":
+                        `Bearer ${SUPABASE_KEY}`
+                }
+            }
+        );
+
+        if (!response.ok) {
+
+            const error =
+                await response.text();
+
+            console.error(
+                "Supabase error:",
+                error
+            );
+
+            throw new Error(
+                "Could not load community games."
+            );
+        }
+
+        allCommunityGames =
+            await response.json();
+
+        renderCommunityGames(
+            allCommunityGames
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        communityGames.innerHTML = `
+            <div class="empty-community">
+                <strong>
+                    Couldn't load community games.
+                </strong>
+                <br>
+                <span>
+                    Check your Supabase connection
+                    and table permissions.
+                </span>
+            </div>
+        `;
+    }
+}
+
+
+/* =========================
+   RENDER COMMUNITY GAMES
+========================= */
+
+function renderCommunityGames(games) {
+
+    if (!games.length) {
+
+        communityGames.innerHTML = `
+            <div class="empty-community">
+                No community games yet.<br>
+                Create one with
+                <strong>Create a Game</strong>!
+            </div>
+        `;
+
+        return;
+    }
+
+    communityGames.innerHTML = "";
+
+    games.forEach(game => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "community-card";
+
+
+        const category =
+            document.createElement("div");
+
+        category.className =
+            "community-category";
+
+        category.textContent =
+            game.category || "Other";
+
+
+        const title =
+            document.createElement("h3");
+
+        title.textContent =
+            game.title || "Untitled Game";
+
+
+        const description =
+            document.createElement("div");
+
+        description.className =
+            "community-description";
+
+        description.textContent =
+            game.description ||
+            "No description provided.";
+
+
+        const author =
+            document.createElement("div");
+
+        author.className =
+            "community-author";
+
+        author.textContent =
+            `Created by ${game.author || "Anonymous"}`;
+
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "play-button community-play";
+
+        button.textContent =
+            "Play Game";
+
+
+        button.addEventListener(
+            "click",
+            function() {
+                openCommunityGame(game);
+            }
+        );
+
+
+        card.appendChild(category);
+
+        card.appendChild(title);
+
+        card.appendChild(description);
+
+        card.appendChild(author);
+
+        card.appendChild(button);
+
+        communityGames.appendChild(card);
+    });
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+communitySearch.addEventListener(
+    "input",
+    function() {
+
+        const search =
+            this.value
+                .trim()
+                .toLowerCase();
+
+        if (!search) {
+
+            renderCommunityGames(
+                allCommunityGames
+            );
+
+            return;
+        }
+
+        const filtered =
+            allCommunityGames.filter(
+                game => {
+
+                    return (
+
+                        (game.title || "")
+                            .toLowerCase()
+                            .includes(search)
+
+                        ||
+
+                        (game.description || "")
+                            .toLowerCase()
+                            .includes(search)
+
+                        ||
+
+                        (game.author || "")
+                            .toLowerCase()
+                            .includes(search)
+
+                        ||
+
+                        (game.category || "")
+                            .toLowerCase()
+                            .includes(search)
+
+                    );
+                }
+            );
+
+        renderCommunityGames(
+            filtered
+        );
+    }
+);
+
+
+/* =========================
+   START
+========================= */
+
+loadCommunityGames();
+
+</script>
+
+</body>
+</html>

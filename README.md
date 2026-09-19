@@ -1,2 +1,0 @@
-# doughub
-DougHub.com

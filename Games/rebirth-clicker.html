@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Rebirth Clicker</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,#fef3c7 0%,#f9a8d4 40%,#fdba74 100%);color:#2f1b12;font-family:-apple-system,BlinkSystemFont,"SF Pro Display",Arial,sans-serif;user-select:none}
+body{display:flex;align-items:center;justify-content:center;padding:12px}
+.screen{width:min(1000px,100%);height:min(100vh - 24px,880px);background:rgba(255,255,255,.2);border:1px solid rgba(88,38,20,.12);border-radius:28px;box-shadow:0 16px 40px rgba(70,30,15,.22);overflow:hidden;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.18);padding:12px 16px;border-bottom:1px solid rgba(90,40,20,.08);font-weight:800}
+.coins{font-size:clamp(20px,3vw,30px);letter-spacing:.04em}
+.btn,.buy{border:none;border-radius:14px;padding:10px 16px;font-weight:800;font-size:14px;background:#fff7ed;color:#3b2319;box-shadow:0 6px 12px rgba(0,0,0,.08)}
+.content{display:flex;flex:1;min-height:0}
+.left{flex:1.15;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px}
+.core-wrap{width:min(62vw,300px);aspect-ratio:1;display:grid;place-items:center}
+.core{width:100%;height:100%;display:grid;place-items:center;font-size:clamp(100px,20vw,190px);border-radius:32px;background:radial-gradient(circle at 30% 30%,#fff7ed 0%,#fde68a 18%,#f3d5ab 30%,#f8c77a 100%);border:3px solid rgba(90,40,20,.12);box-shadow:inset 0 12px 24px rgba(255,255,255,.5),0 18px 35px rgba(116,63,17,.18);transition:transform .08s ease;touch-action:manipulation}
+.core:active{transform:scale(.94)}
+.tap{font-size:clamp(19px,3vw,28px);font-weight:900;text-align:center}
+.status{font-size:13px;font-weight:800;opacity:.8;text-align:center;min-height:18px}
+.right{width:min(43vw,430px);background:rgba(255,255,255,.12);border-left:1px solid rgba(90,40,20,.08);padding:14px;overflow:auto}
+.panel{background:rgba(255,255,255,.14);border:1px solid rgba(90,40,20,.08);border-radius:20px;padding:12px;margin-bottom:11px}
+.panel h3{margin:0 0 10px;font-size:16px;letter-spacing:.04em;text-transform:uppercase}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.stat{background:rgba(255,255,255,.12);border:1px solid rgba(90,40,20,.08);border-radius:13px;padding:9px;text-align:center;font-size:11px}
+.stat strong{display:block;font-size:17px;margin-top:2px}
+.action{width:100%;border:none;border-radius:14px;padding:12px;font-weight:900;font-size:14px;background:linear-gradient(180deg,#facc15,#f59e0b);color:#3b2319}
+.action:disabled,.buy:disabled{opacity:.45}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(90,40,20,.08);border-radius:13px;padding:9px;margin-bottom:7px}
+.info{min-width:0}
+.name{font-weight:900;font-size:14px}
+.desc{font-size:11px;opacity:.78;margin-top:2px}
+.buy{background:linear-gradient(180deg,#facc15,#f59e0b);min-width:70px;padding:9px;font-size:12px}
+.pet{font-size:20px;width:38px;text-align:center}
+.petrow{display:flex;align-items:center;gap:8px}
+.questbar{height:10px;background:rgba(255,255,255,.35);border-radius:99px;overflow:hidden;margin-top:6px}
+.questfill{height:100%;width:0;background:#f59e0b}
+.small{font-size:11px;opacity:.75}
+.drop{position:fixed;font-size:28px;font-weight:900;pointer-events:none;animation:drop .9s forwards;z-index:9999}
+@keyframes drop{0%{opacity:1;transform:translate(-50%,-50%) scale(.7)}100%{opacity:0;transform:translate(-50%,-140px) scale(1.4)}}
+@media(max-width:700px){.content{flex-direction:column}.right{width:100%;border-left:none;border-top:1px solid rgba(90,40,20,.08)}.left{padding:10px 20px}}
+</style>
+</head>
+<body>
+<div class="screen">
+<div class="topbar">
+<div class="coins" id="coins">0 coins</div>
+<button class="btn" id="reset">Reset</button>
+</div>
+<div class="content">
+<div class="left">
+<div class="core-wrap"><div class="core" id="core">🔄</div></div>
+<div class="tap" id="tapText">+1 per click</div>
+<div class="status" id="status">Click to earn coins!</div>
+</div>
+<div class="right">
+
+<div class="panel">
+<h3>Stats</h3>
+<div class="stats">
+<div class="stat">Per click<strong id="perClick">1</strong></div>
+<div class="stat">Rebirths<strong id="rebirths">0</strong></div>
+<div class="stat">Multiplier<strong id="multiplier">1x</strong></div>
+<div class="stat">Critical<strong id="crit">5%</strong></div>
+<div class="stat">Pets<strong id="pets">0</strong></div>
+<div class="stat">Luck<strong id="luck">0%</strong></div>
+</div>
+</div>
+
+<div class="panel">
+<h3>Rebirth</h3>
+<div class="small">Next rebirth: <b id="needed">100</b> coins</div>
+<div style="height:7px"></div>
+<button class="action" id="rebirthBtn">REBIRTH</button>
+</div>
+
+<div class="panel">
+<h3>Upgrades</h3>
+<div id="upgrades"></div>
+</div>
+
+<div class="panel">
+<h3>Pet Shop</h3>
+<div class="small">Pets stay with you through rebirths.</div>
+<div id="petShop"></div>
+</div>
+
+<div class="panel">
+<h3>Quest</h3>
+<div class="name" id="questName">Clicker</div>
+<div class="desc" id="questDesc">Make 100 clicks</div>
+<div class="questbar"><div class="questfill" id="questFill"></div></div>
+<div class="small" id="questProgress">0 / 100</div>
+<button class="action" id="questBtn" style="margin-top:8px">Claim Reward</button>
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+const saveKey="rebirth-clicker-save-v2";
+
+const defaultState={
+coins:0,totalCoins:0,rebirths:0,perClick:1,clicks:0,critical:5,luck:0,
+pets:{},
+quest:{index:0,progress:0,claimed:false},
+upgrades:[
+{name:"Better Click",cost:25,value:1,owned:0},
+{name:"Strong Click",cost:250,value:10,owned:0},
+{name:"Mega Click",cost:2500,value:100,owned:0},
+{name:"Ultra Click",cost:25000,value:1000,owned:0},
+{name:"Super Click",cost:250000,value:10000,owned:0},
+{name:"Insane Click",cost:2500000,value:100000,owned:0},
+{name:"Cosmic Click",cost:25000000,value:1000000,owned:0},
+{name:"Infinite Click",cost:250000000,value:10000000,owned:0}
+]
+};
+
+const pets=[
+{id:"dog",icon:"🐶",name:"Dog",cost:500,value:0.10,desc:"+10% coins"},
+{id:"cat",icon:"🐱",name:"Cat",cost:5000,value:0.25,desc:"+25% coins"},
+{id:"fox",icon:"🦊",name:"Fox",cost:50000,value:0.50,desc:"+50% coins"},
+{id:"dragon",icon:"🐉",name:"Dragon",cost:1000000,value:1,desc:"+100% coins"},
+{id:"unicorn",icon:"🦄",name:"Unicorn",cost:25000000,value:2,desc:"+200% coins"},
+{id:"alien",icon:"👽",name:"Alien",cost:1000000000,value:5,desc:"+500% coins"}
+];
+
+const quests=[
+{name:"Clicker",desc:"Make 100 clicks",goal:100,reward:1000,type:"clicks"},
+{name:"Coin Collector",desc:"Earn 10,000 total coins",goal:10000,reward:5000,type:"coins"},
+{name:"Pet Owner",desc:"Own 2 pets",goal:2,reward:25000,type:"pets"},
+{name:"Rebirth Rookie",desc:"Get 5 rebirths",goal:5,reward:100000,type:"rebirths"},
+{name:"Click Machine",desc:"Make 10,000 clicks",goal:10000,reward:1000000,type:"clicks"},
+{name:"Rich Pig",desc:"Earn 1,000,000 total coins",goal:1000000,reward:500000,type:"coins"}
+];
+
+let state=JSON.parse(JSON.stringify(defaultState));
+
+const $=id=>document.getElementById(id);
+const coinEl=$("coins"),perClickEl=$("perClick"),rebirthEl=$("rebirths"),multiplierEl=$("multiplier"),neededEl=$("needed"),critEl=$("crit"),petsEl=$("pets"),luckEl=$("luck"),tapText=$("tapText"),status=$("status"),core=$("core"),rebirthBtn=$("rebirthBtn"),upgradesEl=$("upgrades"),petShopEl=$("petShop"),questName=$("questName"),questDesc=$("questDesc"),questFill=$("questFill"),questProgress=$("questProgress"),questBtn=$("questBtn");
+
+function formatNumber(n){
+if(n>=1e15)return(n/1e15).toFixed(1)+"Q";
+if(n>=1e12)return(n/1e12).toFixed(1)+"T";
+if(n>=1e9)return(n/1e9).toFixed(1)+"B";
+if(n>=1e6)return(n/1e6).toFixed(1)+"M";
+if(n>=1e3)return(n/1e3).toFixed(1)+"K";
+return Math.floor(n).toLocaleString();
+}
+function petBonus(){return Object.keys(state.pets).reduce((s,id)=>{const p=pets.find(x=>x.id===id);return s+(p?p.value*state.pets[id]:0)},0)}
+function getMultiplier(){return (1+state.rebirths)*(1+petBonus())}
+function rebirthCost(){return Math.floor(100*Math.pow(2,state.rebirths))}
+function save(){localStorage.setItem(saveKey,JSON.stringify(state))}
+function load(){
+const raw=localStorage.getItem(saveKey);if(!raw)return;
+try{
+const s=JSON.parse(raw);state={...JSON.parse(JSON.stringify(defaultState)),...s};
+state.upgrades=defaultState.upgrades.map((u,i)=>({...u,...(s.upgrades?.[i]||{})}));
+state.pets=s.pets||{};state.quest=s.quest||{index:0,progress:0,claimed:false};
+}catch(e){}
+}
+function petCount(){return Object.values(state.pets).reduce((a,b)=>a+b,0)}
+function questValue(q){
+if(q.type==="clicks")return state.clicks;
+if(q.type==="coins")return state.totalCoins;
+if(q.type==="pets")return petCount();
+if(q.type==="rebirths")return state.rebirths;
+return 0;
+}
+function refresh(){
+const mult=getMultiplier(),cost=rebirthCost();
+coinEl.textContent=formatNumber(state.coins)+" coins";
+perClickEl.textContent=formatNumber(state.perClick);
+rebirthEl.textContent=formatNumber(state.rebirths);
+multiplierEl.textContent=formatNumber(mult)+"x";
+neededEl.textContent=formatNumber(cost);
+critEl.textContent=state.critical+"%";
+petsEl.textContent=petCount();
+luckEl.textContent=state.luck+"%";
+tapText.textContent="+"+formatNumber(state.perClick*mult)+" per click";
+rebirthBtn.disabled=state.coins<cost;
+renderUpgrades();renderPets();renderQuest();
+}
+function renderUpgrades(){
+upgradesEl.innerHTML="";
+state.upgrades.forEach((u,i)=>{
+const row=document.createElement("div");row.className="row";
+row.innerHTML='<div class="info"><div class="name">'+u.name+'</div><div class="desc">+'+formatNumber(u.value)+' click • Owned: '+u.owned+' • '+formatNumber(u.cost)+'</div></div>';
+const b=document.createElement("button");b.className="buy";b.textContent="Buy";b.disabled=state.coins<u.cost;b.onclick=()=>buyUpgrade(i);
+row.appendChild(b);upgradesEl.appendChild(row);
+});
+}
+function renderPets(){
+petShopEl.innerHTML="";
+pets.forEach(p=>{
+const owned=state.pets[p.id]||0;
+const row=document.createElement("div");row.className="row";
+row.innerHTML='<div class="petrow"><div class="pet">'+p.icon+'</div><div class="info"><div class="name">'+p.name+' ×'+owned+'</div><div class="desc">'+p.desc+' • '+formatNumber(p.cost)+'</div></div></div>';
+const b=document.createElement("button");b.className="buy";b.textContent="Buy";b.disabled=state.coins<p.cost;b.onclick=()=>buyPet(p);
+row.appendChild(b);petShopEl.appendChild(row);
+});
+}
+function renderQuest(){
+const q=quests[state.quest.index];
+if(!q){questName.textContent="All quests complete!";questDesc.textContent="You completed every quest.";questFill.style.width="100%";questProgress.textContent="DONE";questBtn.disabled=true;return}
+const value=Math.min(q.goal,questValue(q));
+questName.textContent=q.name;questDesc.textContent=q.desc+" • +"+formatNumber(q.reward);
+questFill.style.width=(value/q.goal*100)+"%";
+questProgress.textContent=formatNumber(value)+" / "+formatNumber(q.goal);
+const ready=value>=q.goal;
+questBtn.disabled=!ready||state.quest.claimed;
+questBtn.textContent=state.quest.claimed?"Claimed":"Claim Reward";
+if(ready&&!state.quest.claimed)status.textContent="Quest complete! Claim your reward!";
+}
+function addCoins(n){
+state.coins+=n;state.totalCoins+=n;refresh();save();
+}
+function buyUpgrade(i){
+const u=state.upgrades[i];if(state.coins<u.cost)return;
+state.coins-=u.cost;state.perClick+=u.value;u.owned++;u.cost=Math.floor(u.cost*2.5);refresh();save();
+}
+function buyPet(p){
+if(state.coins<p.cost)return;
+state.coins-=p.cost;state.pets[p.id]=(state.pets[p.id]||0)+1;refresh();save();
+}
+function doRebirth(){
+const cost=rebirthCost();if(state.coins<cost)return;
+state.coins=0;state.perClick=1;state.rebirths++;
+state.upgrades.forEach((u,i)=>{u.owned=0;u.cost=defaultState.upgrades[i].cost});
+status.textContent="REBIRTH! Your multiplier increased!";
+refresh();save();
+}
+function claimQuest(){
+const q=quests[state.quest.index];if(!q||state.quest.claimed||questValue(q)<q.goal)return;
+state.quest.claimed=true;addCoins(q.reward);
+setTimeout(()=>{state.quest.index++;state.quest.progress=0;state.quest.claimed=false;refresh();save()},200);
+}
+function popup(text,x,y){
+const d=document.createElement("div");d.className="drop";d.textContent=text;d.style.left=x+"px";d.style.top=y+"px";d.style.transform="translate(-50%,-50%)";document.body.appendChild(d);setTimeout(()=>d.remove(),900);
+}
+core.addEventListener("pointerdown",e=>{
+e.preventDefault();state.clicks++;
+let gain=state.perClick*getMultiplier();
+if(Math.random()<state.critical/100){gain*=5;popup("CRITICAL! +"+formatNumber(gain),e.clientX,e.clientY);status.textContent="CRITICAL CLICK! 5× coins!";}
+else if(Math.random()<Math.min(.12,state.luck/1000)){gain*=10;popup("LUCKY! +"+formatNumber(gain),e.clientX,e.clientY);status.textContent="LUCKY DROP! 10× coins!";}
+else{popup("+"+formatNumber(gain),e.clientX,e.clientY);status.textContent="Keep clicking!";}
+addCoins(gain);
+});
+rebirthBtn.onclick=doRebirth;
+questBtn.onclick=claimQuest;
+$("reset").onclick=()=>{
+if(confirm("Reset all progress?")){state=JSON.parse(JSON.stringify(defaultState));save();refresh();status.textContent="Progress reset."}
+};
+load();refresh();
+</script>
+</body>
+</html>
