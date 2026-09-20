@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DougHub - Login</title>
+<link rel="icon" href="DougHub.ico" type="image/x-icon">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top left, #24104d 0%, transparent 35%),
+    radial-gradient(circle at bottom right, #17104a 0%, transparent 35%),
+    #02040a;
+  color: white;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 430px;
+}
+
+.card {
+  background: rgba(13, 17, 39, 0.82);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 24px;
+  padding: 35px;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(18px);
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 36px;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo p {
+  margin: 8px 0 0;
+  color: #9ca3af;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #aaa;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+}
+
+label {
+  display: block;
+  margin: 15px 0 7px;
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  outline: none;
+  font-size: 15px;
+}
+
+input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+#usernameBox {
+  display: none;
+}
+
+.action {
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.action:hover {
+  filter: brightness(1.1);
+}
+
+.action:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.message {
+  min-height: 22px;
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #c4b5fd;
+}
+
+.back {
+  display: block;
+  margin-top: 22px;
+  text-align: center;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back:hover {
+  color: white;
+}
+
+.terms-link {
+  display: block;
+  margin-top: 18px;
+  text-align: center;
+  color: #60a5fa;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.terms-link:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+/* TERMS OVERLAY */
+
+#termsOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+
+#termsPanel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  height: min(650px, 85vh);
+  padding: 30px;
+  overflow-y: auto;
+
+  background: #0d1127;
+  border-top: 1px solid rgba(139, 92, 246, .35);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, .5);
+
+  transform: translateY(100%);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+}
+
+.terms-content {
+  max-width: 850px;
+  margin: auto;
+  color: #d1d5db;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.terms-content h2 {
+  color: white;
+  font-size: 28px;
+  margin: 0 50px 8px 0;
+}
+
+.terms-content h3 {
+  color: white;
+  margin-top: 24px;
+  margin-bottom: 6px;
+}
+
+.terms-content p {
+  margin: 5px 0;
+}
+
+.terms-subtitle {
+  color: #858ca1;
+  margin-bottom: 25px;
+}
+
+.close-terms {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+
+  width: 40px;
+  height: 40px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.08);
+  color: white;
+
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close-terms:hover {
+  background: rgba(255,255,255,.15);
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 25px;
+  }
+
+  #termsPanel {
+    padding: 25px 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <div class="logo">
+      <h1>DougHub</h1>
+      <p id="subtitle">Log in to your account</p>
+    </div>
+
+    <div class="tabs">
+      <button
+        class="tab active"
+        id="loginTab"
+        onclick="showLogin()"
+      >
+        Log In
+      </button>
+
+      <button
+        class="tab"
+        id="signupTab"
+        onclick="showSignup()"
+      >
+        Sign Up
+      </button>
+    </div>
+
+    <div id="usernameBox">
+
+      <label for="username">
+        Username
+      </label>
+
+      <input
+        id="username"
+        type="text"
+        placeholder="Choose a username"
+        maxlength="20"
+        autocomplete="username"
+      >
+
+    </div>
+
+    <label for="email">
+      Email
+    </label>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="you@example.com"
+      autocomplete="email"
+    >
+
+    <label for="password">
+      Password
+    </label>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Enter your password"
+      autocomplete="current-password"
+    >
+
+    <button
+      class="action"
+      id="actionButton"
+      onclick="submitForm()"
+    >
+      Log In
+    </button>
+
+    <div
+      class="message"
+      id="message"
+    ></div>
+
+    <a
+      class="back"
+      href="index.html"
+    >
+      ← Back to DougHub
+    </a>
+
+    <a
+      class="terms-link"
+      href="#"
+      onclick="openTerms(); return false;"
+    >
+      Terms of Service
+    </a>
+
+  </div>
+
+</div>
+
+
+<!-- TERMS -->
+
+<div
+  id="termsOverlay"
+  onclick="closeTerms()"
+></div>
+
+<div id="termsPanel">
+
+  <button
+    class="close-terms"
+    onclick="closeTerms()"
+    aria-label="Close Terms of Service"
+  >
+    ×
+  </button>
+
+  <div class="terms-content">
+
+    <h2>Terms of Service</h2>
+
+    <div class="terms-subtitle">
+      DougHub Community Games
+    </div>
+
+    <h3>1. Accounts</h3>
+
+    <p>
+      You must provide accurate information when creating a DougHub account.
+      Keep your account information secure.
+    </p>
+
+    <h3>2. Community Games</h3>
+
+    <p>
+      Games published to DougHub must follow these Terms of Service and
+      applicable laws.
+    </p>
+
+    <h3>3. Your Content</h3>
+
+    <p>
+      Only publish games, code, images, sounds, and other content that you
+      have permission to use.
+    </p>
+
+    <h3>4. Appropriate Content</h3>
+
+    <p>
+      Do not publish illegal, harmful, or inappropriate content.
+    </p>
+
+    <h3>5. Game Size</h3>
+
+    <p>
+      Community Games should be designed for a 1280 × 720 viewport and keep
+      important gameplay and controls inside that area.
+    </p>
+
+    <h3>6. Removal</h3>
+
+    <p>
+      DougHub may remove games or other content that violates these Terms
+      of Service.
+    </p>
+
+    <h3>7. Changes</h3>
+
+    <p>
+      These Terms of Service may be updated as DougHub changes and grows.
+    </p>
+
+    <h3>8. Agreement</h3>
+
+    <p>
+      By creating an account or publishing a Community Game, you agree to
+      follow these Terms of Service.
+    </p>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+  "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+let signupMode = false;
+
+
+function showLogin() {
+
+  signupMode = false;
+
+  document.getElementById("usernameBox").style.display =
+    "none";
+
+  document.getElementById("loginTab").classList.add("active");
+
+  document.getElementById("signupTab").classList.remove("active");
+
+  document.getElementById("subtitle").textContent =
+    "Log in to your account";
+
+  document.getElementById("actionButton").textContent =
+    "Log In";
+
+  document.getElementById("password").autocomplete =
+    "current-password";
+
+  clearMessage();
+}
+
+
+function showSignup() {
+
+  signupMode = true;
+
+  document.getElementById("usernameBox").style.display =
+    "block";
+
+  document.getElementById("loginTab").classList.remove("active");
+
+  document.getElementById("signupTab").classList.add("active");
+
+  document.getElementById("subtitle").textContent =
+    "Do Not Use Your School Email to Sign Up";
+
+  document.getElementById("actionButton").textContent =
+    "Create Account";
+
+  document.getElementById("password").autocomplete =
+    "new-password";
+
+  clearMessage();
+}
+
+
+function showMessage(text) {
+
+  document.getElementById("message").textContent =
+    text;
+}
+
+
+function clearMessage() {
+
+  document.getElementById("message").textContent =
+    "";
+}
+
+
+async function submitForm() {
+
+  const button =
+    document.getElementById("actionButton");
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const username =
+    document.getElementById("username").value.trim();
+
+  clearMessage();
+
+  if (!email || !password) {
+
+    showMessage(
+      "Please enter your email and password."
+    );
+
+    return;
+  }
+
+  if (signupMode && !username) {
+
+    showMessage(
+      "Please choose a username."
+    );
+
+    return;
+  }
+
+  if (signupMode && username.length < 3) {
+
+    showMessage(
+      "Username must be at least 3 characters."
+    );
+
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+
+    if (signupMode) {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signUp({
+
+          email: email,
+
+          password: password,
+
+          options: {
+            data: {
+              username: username
+            }
+          }
+
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.session) {
+
+        window.location.href =
+          "index.html";
+
+      } else {
+
+        showMessage(
+          "Account created! Check your email to confirm your account."
+        );
+
+      }
+
+    } else {
+
+      const {
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
+
+          email: email,
+
+          password: password
+
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      window.location.href =
+        "index.html";
+    }
+
+  } catch (error) {
+
+    showMessage(
+      error.message
+    );
+
+  }
+
+  button.disabled = false;
+}
+
+
+/* TERMS PANEL */
+
+function openTerms() {
+
+  const panel =
+    document.getElementById("termsPanel");
+
+  const overlay =
+    document.getElementById("termsOverlay");
+
+  overlay.style.visibility =
+    "visible";
+
+  overlay.style.opacity =
+    "1";
+
+  panel.style.transform =
+    "translateY(0)";
+}
+
+
+function closeTerms() {
+
+  const panel =
+    document.getElementById("termsPanel");
+
+  const overlay =
+    document.getElementById("termsOverlay");
+
+  panel.style.transform =
+    "translateY(100%)";
+
+  overlay.style.opacity =
+    "0";
+
+  setTimeout(
+    function() {
+
+      overlay.style.visibility =
+        "hidden";
+
+    },
+    400
+  );
+}
+
+
+/* ALREADY LOGGED IN */
+
+supabaseClient.auth.getSession().then(
+  function({ data }) {
+
+    if (data.session) {
+
+      window.location.href =
+        "index.html";
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>

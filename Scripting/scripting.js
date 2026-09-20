@@ -24,6 +24,8 @@ const resultDescription = document.getElementById("resultDescription");
 const resultAuthor = document.getElementById("resultAuthor");
 const resultCategory = document.getElementById("resultCategory");
 
+let previewVersion = 0;
+
 function updateEditor() {
     const code = codeEditor.value;
     const lines = code.split("\n");
@@ -36,23 +38,63 @@ function updateEditor() {
         lineNumbers.appendChild(line);
     }
 
-    characterCount.textContent = `${code.length.toLocaleString()} characters`;
+    characterCount.textContent =
+        `${code.length.toLocaleString()} characters`;
 }
 
 function runGame() {
-    const code = codeEditor.value.trim();
+    const code = codeEditor.value;
 
-    if (!code) {
+    if (!code.trim()) {
         previewStatus.textContent = "No code";
+        placeholder.style.display = "flex";
+        gamePreview.style.display = "none";
+        gamePreview.srcdoc = "";
         return;
     }
+
+    previewVersion++;
+
+    const currentVersion = previewVersion;
+
+    previewStatus.textContent = "Loading...";
 
     placeholder.style.display = "none";
     gamePreview.style.display = "block";
 
-    gamePreview.srcdoc = code;
+    // Completely remove the old iframe.
+    const oldFrame = gamePreview;
 
-    previewStatus.textContent = "Running";
+    const newFrame = document.createElement("iframe");
+
+    newFrame.id = "gamePreview";
+    newFrame.title = "Game Preview";
+    newFrame.setAttribute("sandbox", "allow-scripts");
+    newFrame.style.width = "100%";
+    newFrame.style.height = "100%";
+    newFrame.style.border = "none";
+    newFrame.style.background = "white";
+
+    oldFrame.replaceWith(newFrame);
+
+    // Update our reference to the new iframe.
+    window.gamePreview = newFrame;
+
+    // Wait one frame so the browser has completely created
+    // the new iframe before loading the game.
+    requestAnimationFrame(() => {
+        if (currentVersion !== previewVersion) {
+            return;
+        }
+
+        newFrame.srcdoc = code;
+
+        newFrame.onload = () => {
+            if (currentVersion === previewVersion) {
+                previewStatus.textContent = "Running";
+            }
+        };
+    });
 }
 
 function clearCode() {
@@ -60,11 +102,28 @@ function clearCode() {
         return;
     }
 
-    codeEditor.value = "";
-    gamePreview.srcdoc = "";
-    gamePreview.style.display = "none";
-    placeholder.style.display = "flex";
+    previewVersion++;
 
+    codeEditor.value = "";
+
+    const oldFrame = document.getElementById("gamePreview");
+
+    const newFrame = document.createElement("iframe");
+
+    newFrame.id = "gamePreview";
+    newFrame.title = "Game Preview";
+    newFrame.setAttribute("sandbox", "allow-scripts");
+    newFrame.style.width = "100%";
+    newFrame.style.height = "100%";
+    newFrame.style.border = "none";
+    newFrame.style.background = "white";
+    newFrame.style.display = "none";
+
+    oldFrame.replaceWith(newFrame);
+
+    window.gamePreview = newFrame;
+
+    placeholder.style.display = "flex";
     previewStatus.textContent = "Waiting";
 
     updateEditor();
@@ -99,40 +158,51 @@ async function publishGame() {
     publishButton.textContent = "Publishing...";
 
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/community_games`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`,
-                "Prefer": "return=representation"
-            },
-            body: JSON.stringify({
-                title: title,
-                description: description,
-                author: author,
-                category: category,
-                code: code
-            })
-        });
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/community_games`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": `Bearer ${SUPABASE_KEY}`,
+                    "Prefer": "return=representation"
+                },
+                body: JSON.stringify({
+                    title: title,
+                    description: description,
+                    author: author,
+                    category: category,
+                    code: code
+                })
+            }
+        );
 
         const result = await response.json();
 
         if (!response.ok) {
             console.error("Supabase error:", result);
-            throw new Error(result.message || result.hint || "Could not publish game.");
+            throw new Error(
+                result.message ||
+                result.hint ||
+                "Could not publish game."
+            );
         }
 
         const game = Array.isArray(result) ? result[0] : result;
 
         resultTitle.textContent = game.title;
-        resultDescription.textContent = game.description || "No description.";
-        resultAuthor.textContent = game.author || "Anonymous";
-        resultCategory.textContent = game.category || "Other";
+        resultDescription.textContent =
+            game.description || "No description.";
+        resultAuthor.textContent =
+            game.author || "Anonymous";
+        resultCategory.textContent =
+            game.category || "Other";
 
         published.style.display = "block";
 
-        publishMessage.textContent = "Game published successfully!";
+        publishMessage.textContent =
+            "Game published successfully!";
         publishMessage.style.color = "#22c55e";
 
         published.scrollIntoView({
@@ -156,7 +226,11 @@ async function publishGame() {
 codeEditor.addEventListener("input", updateEditor);
 
 codeEditor.addEventListener("scroll", () => {
-    lineNumbers.scrollTop = codeEditor.scrollTop;
+    const frame = document.getElementById("gamePreview");
+
+    if (frame) {
+        lineNumbers.scrollTop = codeEditor.scrollTop;
+    }
 });
 
 codeEditor.addEventListener("keydown", (event) => {
@@ -177,7 +251,10 @@ codeEditor.addEventListener("keydown", (event) => {
         updateEditor();
     }
 
-    if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "Enter"
+    ) {
         event.preventDefault();
         runGame();
     }

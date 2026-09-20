@@ -7,6 +7,8 @@
 <title>Create a Game • DougHub</title>
 <link rel="icon" href="../DougHub.ico" type="image/x-icon">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 * {
     box-sizing: border-box;
@@ -73,6 +75,33 @@ body::before {
     color: #858ca1;
     font-size: 14px;
     margin-top: 4px;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.username-display {
+    color: #c4b5fd;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.logout-button {
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px;
+    padding: 8px 12px;
+    color: white;
+    background: rgba(255,255,255,.055);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.logout-button:hover {
+    background: rgba(239,68,68,.16);
+    border-color: rgba(239,68,68,.35);
 }
 
 .back-link {
@@ -206,20 +235,12 @@ body::before {
 }
 
 .run-button {
-    background: linear-gradient(
-        135deg,
-        #6366f1,
-        #8b5cf6
-    );
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     border: none;
 }
 
 .run-button:hover {
-    background: linear-gradient(
-        135deg,
-        #7073ff,
-        #9b6cff
-    );
+    background: linear-gradient(135deg, #7073ff, #9b6cff);
 }
 
 .preview {
@@ -233,10 +254,14 @@ body::before {
 }
 
 #gamePreview {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    width: 1280px;
+    height: 720px;
     border: none;
+    left: 0;
+    top: 0;
     background: white;
+    transform-origin: top left;
 }
 
 .placeholder {
@@ -249,6 +274,7 @@ body::before {
     color: #666d82;
     background: #050711;
     pointer-events: none;
+    z-index: 10;
 }
 
 .placeholder.hidden {
@@ -303,6 +329,11 @@ body::before {
     background: #0d1127;
 }
 
+.creator-locked {
+    opacity: .7;
+    cursor: not-allowed;
+}
+
 .publish {
     margin-top: 16px;
 }
@@ -313,17 +344,19 @@ body::before {
     border-radius: 12px;
     padding: 12px;
     color: white;
-    background: linear-gradient(
-        135deg,
-        #6366f1,
-        #a855f7
-    );
+    background: linear-gradient(135deg, #6366f1, #a855f7);
     font-weight: 800;
     cursor: pointer;
 }
 
 .publish-button:hover {
     filter: brightness(1.12);
+}
+
+.publish-button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    filter: none;
 }
 
 .message {
@@ -364,6 +397,18 @@ body::before {
     text-align: center;
 }
 
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #02040a;
+    color: #a78bfa;
+    font-weight: 700;
+}
+
 @media (max-width: 800px) {
     body {
         padding: 16px;
@@ -372,6 +417,10 @@ body::before {
     .topbar {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .account {
+        flex-wrap: wrap;
     }
 
     .workspace {
@@ -384,10 +433,13 @@ body::before {
     }
 }
 </style>
-
 </head>
 
 <body>
+
+<div id="loadingScreen">
+    Checking your DougHub account...
+</div>
 
 <div class="container">
 
@@ -403,28 +455,53 @@ body::before {
             </div>
         </div>
 
-        <a class="back-link" href="../index.html">
-            ← Back to DougHub
-        </a>
+        <div class="account">
+
+            <span class="username-display" id="loggedInUsername">
+                Loading...
+            </span>
+
+            <button
+                class="logout-button"
+                id="logoutButton"
+                type="button"
+            >
+                Log Out
+            </button>
+
+            <a class="back-link" href="../index.html">
+                ← Back
+            </a>
+
+        </div>
 
     </div>
-
 
     <div class="hero">
-        <h1>Create a Game</h1>
-        <p>Write your game, test it, and publish it to DougHub.</p>
-    </div>
 
+        <h1>Create a Game</h1>
+
+        <p>
+            Write your game, test it, and publish it to DougHub.
+        </p>
+
+    </div>
 
     <div class="workspace">
 
         <div class="card">
 
             <div class="card-title">
+
                 <h2>Game Code</h2>
-                <div class="status" id="characterCount">
+
+                <div
+                    class="status"
+                    id="characterCount"
+                >
                     0 characters
                 </div>
+
             </div>
 
             <div class="editor">
@@ -471,14 +548,16 @@ body::before {
 
         </div>
 
-
         <div class="card">
 
             <div class="card-title">
+
                 <h2>Preview</h2>
+
                 <div class="status">
-                    Live Preview
+                    1280 × 720
                 </div>
+
             </div>
 
             <div class="preview">
@@ -490,6 +569,8 @@ body::before {
                     <div>
                         Your game preview will appear here.
                         <br>
+                        Please make it 1280×720.
+                        <br>
                         Click Run to test it.
                     </div>
                 </div>
@@ -498,6 +579,7 @@ body::before {
                     id="gamePreview"
                     title="Game Preview"
                     sandbox="allow-scripts"
+                    scrolling="no"
                 ></iframe>
 
             </div>
@@ -505,7 +587,6 @@ body::before {
         </div>
 
     </div>
-
 
     <div class="card info">
 
@@ -525,7 +606,6 @@ body::before {
 
         </div>
 
-
         <div class="field">
 
             <label for="gameDescription">
@@ -539,7 +619,6 @@ body::before {
 
         </div>
 
-
         <div class="field">
 
             <label for="gameAuthor">
@@ -549,11 +628,12 @@ body::before {
             <input
                 id="gameAuthor"
                 type="text"
-                placeholder="Your name"
+                readonly
+                class="creator-locked"
+                placeholder="Your username"
             >
 
         </div>
-
 
         <div class="field">
 
@@ -563,30 +643,15 @@ body::before {
 
             <select id="gameCategory">
 
-                <option value="Arcade">
-                    Arcade
-                </option>
-
-                <option value="Puzzle">
-                    Puzzle
-                </option>
-
-                <option value="Racing">
-                    Racing
-                </option>
-
-                <option value="Clicker">
-                    Clicker
-                </option>
-
-                <option value="Other">
-                    Other
-                </option>
+                <option value="Arcade">Arcade</option>
+                <option value="Puzzle">Puzzle</option>
+                <option value="Racing">Racing</option>
+                <option value="Clicker">Clicker</option>
+                <option value="Other">Other</option>
 
             </select>
 
         </div>
-
 
         <div class="publish">
 
@@ -604,7 +669,6 @@ body::before {
             ></div>
 
         </div>
-
 
         <div
             class="published"
@@ -633,13 +697,266 @@ body::before {
 
     </div>
 
-
     <div class="footer">
         DougHub • Built by Doug
     </div>
 
 </div>
 
+<script>
+
+const SUPABASE_URL =
+    "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+const GAME_WIDTH = 1280;
+const GAME_HEIGHT = 720;
+
+const preview =
+    document.querySelector(".preview");
+
+function normalizePreviewCode(code) {
+
+    const fixedCSS = `
+<style id="dougHubPreviewViewport">
+
+html {
+    width: 1280px !important;
+    height: 720px !important;
+    min-width: 1280px !important;
+    min-height: 720px !important;
+    max-width: 1280px !important;
+    max-height: 720px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+body {
+    width: 1280px !important;
+    height: 720px !important;
+    min-width: 1280px !important;
+    min-height: 720px !important;
+    max-width: 1280px !important;
+    max-height: 720px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+</style>
+`;
+
+    if (/<head[\s>]/i.test(code)) {
+
+        return code.replace(
+            /<head([^>]*)>/i,
+            function(match) {
+                return match + fixedCSS;
+            }
+        );
+
+    }
+
+    return fixedCSS + code;
+}
+
+function fitPreview() {
+
+    const frame =
+        document.getElementById("gamePreview");
+
+    if (!frame) {
+        return;
+    }
+
+    const width =
+        preview.clientWidth;
+
+    const height =
+        preview.clientHeight;
+
+    if (width <= 0 || height <= 0) {
+        return;
+    }
+
+    const scale =
+        Math.min(
+            width / GAME_WIDTH,
+            height / GAME_HEIGHT
+        );
+
+    const scaledWidth =
+        GAME_WIDTH * scale;
+
+    const scaledHeight =
+        GAME_HEIGHT * scale;
+
+    const left =
+        (width - scaledWidth) / 2;
+
+    const top =
+        (height - scaledHeight) / 2;
+
+    frame.style.width =
+        GAME_WIDTH + "px";
+
+    frame.style.height =
+        GAME_HEIGHT + "px";
+
+    frame.style.left =
+        left + "px";
+
+    frame.style.top =
+        top + "px";
+
+    frame.style.transform =
+        "scale(" + scale + ")";
+}
+
+const previewObserver =
+    new MutationObserver(
+        function() {
+
+            requestAnimationFrame(
+                function() {
+
+                    const frame =
+                        document.getElementById(
+                            "gamePreview"
+                        );
+
+                    if (!frame) {
+                        return;
+                    }
+
+                    if (
+                        frame.srcdoc &&
+                        !frame.srcdoc.includes(
+                            "dougHubPreviewViewport"
+                        )
+                    ) {
+
+                        frame.srcdoc =
+                            normalizePreviewCode(
+                                frame.srcdoc
+                            );
+                    }
+
+                    fitPreview();
+
+                }
+            );
+
+        }
+    );
+
+previewObserver.observe(
+    preview,
+    {
+        childList: true,
+        subtree: true,
+        attributes: true
+    }
+);
+
+window.addEventListener(
+    "resize",
+    fitPreview
+);
+
+window.addEventListener(
+    "load",
+    fitPreview
+);
+
+setTimeout(fitPreview, 50);
+setTimeout(fitPreview, 250);
+setTimeout(fitPreview, 750);
+
+
+/* LOGIN CHECK */
+
+async function checkLogin() {
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+
+        window.location.href =
+            "../log-in.html?redirect=Scripting/scripting.html";
+
+        return false;
+    }
+
+    const {
+        data: profile,
+        error
+    } = await supabaseClient
+        .from("profiles")
+        .select("username")
+        .eq("id", session.user.id)
+        .single();
+
+    if (error || !profile) {
+
+        document.getElementById(
+            "loadingScreen"
+        ).textContent =
+            "Your DougHub profile could not be loaded.";
+
+        return false;
+    }
+
+    document.getElementById(
+        "loggedInUsername"
+    ).textContent =
+        "@" + profile.username;
+
+    document.getElementById(
+        "gameAuthor"
+    ).value =
+        profile.username;
+
+    document.getElementById(
+        "loadingScreen"
+    ).style.display =
+        "none";
+
+    return true;
+}
+
+
+/* LOG OUT */
+
+document
+    .getElementById("logoutButton")
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href =
+                "../log-in.html";
+
+        }
+    );
+
+
+checkLogin();
+
+</script>
 
 <script src="scripting.js"></script>
 
