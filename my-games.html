@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Games - DougHub</title>
+
+<link rel="icon" href="DougHub.ico" type="image/x-icon">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="display.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at top left, #241044 0%, transparent 35%),
+        radial-gradient(circle at bottom right, #17103b 0%, transparent 40%),
+        #02040a;
+}
+
+body {
+    padding: 30px;
+}
+
+.page {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    text-decoration: none;
+    color: white;
+}
+
+.back-button {
+    text-decoration: none;
+    color: #ffffff;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 10px 16px;
+    border-radius: 12px;
+    transition: 0.2s;
+}
+
+.back-button:hover {
+    background: rgba(255,255,255,0.14);
+}
+
+.header {
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    margin: 0 0 8px;
+    font-size: 38px;
+}
+
+.header p {
+    margin: 0;
+    color: #aaa9bd;
+}
+
+.status {
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #aaa9bd;
+}
+
+.games {
+    display: grid;
+    gap: 18px;
+}
+
+.game-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(99,102,241,0.12),
+            rgba(168,85,247,0.06)
+        ),
+        rgba(255,255,255,0.045);
+
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.game-title {
+    margin: 0;
+    font-size: 24px;
+    word-break: break-word;
+}
+
+.game-description {
+    color: #aaa9bd;
+    margin: 8px 0 15px;
+    line-height: 1.5;
+}
+
+.category {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 8px;
+    background: rgba(99,102,241,0.18);
+    color: #c7c9ff;
+    font-size: 12px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.stat {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 13px;
+    padding: 14px;
+}
+
+.stat-number {
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.stat-label {
+    color: #9291a5;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.players {
+    margin-top: 15px;
+}
+
+.players-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.player {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.035);
+    border-radius: 10px;
+    margin-bottom: 6px;
+}
+
+.player-name {
+    color: #e8e7f0;
+}
+
+.player-time {
+    color: #aaa9bd;
+    white-space: nowrap;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.rename-button {
+    background: #6366f1;
+}
+
+.rename-button:hover {
+    background: #5558dc;
+}
+
+.delete-button {
+    background: #dc2626;
+}
+
+.delete-button:hover {
+    background: #b91c1c;
+}
+
+.empty {
+    text-align: center;
+    padding: 50px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.empty h2 {
+    margin-top: 0;
+}
+
+.empty p {
+    color: #aaa9bd;
+}
+
+.empty a {
+    display: inline-block;
+    margin-top: 12px;
+    text-decoration: none;
+    color: white;
+    background: #6366f1;
+    padding: 11px 17px;
+    border-radius: 10px;
+}
+
+.loading {
+    text-align: center;
+    color: #aaa9bd;
+    padding: 40px;
+}
+
+.error {
+    color: #f87171;
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+@media (max-width: 650px) {
+    body {
+        padding: 18px;
+    }
+
+    .game-header {
+        flex-direction: column;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="topbar">
+        <a class="logo" href="index.html">DougHub</a>
+
+        <a class="back-button" href="index.html">
+            ← Back to DougHub
+        </a>
+    </div>
+
+    <div class="header">
+        <h1>🎮 My Games</h1>
+        <p>Manage your games and see how people are playing them.</p>
+    </div>
+
+    <div id="status" class="status">
+        Loading your games...
+    </div>
+
+    <div id="games" class="games"></div>
+
+</div>
+
+<script>
+const SUPABASE_URL =
+    "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+const statusElement =
+    document.getElementById("status");
+
+const gamesElement =
+    document.getElementById("games");
+
+
+function formatTime(seconds) {
+    seconds = Math.max(0, Math.floor(seconds || 0));
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+    }
+
+    if (minutes > 0) {
+        return `${minutes}m ${secs}s`;
+    }
+
+    return `${secs}s`;
+}
+
+
+function escapeHTML(value) {
+    const div = document.createElement("div");
+    div.textContent = value ?? "";
+    return div.innerHTML;
+}
+
+
+async function loadMyGames() {
+
+    statusElement.textContent =
+        "Loading your games...";
+
+    gamesElement.innerHTML = "";
+
+    const {
+        data: {
+            user
+        },
+        error: userError
+    } = await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+
+        statusElement.innerHTML =
+            `You need to be logged in to view My Games.`;
+
+        setTimeout(() => {
+            window.location.href =
+                "log-in.html?redirect=my-games.html";
+        }, 1200);
+
+        return;
+    }
+
+    const {
+        data: games,
+        error: gamesError
+    } = await supabaseClient
+        .from("community_games")
+        .select(
+            "id,title,description,author,category,created_at"
+        )
+        .eq("creator_id", user.id)
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (gamesError) {
+
+        console.error(gamesError);
+
+        statusElement.innerHTML =
+            `<div class="error">
+                Could not load your games.<br>
+                ${escapeHTML(gamesError.message)}
+            </div>`;
+
+        return;
+    }
+
+    statusElement.textContent =
+        `${games.length} game${games.length === 1 ? "" : "s"} published`;
+
+    if (!games.length) {
+
+        gamesElement.innerHTML = `
+            <div class="empty">
+                <h2>You haven't published any games yet.</h2>
+                <p>Create a game and publish it to see it here.</p>
+                <a href="Scripting/scripting.html">
+                    Create a Game
+                </a>
+            </div>
+        `;
+
+        return;
+    }
+
+    for (const game of games) {
+        await createGameCard(game, user.id);
+    }
+}
+
+
+async function createGameCard(game, userId) {
+
+    const {
+        data: sessions,
+        error: sessionsError
+    } = await supabaseClient
+        .from("game_play_sessions")
+        .select(
+            "id,user_id,started_at,ended_at,duration_seconds"
+        )
+        .eq("game_id", game.id);
+
+    if (sessionsError) {
+        console.error(
+            "Could not load play statistics:",
+            sessionsError
+        );
+    }
+
+    const safeSessions =
+        sessions || [];
+
+    const totalPlays =
+        safeSessions.length;
+
+    const uniquePlayers =
+        new Set(
+            safeSessions
+                .filter(session => session.user_id)
+                .map(session => session.user_id)
+        ).size;
+
+    const totalSeconds =
+        safeSessions.reduce(
+            (total, session) =>
+                total + Number(session.duration_seconds || 0),
+            0
+        );
+
+    const playerTotals =
+        {};
+
+    for (const session of safeSessions) {
+
+        const playerId =
+            session.user_id || "guest";
+
+        if (!playerTotals[playerId]) {
+            playerTotals[playerId] = 0;
+        }
+
+        playerTotals[playerId] +=
+            Number(session.duration_seconds || 0);
+    }
+
+    const playerIds =
+        Object.keys(playerTotals)
+            .filter(id => id !== "guest");
+
+    let profiles = [];
+
+    if (playerIds.length) {
+
+        const {
+            data: profileData,
+            error: profileError
+        } = await supabaseClient
+            .from("profiles")
+            .select("id,username")
+            .in("id", playerIds);
+
+        if (!profileError) {
+            profiles = profileData || [];
+        }
+    }
+
+    const profileMap = {};
+
+    for (const profile of profiles) {
+        profileMap[profile.id] =
+            profile.username;
+    }
+
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "game-card";
+
+    let playersHTML = "";
+
+    const sortedPlayers =
+        Object.entries(playerTotals)
+            .sort((a, b) => b[1] - a[1]);
+
+    if (!sortedPlayers.length) {
+
+        playersHTML = `
+            <div class="player">
+                <span class="player-name">
+                    No players yet
+                </span>
+            </div>
+        `;
+
+    } else {
+
+        for (const [playerId, seconds] of sortedPlayers) {
+
+            const playerName =
+                playerId === "guest"
+                    ? "Guest"
+                    : (
+                        profileMap[playerId] ||
+                        "Player"
+                    );
+
+            playersHTML += `
+                <div class="player">
+                    <span class="player-name">
+                        ${escapeHTML(playerName)}
+                    </span>
+
+                    <span class="player-time">
+                        ${formatTime(seconds)}
+                    </span>
+                </div>
+            `;
+        }
+    }
+
+    card.innerHTML = `
+        <div class="game-header">
+
+            <div>
+                <h2 class="game-title">
+                    ${escapeHTML(game.title)}
+                </h2>
+
+                <p class="game-description">
+                    ${escapeHTML(
+                        game.description ||
+                        "No description."
+                    )}
+                </p>
+
+                <span class="category">
+                    ${escapeHTML(
+                        game.category ||
+                        "Other"
+                    )}
+                </span>
+            </div>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-number">
+                    ${totalPlays.toLocaleString()}
+                </div>
+
+                <div class="stat-label">
+                    Total Plays
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">
+                    ${uniquePlayers.toLocaleString()}
+                </div>
+
+                <div class="stat-label">
+                    Unique Players
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">
+                    ${formatTime(totalSeconds)}
+                </div>
+
+                <div class="stat-label">
+                    Total Playtime
+                </div>
+            </div>
+
+        </div>
+
+        <div class="players">
+
+            <div class="players-title">
+                Player Playtime
+            </div>
+
+            ${playersHTML}
+
+        </div>
+
+        <div class="actions">
+
+            <button
+                class="rename-button"
+                data-id="${game.id}">
+                ✏️ Rename
+            </button>
+
+            <button
+                class="delete-button"
+                data-id="${game.id}">
+                🗑️ Delete
+            </button>
+
+        </div>
+    `;
+
+    const renameButton =
+        card.querySelector(".rename-button");
+
+    renameButton.addEventListener(
+        "click",
+        () => renameGame(game)
+    );
+
+    const deleteButton =
+        card.querySelector(".delete-button");
+
+    deleteButton.addEventListener(
+        "click",
+        () => deleteGame(game)
+    );
+
+    gamesElement.appendChild(card);
+}
+
+
+async function renameGame(game) {
+
+    const newTitle =
+        prompt(
+            "Enter the new game name:",
+            game.title
+        );
+
+    if (newTitle === null) {
+        return;
+    }
+
+    const title =
+        newTitle.trim();
+
+    if (!title) {
+        alert("Game name cannot be empty.");
+        return;
+    }
+
+    const {
+        error
+    } = await supabaseClient
+        .from("community_games")
+        .update({
+            title: title
+        })
+        .eq("id", game.id);
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not rename the game:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+    loadMyGames();
+}
+
+
+async function deleteGame(game) {
+
+    const confirmed =
+        confirm(
+            `Delete "${game.title}"?\n\n` +
+            "This cannot be undone."
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const {
+        error
+    } = await supabaseClient
+        .from("community_games")
+        .delete()
+        .eq("id", game.id);
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not delete the game:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+    loadMyGames();
+}
+
+
+loadMyGames();
+</script>
+
+</body>
+</html>

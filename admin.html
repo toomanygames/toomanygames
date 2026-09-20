@@ -1,0 +1,2565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DougHub Admin</title>
+<link rel="icon" href="DougHub.ico" type="image/x-icon">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="display.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Inter, Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(99,102,241,.18), transparent 32%),
+        radial-gradient(circle at 85% 85%, rgba(168,85,247,.14), transparent 32%),
+        #02040a;
+}
+
+body {
+    padding: 25px;
+}
+
+.container {
+    width: min(1150px, 100%);
+    margin: auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.logo .purple {
+    color: #6366f1;
+}
+
+.subtitle {
+    margin-top: 5px;
+    color: #858ca1;
+    font-size: 14px;
+}
+
+.back-button {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 11px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.06);
+    font-weight: 700;
+}
+
+.back-button:hover {
+    background: rgba(255,255,255,.11);
+}
+
+.card {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.09);
+    background: rgba(13,17,39,.72);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 18px 45px rgba(0,0,0,.25);
+}
+
+.card h2 {
+    margin: 0 0 8px;
+}
+
+.status {
+    color: #858ca1;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.message,
+.game,
+.warning-item,
+.user-item {
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 13px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.045);
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.username,
+.game-title,
+.warning-username,
+.user-name {
+    color: #c4b5fd;
+    font-weight: 800;
+}
+
+.game-title {
+    color: white;
+    font-size: 18px;
+}
+
+.time,
+.game-info,
+.warning-time,
+.user-info {
+    color: #73798f;
+    font-size: 12px;
+}
+
+.message-text {
+    margin: 9px 0;
+    color: #d7d9e5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.game-description {
+    margin: 10px 0;
+    color: #b7bbcb;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.warning-text {
+    margin: 10px 0;
+    color: #d7d9e5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 9px 13px;
+    border-radius: 9px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.07);
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+button:hover {
+    background: rgba(99,102,241,.2);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.delete-button {
+    background: rgba(239,68,68,.1);
+    border-color: rgba(239,68,68,.25);
+    color: #fca5a5;
+}
+
+.delete-button:hover {
+    background: rgba(239,68,68,.22);
+}
+
+.edit-button {
+    background: rgba(99,102,241,.12);
+}
+
+.save-button,
+.warning-send-button {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+}
+
+.ban-button {
+    background: rgba(239,68,68,.12);
+    border-color: rgba(239,68,68,.3);
+    color: #fca5a5;
+}
+
+.ban-button:hover {
+    background: rgba(239,68,68,.22);
+}
+
+.unban-button {
+    background: rgba(34,197,94,.1);
+    border-color: rgba(34,197,94,.25);
+    color: #86efac;
+}
+
+.unban-button:hover {
+    background: rgba(34,197,94,.18);
+}
+
+.editor {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 13px;
+    background: rgba(0,0,0,.2);
+}
+
+.editor.open {
+    display: block;
+}
+
+.warning-form,
+.ban-form {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 15px;
+    background: rgba(0,0,0,.18);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.warning-form-title,
+.ban-form-title {
+    margin: 0 0 15px;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.ban-form-title {
+    color: #fca5a5;
+}
+
+.field {
+    margin-bottom: 12px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    color: #9da4b8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 9px;
+    border: 1px solid rgba(255,255,255,.1);
+    outline: none;
+    background: rgba(2,4,10,.7);
+    color: white;
+    font: inherit;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: rgba(99,102,241,.6);
+}
+
+.field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.code-input {
+    min-height: 250px !important;
+    font-family: Consolas, Monaco, monospace !important;
+    font-size: 13px;
+}
+
+.empty {
+    padding: 25px;
+    text-align: center;
+    color: #73798f;
+}
+
+#loading {
+    padding: 60px 20px;
+    text-align: center;
+    color: #a78bfa;
+    font-weight: 700;
+}
+
+.error {
+    padding: 15px;
+    border-radius: 12px;
+    color: #fca5a5;
+    background: rgba(239,68,68,.1);
+    border: 1px solid rgba(239,68,68,.25);
+}
+
+.success {
+    padding: 12px 14px;
+    margin-top: 12px;
+    border-radius: 10px;
+    color: #86efac;
+    background: rgba(34,197,94,.1);
+    border: 1px solid rgba(34,197,94,.2);
+}
+
+.user-active {
+    color: #86efac;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.user-banned {
+    color: #fca5a5;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.user-reason {
+    margin-top: 7px;
+    color: #9da4b8;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.admin-badge {
+    display: inline-block;
+    margin-left: 7px;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: rgba(139,92,246,.15);
+    color: #c4b5fd;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+@media (max-width: 700px) {
+    body {
+        padding: 15px;
+    }
+
+    header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .top-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <div>
+        <div class="logo">
+            Doug<span class="purple">Hub</span> Admin
+        </div>
+
+        <div class="subtitle">
+            Community management panel
+        </div>
+    </div>
+
+    <a href="index.html" class="back-button">
+        ← DougHub
+    </a>
+</header>
+
+<div id="loading">
+    Checking admin permissions...
+</div>
+
+<div id="adminArea" style="display:none;">
+
+<!-- USER MANAGEMENT -->
+
+<div class="card">
+
+    <h2>👥 Users</h2>
+
+    <div class="status" id="usersStatus">
+        Loading users...
+    </div>
+
+    <div id="usersList"></div>
+
+</div>
+
+
+<!-- WARNINGS -->
+
+<div class="card">
+
+    <h2>⚠️ User Warnings</h2>
+
+    <div class="status" id="warningStatus">
+        Send a warning to a user.
+    </div>
+
+    <div class="warning-form">
+
+        <div class="warning-form-title">
+            Send a Warning
+        </div>
+
+        <div class="field">
+
+            <label for="warningUser">
+                User
+            </label>
+
+            <select id="warningUser">
+                <option value="">
+                    Loading users...
+                </option>
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label for="warningMessage">
+                Warning Message
+            </label>
+
+            <textarea
+                id="warningMessage"
+                placeholder="Write the warning message..."
+            ></textarea>
+
+        </div>
+
+        <div class="buttons">
+
+            <button
+                id="sendWarningButton"
+                class="warning-send-button"
+                type="button"
+            >
+                ⚠️ Send Warning
+            </button>
+
+        </div>
+
+        <div
+            id="warningResult"
+            style="display:none;"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- BANS -->
+
+<div class="card">
+
+    <h2>🚫 Ban Accounts</h2>
+
+    <div class="status" id="banStatus">
+        Ban or unban DougHub accounts.
+    </div>
+
+    <div class="ban-form">
+
+        <div class="ban-form-title">
+            🚫 Ban an Account
+        </div>
+
+        <div class="field">
+
+            <label for="banUser">
+                User
+            </label>
+
+            <select id="banUser">
+                <option value="">
+                    Loading users...
+                </option>
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label for="banReason">
+                Ban Reason
+            </label>
+
+            <textarea
+                id="banReason"
+                placeholder="Enter the reason for the ban..."
+            ></textarea>
+
+        </div>
+
+        <div class="buttons">
+
+            <button
+                id="banAccountButton"
+                class="ban-button"
+                type="button"
+            >
+                🚫 Ban Account
+            </button>
+
+        </div>
+
+        <div
+            id="banResult"
+            style="display:none;"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- RECENT WARNINGS -->
+
+<div class="card">
+
+    <h2>📋 Recent Warnings</h2>
+
+    <div
+        class="status"
+        id="warningsListStatus"
+    >
+        Loading...
+    </div>
+
+    <div id="warningsList"></div>
+
+</div>
+
+
+<!-- CHAT -->
+
+<div class="card">
+
+    <h2>💬 Chat Messages</h2>
+
+    <div class="status" id="chatStatus">
+        Loading...
+    </div>
+
+    <div id="chatMessages"></div>
+
+</div>
+
+
+<!-- GAMES -->
+
+<div class="card">
+
+    <h2>🎮 Community Games</h2>
+
+    <div class="status" id="gameStatus">
+        Loading...
+    </div>
+
+    <div id="communityGames"></div>
+
+</div>
+
+</div>
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+const loading =
+    document.getElementById("loading");
+
+const adminArea =
+    document.getElementById("adminArea");
+
+const usersList =
+    document.getElementById("usersList");
+
+const usersStatus =
+    document.getElementById("usersStatus");
+
+const warningUser =
+    document.getElementById("warningUser");
+
+const warningMessage =
+    document.getElementById("warningMessage");
+
+const sendWarningButton =
+    document.getElementById("sendWarningButton");
+
+const warningStatus =
+    document.getElementById("warningStatus");
+
+const warningResult =
+    document.getElementById("warningResult");
+
+const banUser =
+    document.getElementById("banUser");
+
+const banReason =
+    document.getElementById("banReason");
+
+const banAccountButton =
+    document.getElementById("banAccountButton");
+
+const banStatus =
+    document.getElementById("banStatus");
+
+const banResult =
+    document.getElementById("banResult");
+
+const warningsList =
+    document.getElementById("warningsList");
+
+const warningsListStatus =
+    document.getElementById("warningsListStatus");
+
+const chatMessages =
+    document.getElementById("chatMessages");
+
+const communityGames =
+    document.getElementById("communityGames");
+
+const chatStatus =
+    document.getElementById("chatStatus");
+
+const gameStatus =
+    document.getElementById("gameStatus");
+
+
+let currentAdminUser = null;
+let allUsers = [];
+
+
+/* =========================================
+   ADMIN CHECK
+========================================= */
+
+async function checkAdmin() {
+
+    const {
+        data: { session },
+        error: sessionError
+    } = await supabaseClient.auth.getSession();
+
+
+    if (sessionError) {
+
+        loading.innerHTML =
+            '<div class="error">Could not check your login.</div>';
+
+        console.error(sessionError);
+
+        return false;
+    }
+
+
+    if (!session) {
+
+        window.location.href =
+            "log-in.html?redirect=admin.html";
+
+        return false;
+    }
+
+
+    currentAdminUser =
+        session.user;
+
+
+    const {
+        data: profile,
+        error: profileError
+    } = await supabaseClient
+        .from("profiles")
+        .select("username,is_admin")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+
+    if (profileError) {
+
+        console.error(profileError);
+
+        loading.innerHTML = `
+            <div class="error">
+                Could not load your admin profile.<br><br>
+                ${escapeHtml(profileError.message)}
+            </div>
+        `;
+
+        return false;
+    }
+
+
+    if (!profile || profile.is_admin !== true) {
+
+        loading.innerHTML = `
+            <div class="error">
+                Access denied.<br><br>
+                This account is not an admin.
+            </div>
+        `;
+
+        return false;
+    }
+
+
+    loading.style.display =
+        "none";
+
+    adminArea.style.display =
+        "block";
+
+    return true;
+}
+
+
+/* =========================================
+   LOAD ALL USERS
+========================================= */
+
+async function loadUsers() {
+
+    usersStatus.textContent =
+        "Loading users...";
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id,username,is_admin,is_banned,ban_reason,banned_at"
+            )
+            .order(
+                "username",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        usersStatus.textContent =
+            "Could not load users.";
+
+        usersList.innerHTML = `
+            <div class="error">
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    allUsers =
+        data || [];
+
+
+    usersStatus.textContent =
+        allUsers.length +
+        " user" +
+        (allUsers.length === 1 ? "" : "s");
+
+
+    populateUserSelects();
+
+    renderUsers();
+
+}
+
+
+/* =========================================
+   POPULATE USER DROPDOWNS
+========================================= */
+
+function populateUserSelects() {
+
+    warningUser.innerHTML = `
+        <option value="">
+            Select a user...
+        </option>
+    `;
+
+    banUser.innerHTML = `
+        <option value="">
+            Select a user...
+        </option>
+    `;
+
+
+    allUsers.forEach(user => {
+
+        const username =
+            user.username ||
+            "User";
+
+
+        const warningOption =
+            document.createElement("option");
+
+        warningOption.value =
+            user.id;
+
+        warningOption.textContent =
+            "@" + username;
+
+        warningUser.appendChild(
+            warningOption
+        );
+
+
+        const banOption =
+            document.createElement("option");
+
+        banOption.value =
+            user.id;
+
+        banOption.textContent =
+            "@" +
+            username +
+            (
+                user.is_banned
+                    ? " — BANNED"
+                    : ""
+            );
+
+        banUser.appendChild(
+            banOption
+        );
+
+    });
+
+}
+
+
+/* =========================================
+   RENDER USER LIST
+========================================= */
+
+function renderUsers() {
+
+    usersList.innerHTML =
+        "";
+
+
+    if (!allUsers.length) {
+
+        usersList.innerHTML =
+            '<div class="empty">No users found.</div>';
+
+        return;
+    }
+
+
+    allUsers.forEach(user => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "user-item";
+
+
+        const top =
+            document.createElement("div");
+
+        top.className =
+            "top-row";
+
+
+        const left =
+            document.createElement("div");
+
+
+        const name =
+            document.createElement("div");
+
+        name.className =
+            "user-name";
+
+        name.textContent =
+            "@" +
+            (
+                user.username ||
+                "User"
+            );
+
+
+        if (user.is_admin) {
+
+            const badge =
+                document.createElement("span");
+
+            badge.className =
+                "admin-badge";
+
+            badge.textContent =
+                "ADMIN";
+
+            name.appendChild(
+                badge
+            );
+
+        }
+
+
+        const info =
+            document.createElement("div");
+
+        info.className =
+            "user-info";
+
+
+        if (user.is_banned) {
+
+            info.innerHTML =
+                '<span class="user-banned">🚫 BANNED</span>';
+
+        } else {
+
+            info.innerHTML =
+                '<span class="user-active">● Active</span>';
+
+        }
+
+
+        left.appendChild(name);
+        left.appendChild(info);
+
+
+        const buttons =
+            document.createElement("div");
+
+        buttons.className =
+            "buttons";
+
+
+        if (user.is_banned) {
+
+            const unbanButton =
+                document.createElement("button");
+
+            unbanButton.className =
+                "unban-button";
+
+            unbanButton.type =
+                "button";
+
+            unbanButton.textContent =
+                "♻️ Unban";
+
+
+            unbanButton.addEventListener(
+                "click",
+                function() {
+
+                    unbanAccount(
+                        user.id
+                    );
+
+                }
+            );
+
+
+            buttons.appendChild(
+                unbanButton
+            );
+
+        } else {
+
+            const banButton =
+                document.createElement("button");
+
+            banButton.className =
+                "ban-button";
+
+            banButton.type =
+                "button";
+
+            banButton.textContent =
+                "🚫 Ban";
+
+
+            banButton.addEventListener(
+                "click",
+                function() {
+
+                    banUser.value =
+                        user.id;
+
+                    document
+                        .getElementById(
+                            "banReason"
+                        )
+                        .focus();
+
+                    window.scrollTo({
+                        top:
+                            document
+                                .getElementById(
+                                    "banUser"
+                                )
+                                .getBoundingClientRect()
+                                .top +
+                            window.scrollY -
+                            120,
+                        behavior:
+                            "smooth"
+                    });
+
+                }
+            );
+
+
+            buttons.appendChild(
+                banButton
+            );
+
+        }
+
+
+        top.appendChild(left);
+        top.appendChild(buttons);
+
+
+        item.appendChild(top);
+
+
+        if (user.is_banned && user.ban_reason) {
+
+            const reason =
+                document.createElement("div");
+
+            reason.className =
+                "user-reason";
+
+            reason.textContent =
+                "Reason: " +
+                user.ban_reason;
+
+            item.appendChild(
+                reason
+            );
+
+        }
+
+
+        usersList.appendChild(
+            item
+        );
+
+    });
+
+}
+
+
+/* =========================================
+   SEND WARNING
+========================================= */
+
+async function sendWarning() {
+
+    const userId =
+        warningUser.value;
+
+    const message =
+        warningMessage.value.trim();
+
+
+    warningResult.style.display =
+        "none";
+
+
+    if (!userId) {
+
+        alert(
+            "Please select a user."
+        );
+
+        return;
+    }
+
+
+    if (!message) {
+
+        alert(
+            "Please enter a warning message."
+        );
+
+        return;
+    }
+
+
+    sendWarningButton.disabled =
+        true;
+
+    sendWarningButton.textContent =
+        "Sending...";
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("user_warnings")
+            .insert({
+                user_id:
+                    userId,
+                message:
+                    message
+            });
+
+
+    sendWarningButton.disabled =
+        false;
+
+    sendWarningButton.textContent =
+        "⚠️ Send Warning";
+
+
+    if (error) {
+
+        console.error(error);
+
+        warningResult.className =
+            "error";
+
+        warningResult.textContent =
+            "Could not send warning: " +
+            error.message;
+
+        warningResult.style.display =
+            "block";
+
+        return;
+    }
+
+
+    warningMessage.value =
+        "";
+
+    warningUser.value =
+        "";
+
+
+    warningResult.className =
+        "success";
+
+    warningResult.textContent =
+        "Warning sent successfully.";
+
+    warningResult.style.display =
+        "block";
+
+
+    await loadWarnings();
+
+}
+
+
+/* =========================================
+   BAN ACCOUNT
+========================================= */
+
+async function banAccount() {
+
+    const userId =
+        banUser.value;
+
+    const reason =
+        banReason.value.trim();
+
+
+    banResult.style.display =
+        "none";
+
+
+    if (!userId) {
+
+        alert(
+            "Please select a user."
+        );
+
+        return;
+    }
+
+
+    if (!reason) {
+
+        alert(
+            "Please enter a ban reason."
+        );
+
+        return;
+    }
+
+
+    const selectedUser =
+        allUsers.find(
+            user =>
+                user.id === userId
+        );
+
+
+    if (!selectedUser) {
+
+        alert(
+            "Could not find that user."
+        );
+
+        return;
+    }
+
+
+    if (selectedUser.id === currentAdminUser.id) {
+
+        alert(
+            "You cannot ban your own admin account."
+        );
+
+        return;
+    }
+
+
+    if (!confirm(
+        "Are you sure you want to ban @" +
+        (selectedUser.username || "User") +
+        "?"
+    )) {
+
+        return;
+    }
+
+
+    banAccountButton.disabled =
+        true;
+
+    banAccountButton.textContent =
+        "Banning...";
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .update({
+                is_banned:
+                    true,
+                ban_reason:
+                    reason,
+                banned_at:
+                    new Date().toISOString()
+            })
+            .eq(
+                "id",
+                userId
+            );
+
+
+    banAccountButton.disabled =
+        false;
+
+    banAccountButton.textContent =
+        "🚫 Ban Account";
+
+
+    if (error) {
+
+        console.error(error);
+
+        banResult.className =
+            "error";
+
+        banResult.textContent =
+            "Could not ban account: " +
+            error.message;
+
+        banResult.style.display =
+            "block";
+
+        return;
+    }
+
+
+    banReason.value =
+        "";
+
+    banUser.value =
+        "";
+
+
+    banResult.className =
+        "success";
+
+    banResult.textContent =
+        "Account banned successfully.";
+
+    banResult.style.display =
+        "block";
+
+
+    await loadUsers();
+
+}
+
+
+/* =========================================
+   UNBAN ACCOUNT
+========================================= */
+
+async function unbanAccount(userId) {
+
+    const user =
+        allUsers.find(
+            item =>
+                item.id === userId
+        );
+
+
+    if (!user) {
+        return;
+    }
+
+
+    if (!confirm(
+        "Are you sure you want to unban @" +
+        (user.username || "User") +
+        "?"
+    )) {
+
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .update({
+                is_banned:
+                    false,
+                ban_reason:
+                    null,
+                banned_at:
+                    null
+            })
+            .eq(
+                "id",
+                userId
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not unban account:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+
+    await loadUsers();
+
+}
+
+
+/* =========================================
+   LOAD WARNINGS
+========================================= */
+
+async function loadWarnings() {
+
+    warningsListStatus.textContent =
+        "Loading warnings...";
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("user_warnings")
+            .select(
+                "id,user_id,message,created_at,read_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            )
+            .limit(100);
+
+
+    if (error) {
+
+        console.error(error);
+
+        warningsListStatus.textContent =
+            "Could not load warnings.";
+
+        warningsList.innerHTML = `
+            <div class="error">
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+        warningsListStatus.textContent =
+            "0 warnings";
+
+        warningsList.innerHTML =
+            '<div class="empty">No warnings have been sent.</div>';
+
+        return;
+    }
+
+
+    const userIds =
+        [
+            ...new Set(
+                data.map(
+                    warning =>
+                        warning.user_id
+                )
+            )
+        ];
+
+
+    const {
+        data: users
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select("id,username")
+            .in(
+                "id",
+                userIds
+            );
+
+
+    const usernameMap =
+        new Map();
+
+
+    (users || []).forEach(user => {
+
+        usernameMap.set(
+            user.id,
+            user.username ||
+            "User"
+        );
+
+    });
+
+
+    warningsListStatus.textContent =
+        data.length +
+        " warning" +
+        (data.length === 1 ? "" : "s");
+
+
+    warningsList.innerHTML =
+        "";
+
+
+    data.forEach(warning => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "warning-item";
+
+
+        const top =
+            document.createElement("div");
+
+        top.className =
+            "top-row";
+
+
+        const username =
+            document.createElement("span");
+
+        username.className =
+            "warning-username";
+
+        username.textContent =
+            "@" +
+            (
+                usernameMap.get(
+                    warning.user_id
+                ) ||
+                "Unknown User"
+            );
+
+
+        const time =
+            document.createElement("span");
+
+        time.className =
+            "warning-time";
+
+        time.textContent =
+            new Date(
+                warning.created_at
+            ).toLocaleString();
+
+
+        top.appendChild(username);
+        top.appendChild(time);
+
+
+        const text =
+            document.createElement("div");
+
+        text.className =
+            "warning-text";
+
+        text.textContent =
+            warning.message;
+
+
+        const readStatus =
+            document.createElement("div");
+
+        readStatus.className =
+            "warning-time";
+
+        readStatus.textContent =
+            warning.read_at
+                ? "✓ Read by user"
+                : "● Unread";
+
+
+        const buttons =
+            document.createElement("div");
+
+        buttons.className =
+            "buttons";
+
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.className =
+            "delete-button";
+
+        deleteButton.type =
+            "button";
+
+        deleteButton.textContent =
+            "🗑️ Delete";
+
+
+        deleteButton.addEventListener(
+            "click",
+            function() {
+
+                deleteWarning(
+                    warning.id
+                );
+
+            }
+        );
+
+
+        buttons.appendChild(
+            deleteButton
+        );
+
+
+        item.appendChild(top);
+        item.appendChild(text);
+        item.appendChild(readStatus);
+        item.appendChild(buttons);
+
+
+        warningsList.appendChild(item);
+
+    });
+
+}
+
+
+/* =========================================
+   DELETE WARNING
+========================================= */
+
+async function deleteWarning(id) {
+
+    if (!confirm(
+        "Are you sure you want to delete this warning?"
+    )) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("user_warnings")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not delete the warning:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+
+    await loadWarnings();
+
+}
+
+
+/* =========================================
+   CHAT
+========================================= */
+
+async function loadChatMessages() {
+
+    chatStatus.textContent =
+        "Loading messages...";
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("chat_messages")
+            .select(
+                "id,user_id,username,message,created_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            )
+            .limit(200);
+
+
+    if (error) {
+
+        console.error(error);
+
+        chatStatus.textContent =
+            "Could not load messages.";
+
+        chatMessages.innerHTML = `
+            <div class="error">
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    chatStatus.textContent =
+        data.length +
+        " message" +
+        (data.length === 1 ? "" : "s");
+
+
+    chatMessages.innerHTML =
+        "";
+
+
+    if (data.length === 0) {
+
+        chatMessages.innerHTML =
+            '<div class="empty">No chat messages.</div>';
+
+        return;
+    }
+
+
+    data.forEach(message => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "message";
+
+
+        const top =
+            document.createElement("div");
+
+        top.className =
+            "top-row";
+
+
+        const username =
+            document.createElement("span");
+
+        username.className =
+            "username";
+
+        username.textContent =
+            "@" +
+            (
+                message.username ||
+                "Anonymous"
+            );
+
+
+        const time =
+            document.createElement("span");
+
+        time.className =
+            "time";
+
+        time.textContent =
+            new Date(
+                message.created_at
+            ).toLocaleString();
+
+
+        top.appendChild(username);
+        top.appendChild(time);
+
+
+        const text =
+            document.createElement("div");
+
+        text.className =
+            "message-text";
+
+        text.textContent =
+            message.message ||
+            "";
+
+
+        const buttons =
+            document.createElement("div");
+
+        buttons.className =
+            "buttons";
+
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.className =
+            "delete-button";
+
+        deleteButton.type =
+            "button";
+
+        deleteButton.textContent =
+            "🗑️ Delete";
+
+
+        deleteButton.addEventListener(
+            "click",
+            function() {
+
+                deleteMessage(
+                    message.id
+                );
+
+            }
+        );
+
+
+        buttons.appendChild(
+            deleteButton
+        );
+
+
+        item.appendChild(top);
+        item.appendChild(text);
+        item.appendChild(buttons);
+
+
+        chatMessages.appendChild(item);
+
+    });
+
+}
+
+
+/* =========================================
+   DELETE CHAT MESSAGE
+========================================= */
+
+async function deleteMessage(id) {
+
+    if (!confirm(
+        "Are you sure you want to delete this message?"
+    )) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("chat_messages")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not delete the message:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+
+    await loadChatMessages();
+
+}
+
+
+/* =========================================
+   LOAD GAMES
+========================================= */
+
+async function loadGames() {
+
+    gameStatus.textContent =
+        "Loading games...";
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("community_games")
+            .select(
+                "id,title,description,author,category,code,created_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        gameStatus.textContent =
+            "Could not load games.";
+
+        communityGames.innerHTML = `
+            <div class="error">
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    gameStatus.textContent =
+        data.length +
+        " game" +
+        (data.length === 1 ? "" : "s");
+
+
+    communityGames.innerHTML =
+        "";
+
+
+    if (data.length === 0) {
+
+        communityGames.innerHTML =
+            '<div class="empty">No community games.</div>';
+
+        return;
+    }
+
+
+    data.forEach(game => {
+
+        createGameElement(game);
+
+    });
+
+}
+
+
+/* =========================================
+   CREATE GAME
+========================================= */
+
+function createGameElement(game) {
+
+    const item =
+        document.createElement("div");
+
+    item.className =
+        "game";
+
+
+    const top =
+        document.createElement("div");
+
+    top.className =
+        "top-row";
+
+
+    const titleArea =
+        document.createElement("div");
+
+
+    const title =
+        document.createElement("div");
+
+    title.className =
+        "game-title";
+
+    title.textContent =
+        game.title ||
+        "Untitled Game";
+
+
+    const info =
+        document.createElement("div");
+
+    info.className =
+        "game-info";
+
+    info.textContent =
+        "@" +
+        (
+            game.author ||
+            "Anonymous"
+        ) +
+        " • " +
+        (
+            game.category ||
+            "Other"
+        ) +
+        " • " +
+        new Date(
+            game.created_at
+        ).toLocaleString();
+
+
+    titleArea.appendChild(title);
+    titleArea.appendChild(info);
+
+    top.appendChild(titleArea);
+
+
+    const description =
+        document.createElement("div");
+
+    description.className =
+        "game-description";
+
+    description.textContent =
+        game.description ||
+        "No description.";
+
+
+    const buttons =
+        document.createElement("div");
+
+    buttons.className =
+        "buttons";
+
+
+    const editButton =
+        document.createElement("button");
+
+    editButton.className =
+        "edit-button";
+
+    editButton.type =
+        "button";
+
+    editButton.textContent =
+        "✏️ Edit";
+
+
+    const deleteButton =
+        document.createElement("button");
+
+    deleteButton.className =
+        "delete-button";
+
+    deleteButton.type =
+        "button";
+
+    deleteButton.textContent =
+        "🗑️ Delete";
+
+
+    buttons.appendChild(editButton);
+    buttons.appendChild(deleteButton);
+
+
+    const editor =
+        createEditor(game);
+
+
+    editButton.addEventListener(
+        "click",
+        function() {
+
+            editor.classList.toggle(
+                "open"
+            );
+
+        }
+    );
+
+
+    deleteButton.addEventListener(
+        "click",
+        function() {
+
+            deleteGame(
+                game.id
+            );
+
+        }
+    );
+
+
+    item.appendChild(top);
+    item.appendChild(description);
+    item.appendChild(buttons);
+    item.appendChild(editor);
+
+
+    communityGames.appendChild(item);
+
+}
+
+
+/* =========================================
+   CREATE FIELD
+========================================= */
+
+function createField(
+    labelText,
+    value,
+    type
+) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "field";
+
+
+    const label =
+        document.createElement("label");
+
+    label.textContent =
+        labelText;
+
+
+    const input =
+        type === "textarea"
+            ? document.createElement("textarea")
+            : document.createElement("input");
+
+
+    input.value =
+        value ||
+        "";
+
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+
+
+    return {
+        wrapper: wrapper,
+        input: input
+    };
+
+}
+
+
+/* =========================================
+   GAME EDITOR
+========================================= */
+
+function createEditor(game) {
+
+    const editor =
+        document.createElement("div");
+
+    editor.className =
+        "editor";
+
+
+    const titleField =
+        createField(
+            "Title",
+            game.title,
+            "input"
+        );
+
+
+    const descriptionField =
+        createField(
+            "Description",
+            game.description,
+            "textarea"
+        );
+
+
+    const authorField =
+        createField(
+            "Creator",
+            game.author,
+            "input"
+        );
+
+
+    const categoryWrapper =
+        document.createElement("div");
+
+    categoryWrapper.className =
+        "field";
+
+
+    const categoryLabel =
+        document.createElement("label");
+
+    categoryLabel.textContent =
+        "Category";
+
+
+    const category =
+        document.createElement("select");
+
+
+    const categories = [
+        "Arcade",
+        "Puzzle",
+        "Racing",
+        "Clicker",
+        "Other"
+    ];
+
+
+    categories.forEach(value => {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            value;
+
+        option.textContent =
+            value;
+
+
+        if (
+            value ===
+            game.category
+        ) {
+
+            option.selected =
+                true;
+
+        }
+
+
+        category.appendChild(option);
+
+    });
+
+
+    categoryWrapper.appendChild(
+        categoryLabel
+    );
+
+    categoryWrapper.appendChild(
+        category
+    );
+
+
+    const codeField =
+        createField(
+            "Game Code",
+            game.code,
+            "textarea"
+        );
+
+
+    codeField.input.className =
+        "code-input";
+
+
+    const buttons =
+        document.createElement("div");
+
+    buttons.className =
+        "buttons";
+
+
+    const saveButton =
+        document.createElement("button");
+
+    saveButton.className =
+        "save-button";
+
+    saveButton.type =
+        "button";
+
+    saveButton.textContent =
+        "💾 Save Changes";
+
+
+    const cancelButton =
+        document.createElement("button");
+
+    cancelButton.type =
+        "button";
+
+    cancelButton.textContent =
+        "Cancel";
+
+
+    buttons.appendChild(
+        saveButton
+    );
+
+    buttons.appendChild(
+        cancelButton
+    );
+
+
+    cancelButton.addEventListener(
+        "click",
+        function() {
+
+            editor.classList.remove(
+                "open"
+            );
+
+        }
+    );
+
+
+    saveButton.addEventListener(
+        "click",
+        async function() {
+
+            const title =
+                titleField.input.value.trim();
+
+            const description =
+                descriptionField.input.value.trim();
+
+            const author =
+                authorField.input.value.trim();
+
+            const newCode =
+                codeField.input.value;
+
+
+            if (!title) {
+
+                alert(
+                    "The game needs a title."
+                );
+
+                return;
+            }
+
+
+            if (!newCode.trim()) {
+
+                alert(
+                    "The game needs code."
+                );
+
+                return;
+            }
+
+
+            saveButton.disabled =
+                true;
+
+            saveButton.textContent =
+                "Saving...";
+
+
+            const {
+                error
+            } =
+                await supabaseClient
+                    .from("community_games")
+                    .update({
+                        title:
+                            title,
+                        description:
+                            description,
+                        author:
+                            author ||
+                            "Anonymous",
+                        category:
+                            category.value,
+                        code:
+                            newCode
+                    })
+                    .eq(
+                        "id",
+                        game.id
+                    );
+
+
+            saveButton.disabled =
+                false;
+
+            saveButton.textContent =
+                "💾 Save Changes";
+
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "Could not save the game:\n\n" +
+                    error.message
+                );
+
+                return;
+            }
+
+
+            await loadGames();
+
+        }
+    );
+
+
+    editor.appendChild(
+        titleField.wrapper
+    );
+
+    editor.appendChild(
+        descriptionField.wrapper
+    );
+
+    editor.appendChild(
+        authorField.wrapper
+    );
+
+    editor.appendChild(
+        categoryWrapper
+    );
+
+    editor.appendChild(
+        codeField.wrapper
+    );
+
+    editor.appendChild(
+        buttons
+    );
+
+
+    return editor;
+
+}
+
+
+/* =========================================
+   DELETE GAME
+========================================= */
+
+async function deleteGame(id) {
+
+    if (!confirm(
+        "Are you sure you want to permanently delete this game?"
+    )) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("community_games")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not delete the game:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+
+    await loadGames();
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================
+   BUTTON EVENTS
+========================================= */
+
+sendWarningButton.addEventListener(
+    "click",
+    sendWarning
+);
+
+banAccountButton.addEventListener(
+    "click",
+    banAccount
+);
+
+
+/* =========================================
+   START
+========================================= */
+
+async function startAdminPanel() {
+
+    const allowed =
+        await checkAdmin();
+
+
+    if (!allowed) {
+        return;
+    }
+
+
+    await Promise.all([
+        loadUsers(),
+        loadWarnings(),
+        loadChatMessages(),
+        loadGames()
+    ]);
+
+}
+
+
+startAdminPanel();
+
+</script>
+
+</body>
+</html>

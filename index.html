@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DougHub</title>
-<link rel="icon" href="DougHub.ico" type="image/x-icon">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>DougHub</title>
+
+<link rel="icon" href="DougHub.ico" type="image/x-icon">
 
 <style>
 * {
@@ -19,17 +19,13 @@ html {
 
 body {
     margin: 0;
-    min-height: 100vh;
-    font-family: Inter, Arial, sans-serif;
-    color: white;
+    font-family: Arial, Helvetica, sans-serif;
     background:
-        radial-gradient(circle at 15% 10%, rgba(99,102,241,.18), transparent 28%),
-        radial-gradient(circle at 85% 20%, rgba(168,85,247,.15), transparent 30%),
+        radial-gradient(circle at top left, #17133b 0%, transparent 35%),
+        radial-gradient(circle at top right, #25104b 0%, transparent 30%),
         #02040a;
-}
-
-body.game-open {
-    overflow: hidden;
+    color: #fff;
+    min-height: 100vh;
 }
 
 a {
@@ -42,646 +38,1086 @@ input {
     font: inherit;
 }
 
-.page {
-    width: min(1400px, calc(100% - 40px));
-    margin: auto;
-}
+/* HEADER */
 
 header {
     position: sticky;
     top: 0;
-    z-index: 50;
-    padding: 18px 0;
-    background: rgba(2,4,10,.82);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgba(255,255,255,.07);
-}
+    z-index: 1000;
+    height: 72px;
+    padding: 0 30px;
 
-.header-inner {
-    width: min(1400px, calc(100% - 40px));
-    margin: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    background: rgba(4, 5, 15, 0.82);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px);
 }
 
 .logo {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 25px;
-    font-weight: 900;
+
+    font-size: 21px;
+    font-weight: 800;
 }
 
 .logo-icon {
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    border-radius: 13px;
-    background: linear-gradient(135deg,#6366f1,#a855f7);
-    box-shadow: 0 8px 30px rgba(99,102,241,.3);
+    width: 38px;
+    height: 38px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+
+    box-shadow:
+        0 0 25px rgba(99,102,241,0.35);
+
+    font-weight: 900;
 }
 
-.logo-text span {
-    color: #a78bfa;
-}
-
-.header-actions {
+.nav {
     display: flex;
     align-items: center;
     gap: 12px;
-    position: relative;
 }
 
-.create-button {
-    padding: 11px 18px;
-    border-radius: 12px;
-    background: rgba(99,102,241,.15);
-    border: 1px solid rgba(129,140,248,.3);
-    color: #ddd6fe;
-    font-weight: 800;
-    transition: .2s;
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 15px;
+
+    border-radius: 10px;
+
+    color: #c9c8d8;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    background: rgba(255,255,255,0.035);
+
+    transition: 0.2s;
+
+    cursor: pointer;
 }
 
-.create-button:hover {
-    background: rgba(99,102,241,.28);
-    transform: translateY(-2px);
+.nav-btn:hover {
+    color: white;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    transform: translateY(-1px);
 }
 
+.create-btn {
+    background:
+        linear-gradient(135deg, #6366f1, #8b5cf6);
 
-.chat-button {
-    padding: 11px 18px;
-    border-radius: 12px;
-    background: rgba(168,85,247,.15);
-    border: 1px solid rgba(168,85,247,.3);
-    color: #ddd6fe;
-    font-weight: 800;
-    transition: .2s;
+    color: white;
+
+    border: none;
 }
 
-.chat-button:hover {
-    background: rgba(168,85,247,.28);
-    transform: translateY(-2px);
+.create-btn:hover {
+    background:
+        linear-gradient(135deg, #7477ff, #9b6bff);
 }
 
 /* ACCOUNT */
 
-.account-button {
-    width: 44px;
-    height: 44px;
-    display: grid;
-    place-items: center;
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 13px;
-    background: rgba(255,255,255,.06);
+.account-area {
+    position: relative;
+}
+
+.account-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 7px 11px;
+
+    border-radius: 12px;
+
     color: white;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
     cursor: pointer;
-    transition: .2s;
 }
 
-.account-button:hover {
-    background: rgba(99,102,241,.18);
-    border-color: rgba(129,140,248,.35);
-    transform: translateY(-2px);
+.account-btn:hover {
+    background:
+        rgba(255,255,255,0.09);
 }
 
-.account-icon {
-    width: 22px;
-    height: 22px;
+.account-avatar {
+    width: 32px;
+    height: 32px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(135deg, #6366f1, #a855f7);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 800;
+}
+
+.account-avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
 }
 
 .account-menu {
     position: absolute;
-    top: 55px;
+
     right: 0;
-    width: 250px;
-    padding: 10px;
-    border-radius: 17px;
-    border: 1px solid rgba(255,255,255,.1);
-    background: rgba(10,13,28,.97);
-    box-shadow: 0 25px 70px rgba(0,0,0,.55);
-    backdrop-filter: blur(20px);
-    display: none;
-}
+    top: calc(100% + 10px);
 
-.account-menu.active {
-    display: block;
-    animation: accountOpen .15s ease-out;
-}
+    width: 190px;
 
-@keyframes accountOpen {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
+    padding: 8px;
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+    border-radius: 14px;
 
-.account-user {
-    padding: 12px;
-    margin-bottom: 6px;
-    border-bottom: 1px solid rgba(255,255,255,.07);
-}
-
-.account-user-name {
-    font-weight: 800;
-    font-size: 15px;
-}
-
-.account-user-email {
-    margin-top: 4px;
-    color: #747c96;
-    font-size: 12px;
-    word-break: break-all;
-}
-
-.account-option {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    border: 0;
-    border-radius: 10px;
-    background: transparent;
-    color: #d9dcef;
-    text-align: left;
-    cursor: pointer;
-    transition: .15s;
-}
-
-.account-option:hover {
-    background: rgba(99,102,241,.14);
-    color: white;
-}
-
-.account-option.logout {
-    color: #fca5a5;
-}
-
-.account-option.logout:hover {
-    background: rgba(239,68,68,.1);
-}
-
-.account-option-icon {
-    width: 20px;
-    text-align: center;
-}
-
-/* MODALS */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0,0,0,.72);
-    backdrop-filter: blur(12px);
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.account-modal {
-    width: min(430px, 100%);
-    padding: 28px;
-    border-radius: 22px;
-    border: 1px solid rgba(255,255,255,.1);
     background:
-        linear-gradient(145deg,rgba(18,22,43,.98),rgba(8,11,24,.98));
-    box-shadow: 0 30px 100px rgba(0,0,0,.6);
+        rgba(12, 13, 28, 0.97);
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.4);
+
+    backdrop-filter:
+        blur(20px);
+
+    display: none;
 }
 
-.account-modal h2 {
-    margin: 0 0 8px;
-    font-size: 24px;
+.account-menu.show {
+    display: block;
 }
 
-.account-modal p {
-    margin: 0 0 20px;
-    color: #858da5;
-    line-height: 1.5;
-}
+.account-menu a,
+.account-menu button {
+    display: block;
 
-.account-input {
     width: 100%;
-    padding: 13px 15px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 11px;
-    outline: none;
-    background: rgba(3,6,17,.8);
-    color: white;
-}
 
-.account-input:focus {
-    border-color: rgba(129,140,248,.55);
-}
+    padding: 10px 12px;
 
-.modal-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-}
+    text-align: left;
 
-.modal-button {
-    flex: 1;
-    padding: 12px 15px;
-    border: 0;
-    border-radius: 11px;
+    color: #d8d7e5;
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: 9px;
+
     cursor: pointer;
-    font-weight: 800;
 }
 
-.modal-save {
-    background: linear-gradient(135deg,#6366f1,#8b5cf6);
+.account-menu a:hover,
+.account-menu button:hover {
+    background:
+        rgba(255,255,255,0.07);
+
     color: white;
 }
 
-.modal-cancel {
-    background: rgba(255,255,255,.07);
-    color: #c5c9d8;
+.logout {
+    color: #ff7777 !important;
 }
 
-.modal-message {
-    min-height: 20px;
-    margin-top: 12px;
-    color: #a5b4fc;
-    font-size: 13px;
+/* MAIN */
+
+main {
+    width: min(1200px, calc(100% - 32px));
+
+    margin: auto;
 }
 
 /* HERO */
 
 .hero {
-    padding: 45px 0 35px;
+    padding: 55px 0 30px;
 }
 
 .hero-card {
     position: relative;
+
     overflow: hidden;
+
     padding: 60px 50px;
+
     border-radius: 28px;
-    border: 1px solid rgba(255,255,255,.09);
+
+    text-align: center;
+
     background:
-        linear-gradient(135deg,rgba(99,102,241,.15),rgba(168,85,247,.08)),
-        rgba(10,13,28,.75);
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(168,85,247,0.2),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 15% 80%,
+            rgba(99,102,241,0.18),
+            transparent 35%
+        ),
+        rgba(13,17,39,0.78);
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+
     box-shadow:
-        0 25px 80px rgba(0,0,0,.35),
-        inset 0 1px rgba(255,255,255,.05);
+        0 25px 80px rgba(0,0,0,0.3),
+        inset 0 1px rgba(255,255,255,0.05);
 }
 
-.hero-card:before {
+.hero-card::before {
     content: "";
+
     position: absolute;
-    width: 350px;
-    height: 350px;
-    right: -120px;
-    top: -150px;
-    border-radius: 50%;
-    background: rgba(139,92,246,.15);
-    filter: blur(40px);
+
+    width: 280px;
+    height: 280px;
+
+    right: -100px;
+    top: -120px;
+
+    background:
+        rgba(139,92,246,0.2);
+
+    filter:
+        blur(70px);
+
+    border-radius:
+        50%;
+}
+
+.hero-badge {
+    position: relative;
+
+    display: inline-block;
+
+    padding: 7px 12px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(99,102,241,0.13);
+
+    border:
+        1px solid rgba(99,102,241,0.25);
+
+    color:
+        #aaa9ff;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
 }
 
 .hero h1 {
     position: relative;
-    margin: 0 0 14px;
-    font-size: clamp(42px,7vw,78px);
-    line-height: .95;
-    letter-spacing: -4px;
+
+    margin:
+        20px 0 15px;
+
+    font-size:
+        clamp(42px, 7vw, 76px);
+
+    line-height:
+        0.98;
+
+    letter-spacing:
+        -3px;
 }
 
 .hero h1 span {
-    background: linear-gradient(90deg,#818cf8,#c084fc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    background:
+        linear-gradient(
+            90deg,
+            #818cf8,
+            #c084fc
+        );
+
+    -webkit-background-clip:
+        text;
+
+    background-clip:
+        text;
+
+    color:
+        transparent;
 }
 
 .hero p {
     position: relative;
-    max-width: 650px;
-    margin: 0;
-    color: #a8aec2;
-    font-size: 18px;
-    line-height: 1.6;
+
+    max-width:
+        700px;
+
+    margin:
+        0 auto;
+
+    color:
+        #aaa9bb;
+
+    font-size:
+        18px;
+
+    line-height:
+        1.65;
 }
 
+/* HERO STATS */
+
+.hero-stats {
+    position: relative;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 20px;
+
+    margin-top:
+        35px;
+
+    flex-wrap:
+        wrap;
+}
+
+.hero-stat {
+    min-width:
+        175px;
+
+    padding:
+        20px 25px;
+
+    border-radius:
+        17px;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+}
+
+.hero-stat-number {
+    font-size:
+        32px;
+
+    font-weight:
+        900;
+
+    line-height:
+        1;
+
+    background:
+        linear-gradient(
+            90deg,
+            #a5b4fc,
+            #d8b4fe
+        );
+
+    -webkit-background-clip:
+        text;
+
+    background-clip:
+        text;
+
+    color:
+        transparent;
+}
+
+.hero-stat-label {
+    margin-top:
+        8px;
+
+    color:
+        #a7a6b7;
+
+    font-size:
+        13px;
+}
+
+/* SECTIONS */
+
 .section {
-    margin: 45px 0;
+    padding:
+        25px 0 55px;
 }
 
 .section-header {
-    margin-bottom: 20px;
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    margin-bottom:
+        20px;
 }
 
 .section-title {
-    margin: 0;
-    font-size: 28px;
-    letter-spacing: -.8px;
+    margin:
+        0;
+
+    font-size:
+        25px;
 }
 
 .section-subtitle {
-    margin: 6px 0 0;
-    color: #777f99;
+    margin:
+        5px 0 0;
+
+    color:
+        #858494;
+
+    font-size:
+        14px;
 }
 
-.game-grid {
-    display: grid;
-    grid-template-columns: repeat(4,minmax(0,1fr));
-    gap: 18px;
+/* SEARCH */
+
+.search-box {
+    width:
+        260px;
+
+    max-width:
+        100%;
+
+    padding:
+        11px 14px;
+
+    border-radius:
+        11px;
+
+    outline:
+        none;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+}
+
+.search-box:focus {
+    border-color:
+        rgba(129,140,248,0.6);
+}
+
+/* GAMES */
+
+.games-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        18px;
 }
 
 .game-card {
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    padding: 23px;
-    border-radius: 22px;
-    border: 1px solid rgba(255,255,255,.08);
+    position:
+        relative;
+
+    min-height:
+        210px;
+
+    padding:
+        23px;
+
+    border-radius:
+        20px;
+
+    overflow:
+        hidden;
+
     background:
-        linear-gradient(145deg,rgba(18,22,43,.95),rgba(8,11,24,.92));
-    box-shadow: 0 15px 45px rgba(0,0,0,.2);
-    transition: .2s;
+        rgba(13,17,39,0.72);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    transition:
+        0.25s;
+
+    cursor:
+        pointer;
 }
 
 .game-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(129,140,248,.35);
-    box-shadow: 0 22px 60px rgba(0,0,0,.32);
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(129,140,248,0.35);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.25);
 }
 
 .game-icon {
-    width: 72px;
-    height: 72px;
-    display: grid;
-    place-items: center;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    font-size: 38px;
-    background: rgba(99,102,241,.13);
-    border: 1px solid rgba(129,140,248,.18);
+    width:
+        52px;
+
+    height:
+        52px;
+
+    border-radius:
+        15px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    font-size:
+        27px;
+
+    background:
+        rgba(99,102,241,0.12);
+
+    border:
+        1px solid rgba(99,102,241,0.18);
 }
 
 .game-card h3 {
-    margin: 0 0 8px;
-    font-size: 21px;
+    margin:
+        18px 0 7px;
+
+    font-size:
+        19px;
 }
 
 .game-card p {
-    margin: 0;
-    color: #858da5;
-    line-height: 1.5;
-    flex: 1;
+    margin:
+        0;
+
+    color:
+        #888798;
+
+    font-size:
+        14px;
+
+    line-height:
+        1.5;
 }
 
-.game-meta {
-    margin: 15px 0;
-    color: #636b84;
-    font-size: 13px;
+.play-label {
+    position:
+        absolute;
+
+    left:
+        23px;
+
+    bottom:
+        19px;
+
+    color:
+        #9fa3ff;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
 }
 
-.play-button {
-    width: 100%;
-    display: block;
-    padding: 13px 16px;
-    text-align: center;
-    border: 0;
-    border-radius: 12px;
-    background: linear-gradient(135deg,#6366f1,#8b5cf6);
-    color: white;
-    font-weight: 850;
-    cursor: pointer;
-    transition: .2s;
-}
+/* COMMUNITY */
 
-.play-button:hover {
-    filter: brightness(1.12);
-    transform: translateY(-2px);
-}
+.community-games {
+    display:
+        flex;
 
-.community-tools {
-    margin-bottom: 18px;
-}
+    gap:
+        16px;
 
-.search-box {
-    width: 100%;
-    padding: 14px 17px;
-    color: white;
-    outline: none;
-    border-radius: 13px;
-    border: 1px solid rgba(255,255,255,.09);
-    background: rgba(12,16,33,.85);
-}
+    overflow-x:
+        auto;
 
-.search-box::placeholder {
-    color: #626a82;
-}
+    padding:
+        4px 2px 16px;
 
-.community-scroll {
-    display: flex;
-    gap: 18px;
-    overflow-x: auto;
-    padding: 5px 3px 18px;
-    scrollbar-width: thin;
+    scrollbar-width:
+        thin;
 }
 
 .community-card {
-    flex: 0 0 310px;
-    min-height: 240px;
-    padding: 21px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,.08);
-    background: rgba(11,15,31,.9);
-    transition: .2s;
+    flex:
+        0 0 270px;
+
+    min-height:
+        190px;
+
+    padding:
+        21px;
+
+    border-radius:
+        18px;
+
+    background:
+        rgba(13,17,39,0.72);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    cursor:
+        pointer;
+
+    transition:
+        0.2s;
 }
 
 .community-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(168,85,247,.35);
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(168,85,247,0.35);
 }
 
 .community-category {
-    display: inline-block;
-    margin-bottom: 12px;
-    padding: 5px 9px;
-    border-radius: 8px;
-    background: rgba(168,85,247,.12);
-    color: #c4b5fd;
-    font-size: 12px;
-    font-weight: 800;
+    display:
+        inline-block;
+
+    padding:
+        5px 9px;
+
+    border-radius:
+        999px;
+
+    font-size:
+        11px;
+
+    color:
+        #c4b5fd;
+
+    background:
+        rgba(139,92,246,0.12);
 }
 
 .community-card h3 {
-    margin: 0 0 8px;
-    font-size: 20px;
+    margin:
+        15px 0 7px;
 }
 
 .community-card p {
-    color: #858da5;
-    line-height: 1.45;
-    min-height: 45px;
+    color:
+        #8c8b9c;
+
+    font-size:
+        13px;
+
+    line-height:
+        1.5;
+
+    margin:
+        0;
 }
 
 .community-author {
-    margin: 13px 0;
-    color: #646c84;
-    font-size: 13px;
+    margin-top:
+        15px;
+
+    color:
+        #777687;
+
+    font-size:
+        12px;
 }
 
-.empty-community {
-    width: 100%;
-    padding: 35px;
-    text-align: center;
-    color: #646c84;
-    border: 1px dashed rgba(255,255,255,.1);
-    border-radius: 18px;
+.empty {
+    padding:
+        35px;
+
+    text-align:
+        center;
+
+    color:
+        #777687;
+
+    border:
+        1px dashed rgba(255,255,255,0.1);
+
+    border-radius:
+        18px;
 }
 
-/* GAME PLAYER */
+/* PLAYER */
 
-#playerOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0,0,0,.88);
-    backdrop-filter: blur(14px);
+.player-overlay {
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        2000;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    background:
+        rgba(0,0,0,0.75);
+
+    backdrop-filter:
+        blur(10px);
 }
 
-#playerOverlay.active {
-    display: flex;
+.player-overlay.show {
+    display:
+        flex;
 }
 
-#playerBox {
-    position: relative;
-    width: min(1200px, 96vw);
-    height: min(800px, 92vh);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 22px;
-    border: 1px solid rgba(255,255,255,.12);
-    background: #070a16;
-    box-shadow: 0 30px 100px rgba(0,0,0,.7);
+.player-window {
+    width:
+        min(1100px, 100%);
+
+    height:
+        min(800px, 90vh);
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        20px;
+
+    background:
+        #080a16;
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,0.6);
 }
 
 .player-header {
-    min-height: 60px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 17px;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    background: #070a16;
+    height:
+        58px;
+
+    padding:
+        0 16px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
 }
 
-#playerTitle {
-    margin: 0;
-    font-size: 18px;
+.player-title {
+    font-weight:
+        800;
 }
 
-.close-button {
-    width: 38px;
-    height: 38px;
-    border: 0;
-    border-radius: 10px;
-    background: rgba(255,255,255,.07);
-    color: white;
-    font-size: 21px;
-    cursor: pointer;
-}
+.close-player {
+    width:
+        35px;
 
-.close-button:hover {
-    background: rgba(255,255,255,.13);
-}
+    height:
+        35px;
 
-#gameViewport {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    overflow: hidden;
-    background: #070a16;
+    border:
+        none;
+
+    border-radius:
+        9px;
+
+    background:
+        rgba(255,255,255,0.07);
+
+    color:
+        white;
+
+    cursor:
+        pointer;
+
+    font-size:
+        18px;
 }
 
 #gameFrame {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: #070a16;
+    flex:
+        1;
+
+    width:
+        100%;
+
+    border:
+        none;
+
+    background:
+        white;
 }
+
+/* MODAL */
+
+.modal {
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        3000;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    background:
+        rgba(0,0,0,0.75);
+}
+
+.modal.show {
+    display:
+        flex;
+}
+
+.modal-box {
+    width:
+        min(420px, 100%);
+
+    padding:
+        25px;
+
+    border-radius:
+        18px;
+
+    background:
+        #0d1020;
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+}
+
+.modal-box h2 {
+    margin-top:
+        0;
+}
+
+.modal-box input {
+    width:
+        100%;
+
+    padding:
+        12px;
+
+    margin:
+        12px 0;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+
+    outline:
+        none;
+}
+
+.modal-buttons {
+    display:
+        flex;
+
+    gap:
+        10px;
+
+    justify-content:
+        flex-end;
+}
+
+.modal-buttons button {
+    padding:
+        10px 15px;
+
+    border-radius:
+        9px;
+
+    border:
+        none;
+
+    cursor:
+        pointer;
+}
+
+.cancel-btn {
+    background:
+        rgba(255,255,255,0.08);
+
+    color:
+        white;
+}
+
+.confirm-btn {
+    background:
+        #6366f1;
+
+    color:
+        white;
+}
+
+/* FOOTER */
 
 footer {
-    margin-top: 65px;
-    padding: 30px 0 45px;
-    text-align: center;
-    color: #525a70;
-    border-top: 1px solid rgba(255,255,255,.06);
+    padding:
+        30px 0 50px;
+
+    color:
+        #666576;
+
+    text-align:
+        center;
+
+    font-size:
+        13px;
 }
 
-footer strong {
-    color: #7c84a0;
-}
+/* MOBILE */
 
-@media (max-width:1100px) {
-    .game-grid {
-        grid-template-columns: repeat(2,minmax(0,1fr));
+@media (max-width: 900px) {
+
+    .games-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    header {
+        padding:
+            0 15px;
+    }
+
+    .nav-btn:not(.create-btn) {
+        display:
+            none;
     }
 }
 
-@media (max-width:650px) {
-
-    .page {
-        width: calc(100% - 24px);
-    }
-
-    .header-inner {
-        width: calc(100% - 24px);
-    }
-
-    .create-button {
-        display: none;
-    }
+@media (max-width: 600px) {
 
     .hero-card {
-        padding: 38px 25px;
+        padding:
+            40px 25px;
     }
 
     .hero h1 {
-        letter-spacing: -2px;
+        font-size:
+            45px;
+
+        letter-spacing:
+            -2px;
     }
 
-    .game-grid {
-        grid-template-columns: 1fr;
+    .games-grid {
+        grid-template-columns:
+            1fr;
     }
 
-    .account-menu {
-        right: -5px;
+    .section-header {
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
     }
 
-    #playerOverlay {
-        padding: 8px;
+    .search-box {
+        width:
+            100%;
     }
 
-    #playerBox {
-        width: 100%;
-        height: calc(100vh - 16px);
-        border-radius: 16px;
+    .hero-stat {
+        flex:
+            1;
+
+        min-width:
+            140px;
     }
 }
 </style>
@@ -690,83 +1126,76 @@ footer strong {
 <body>
 
 <header>
-    <div class="header-inner">
 
-        <a class="logo" href="index.html">
-            <div class="logo-icon">D</div>
+    <a href="index.html" class="logo">
+        <div class="logo-icon">D</div>
+        <span>DougHub</span>
+    </a>
 
-            <div class="logo-text">
-                Doug<span>Hub</span>
-            </div>
+    <div class="nav">
+
+        <!-- THESE ARE ALWAYS NORMAL LINKS -->
+        <a
+            href="Scripting/scripting.html"
+            class="nav-btn create-btn"
+        >
+            + Create a Game
         </a>
 
-        <div class="header-actions">
+        <a
+            href="chat.html"
+            class="nav-btn"
+        >
+            Community Chat
+        </a>
 
-            <a class="create-button" href="Scripting/scripting.html">
-                ✨ Create a Game
-            </a>
-
-            <a class="chat-button" href="chat.html">
-                💬 Community Chat
-            </a>
+        <!-- ACCOUNT -->
+        <div class="account-area">
 
             <button
                 id="accountButton"
-                class="account-button"
+                class="account-btn"
                 type="button"
-                aria-label="Account"
-                aria-expanded="false"
             >
-                <svg
-                    class="account-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+
+                <div
+                    id="accountAvatar"
+                    class="account-avatar"
                 >
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"></path>
-                </svg>
-            </button>
-
-            <div id="accountMenu" class="account-menu">
-
-                <div class="account-user">
-                    <div id="accountUsername" class="account-user-name">
-                        @Account
-                    </div>
-
-                    <div id="accountEmail" class="account-user-email">
-                        Not logged in
-                    </div>
+                    ?
                 </div>
 
-                <button
-                    id="changeUsernameButton"
-                    class="account-option"
-                    type="button"
-                >
-                    <span class="account-option-icon">✏️</span>
-                    Change Username
-                </button>
+                <span id="accountName">
+                    Log In
+                </span>
 
-                <button
-                    id="changeEmailButton"
-                    class="account-option"
-                    type="button"
+            </button>
+
+            <div
+                id="accountMenu"
+                class="account-menu"
+            >
+
+                <a href="my-games.html">
+                    My Games
+                </a>
+
+                <a
+                    href="admin.html"
+                    id="adminLink"
                 >
-                    <span class="account-option-icon">📧</span>
-                    Change Email
-                </button>
+                    Admin Panel
+                </a>
+
+                <a href="settings.html">
+                    Settings
+                </a>
 
                 <button
                     id="logoutButton"
-                    class="account-option logout"
+                    class="logout"
                     type="button"
                 >
-                    <span class="account-option-icon">↪</span>
                     Log Out
                 </button>
 
@@ -775,14 +1204,20 @@ footer strong {
         </div>
 
     </div>
+
 </header>
 
+<main>
 
-<main class="page">
+    <!-- BIG TOP SECTION -->
 
     <section class="hero">
 
         <div class="hero-card">
+
+            <div class="hero-badge">
+                The DougHub Platform
+            </div>
 
             <h1>
                 Welcome to <span>DougHub</span>
@@ -793,150 +1228,200 @@ footer strong {
                 and create your own games with the DougHub Creator.
             </p>
 
+            <div class="hero-stats">
+
+                <div class="hero-stat">
+
+                    <div
+                        id="userCount"
+                        class="hero-stat-number"
+                    >
+                        —
+                    </div>
+
+                    <div class="hero-stat-label">
+                        👥 Users
+                    </div>
+
+                </div>
+
+                <div class="hero-stat">
+
+                    <div
+                        id="gameCount"
+                        class="hero-stat-number"
+                    >
+                        4
+                    </div>
+
+                    <div class="hero-stat-label">
+                        🎮 Games
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
     </section>
 
+    <!-- DOUG'S GAMES -->
 
     <section class="section">
 
         <div class="section-header">
 
-            <h2 class="section-title">
-                DougHub Games
-            </h2>
+            <div>
 
-            <p class="section-subtitle">
-                Games made for DougHub.
-            </p>
+                <h2 class="section-title">
+                    Doug's Games
+                </h2>
 
-        </div>
-
-
-        <div class="game-grid">
-
-            <div class="game-card">
-
-                <div class="game-icon">🐷</div>
-
-                <h3>Pig Clicker</h3>
-
-                <p>
-                    Click the pig, earn coins, and see how high you can get.
+                <p class="section-subtitle">
+                    Games made by Doug.
                 </p>
-
-                <div class="game-meta">
-                    Clicker • DougHub
-                </div>
-
-                <a class="play-button" href="Games/pig-clicker.html">
-                    Play Game
-                </a>
 
             </div>
 
+        </div>
 
-            <div class="game-card">
+        <div class="games-grid">
 
-                <div class="game-icon">🔄</div>
+            <a
+                href="Games/pig-clicker.html"
+                class="game-card"
+            >
 
-                <h3>Rebirth Clicker</h3>
+                <div class="game-icon">
+                    🐷
+                </div>
+
+                <h3>
+                    Pig Clicker
+                </h3>
+
+                <p>
+                    Click the pig, earn points, and keep upgrading.
+                </p>
+
+                <div class="play-label">
+                    PLAY →
+                </div>
+
+            </a>
+
+            <a
+                href="Games/rebirth-clicker.html"
+                class="game-card"
+            >
+
+                <div class="game-icon">
+                    🔄
+                </div>
+
+                <h3>
+                    Rebirth Clicker
+                </h3>
 
                 <p>
                     Click, upgrade, rebirth, and build your progress.
                 </p>
 
-                <div class="game-meta">
-                    Clicker • DougHub
+                <div class="play-label">
+                    PLAY →
                 </div>
 
-                <a class="play-button" href="Games/rebirth-clicker.html">
-                    Play Game
-                </a>
+            </a>
 
-            </div>
+            <a
+                href="Games/racing.html"
+                class="game-card"
+            >
 
+                <div class="game-icon">
+                    🏎️
+                </div>
 
-            <div class="game-card">
-
-                <div class="game-icon">🏎️</div>
-
-                <h3>Doug Racing</h3>
+                <h3>
+                    Doug Racing
+                </h3>
 
                 <p>
-                    Race through the track and try to beat your best time.
+                    Race around the track and try to beat your best time.
                 </p>
 
-                <div class="game-meta">
-                    Racing • DougHub
+                <div class="play-label">
+                    PLAY →
                 </div>
 
-                <a class="play-button" href="Games/racing.html">
-                    Play Game
-                </a>
+            </a>
 
-            </div>
+            <a
+                href="Games/puzzle.html"
+                class="game-card"
+            >
 
+                <div class="game-icon">
+                    🧩
+                </div>
 
-            <div class="game-card">
-
-                <div class="game-icon">🧩</div>
-
-                <h3>Doug Puzzle</h3>
+                <h3>
+                    Doug Puzzle
+                </h3>
 
                 <p>
-                    Match tiles, solve puzzles, and keep your streak going.
+                    Solve puzzles and test your skills.
                 </p>
 
-                <div class="game-meta">
-                    Puzzle • DougHub
+                <div class="play-label">
+                    PLAY →
                 </div>
 
-                <a class="play-button" href="Games/puzzle.html">
-                    Play Game
-                </a>
-
-            </div>
+            </a>
 
         </div>
 
     </section>
 
+    <!-- COMMUNITY GAMES -->
 
     <section class="section">
 
         <div class="section-header">
 
-            <h2 class="section-title">
-                Community Games
-            </h2>
+            <div>
 
-            <p class="section-subtitle">
-                Games published by DougHub creators.
-            </p>
+                <h2 class="section-title">
+                    Community Games
+                </h2>
 
-        </div>
+                <p class="section-subtitle">
+                    Games created with the DougHub Creator.
+                </p>
 
-
-        <div class="community-tools">
+            </div>
 
             <input
-                id="communitySearch"
+                id="gameSearch"
                 class="search-box"
-                type="text"
-                placeholder="Search community games..."
-                autocomplete="off"
+                type="search"
+                placeholder="Search games..."
+                autocomplete="new-password"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                name="dh-game-search"
             >
 
         </div>
 
-
         <div
             id="communityGames"
-            class="community-scroll"
+            class="community-games"
         >
 
-            <div class="empty-community">
+            <div class="empty">
                 Loading community games...
             </div>
 
@@ -946,140 +1431,82 @@ footer strong {
 
 </main>
 
-
 <footer>
-    <strong>DougHub</strong> — Games, creators, and community.
+    DougHub © 2026
 </footer>
 
+<!-- GAME PLAYER -->
 
-<!-- CHANGE USERNAME -->
+<div
+    id="playerOverlay"
+    class="player-overlay"
+>
 
-<div id="usernameModal" class="modal-overlay">
-
-    <div class="account-modal">
-
-        <h2>Change Username</h2>
-
-        <p>
-            Choose a new username for your DougHub account.
-        </p>
-
-        <input
-            id="newUsername"
-            class="account-input"
-            type="text"
-            maxlength="30"
-            placeholder="New username"
-            autocomplete="off"
-        >
-
-        <div class="modal-actions">
-
-            <button
-                id="cancelUsername"
-                class="modal-button modal-cancel"
-                type="button"
-            >
-                Cancel
-            </button>
-
-            <button
-                id="saveUsername"
-                class="modal-button modal-save"
-                type="button"
-            >
-                Save
-            </button>
-
-        </div>
-
-        <div id="usernameMessage" class="modal-message"></div>
-
-    </div>
-
-</div>
-
-
-<!-- CHANGE EMAIL -->
-
-<div id="emailModal" class="modal-overlay">
-
-    <div class="account-modal">
-
-        <h2>Change Email</h2>
-
-        <p>
-            Enter your new email address. Supabase may ask you to confirm
-            the new email.
-        </p>
-
-        <input
-            id="newEmail"
-            class="account-input"
-            type="email"
-            placeholder="New email address"
-            autocomplete="email"
-        >
-
-        <div class="modal-actions">
-
-            <button
-                id="cancelEmail"
-                class="modal-button modal-cancel"
-                type="button"
-            >
-                Cancel
-            </button>
-
-            <button
-                id="saveEmail"
-                class="modal-button modal-save"
-                type="button"
-            >
-                Change Email
-            </button>
-
-        </div>
-
-        <div id="emailMessage" class="modal-message"></div>
-
-    </div>
-
-</div>
-
-
-<!-- COMMUNITY GAME PLAYER -->
-
-<div id="playerOverlay">
-
-    <div id="playerBox">
+    <div class="player-window">
 
         <div class="player-header">
 
-            <h2 id="playerTitle">
-                Community Game
-            </h2>
+            <div
+                id="playerTitle"
+                class="player-title"
+            >
+                Game
+            </div>
 
             <button
                 id="closePlayer"
-                class="close-button"
+                class="close-player"
                 type="button"
-                aria-label="Close game"
             >
                 ×
             </button>
 
         </div>
 
+        <iframe
+            id="gameFrame"
+        ></iframe>
 
-        <div id="gameViewport">
+    </div>
 
-            <iframe
-                id="gameFrame"
-                title="Community Game"
-                sandbox="allow-scripts allow-pointer-lock"
-                scrolling="no"
-            ></iframe>
+</div>
+
+<!-- PASSWORD MODAL -->
+
+<div
+    id="passwordModal"
+    class="modal"
+>
+
+    <div class="modal-box">
+
+        <h2>
+            Enter Password
+        </h2>
+
+        <input
+            id="passwordInput"
+            type="password"
+            placeholder="Password"
+        >
+
+        <div class="modal-buttons">
+
+            <button
+                id="cancelPassword"
+                class="cancel-btn"
+                type="button"
+            >
+                Cancel
+            </button>
+
+            <button
+                id="confirmPassword"
+                class="confirm-btn"
+                type="button"
+            >
+                Continue
+            </button>
 
         </div>
 
@@ -1087,6 +1514,7 @@ footer strong {
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
@@ -1097,34 +1525,22 @@ const SUPABASE_KEY =
     "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
 
 const supabaseClient =
-    window.supabase.createClient(
+    supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
     );
 
+let currentUser = null;
+let communityGames = [];
 
-const GAME_WIDTH = 1280;
-const GAME_HEIGHT = 720;
+let currentGameId = null;
+let currentPlaySessionId = null;
+let playStartedAt = null;
 
 
-const communityContainer =
-    document.getElementById("communityGames");
-
-const searchInput =
-    document.getElementById("communitySearch");
-
-const playerOverlay =
-    document.getElementById("playerOverlay");
-
-const playerTitle =
-    document.getElementById("playerTitle");
-
-const gameViewport =
-    document.getElementById("gameViewport");
-
-const closePlayer =
-    document.getElementById("closePlayer");
-
+/* =========================================
+   ACCOUNT
+========================================= */
 
 const accountButton =
     document.getElementById("accountButton");
@@ -1132,169 +1548,27 @@ const accountButton =
 const accountMenu =
     document.getElementById("accountMenu");
 
-const accountUsername =
-    document.getElementById("accountUsername");
 
-const accountEmail =
-    document.getElementById("accountEmail");
+/*
+    IMPORTANT:
 
-const changeUsernameButton =
-    document.getElementById("changeUsernameButton");
+    If logged OUT:
+    Clicking the account button sends
+    the user to log-in.html.
 
-const changeEmailButton =
-    document.getElementById("changeEmailButton");
-
-const logoutButton =
-    document.getElementById("logoutButton");
-
-
-const usernameModal =
-    document.getElementById("usernameModal");
-
-const emailModal =
-    document.getElementById("emailModal");
-
-const newUsername =
-    document.getElementById("newUsername");
-
-const newEmail =
-    document.getElementById("newEmail");
-
-const usernameMessage =
-    document.getElementById("usernameMessage");
-
-const emailMessage =
-    document.getElementById("emailMessage");
-
-const cancelUsername =
-    document.getElementById("cancelUsername");
-
-const cancelEmail =
-    document.getElementById("cancelEmail");
-
-const saveUsername =
-    document.getElementById("saveUsername");
-
-const saveEmail =
-    document.getElementById("saveEmail");
-
-
-let communityGames = [];
-
-let currentSession = null;
-
-let currentProfile = null;
-
-
-/* ACCOUNT */
-
-async function loadAccount() {
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient.auth.getSession();
-
-
-    if (error) {
-
-        console.error(
-            "Could not get session:",
-            error
-        );
-
-        currentSession = null;
-        currentProfile = null;
-
-        return;
-    }
-
-
-    currentSession =
-        data.session;
-
-
-    if (!currentSession) {
-
-        currentProfile = null;
-
-        return;
-    }
-
-
-    const {
-        data: profile,
-        error: profileError
-    } =
-        await supabaseClient
-            .from("profiles")
-            .select("username")
-            .eq("id", currentSession.user.id)
-            .single();
-
-
-    if (profileError) {
-
-        console.error(
-            "Could not load profile:",
-            profileError
-        );
-
-        currentProfile = null;
-
-    } else {
-
-        currentProfile = profile;
-
-    }
-
-
-    updateAccountDisplay();
-}
-
-
-function updateAccountDisplay() {
-
-    if (!currentSession) {
-
-        accountUsername.textContent =
-            "@Account";
-
-        accountEmail.textContent =
-            "Not logged in";
-
-        return;
-    }
-
-
-    const username =
-        currentProfile &&
-        currentProfile.username
-            ? currentProfile.username
-            : "User";
-
-
-    accountUsername.textContent =
-        "@" + username;
-
-
-    accountEmail.textContent =
-        currentSession.user.email ||
-        "";
-}
-
-
-/* ACCOUNT BUTTON */
+    If logged IN:
+    Clicking the account button opens
+    the dropdown.
+*/
 
 accountButton.addEventListener(
     "click",
     async function(event) {
 
+        event.preventDefault();
         event.stopPropagation();
 
-
-        if (!currentSession) {
+        if (!currentUser) {
 
             window.location.href =
                 "log-in.html";
@@ -1302,992 +1576,757 @@ accountButton.addEventListener(
             return;
         }
 
-
-        const isOpen =
-            accountMenu.classList.contains(
-                "active"
-            );
-
-
-        accountMenu.classList.toggle(
-            "active"
-        );
-
-
-        accountButton.setAttribute(
-            "aria-expanded",
-            String(!isOpen)
-        );
-
+        accountMenu.classList.toggle("show");
     }
 );
 
 
-/* CLOSE ACCOUNT MENU */
+/* Close dropdown when clicking elsewhere */
 
 document.addEventListener(
     "click",
     function(event) {
 
         if (
-            !accountMenu.contains(event.target) &&
-            event.target !== accountButton
+            !event.target.closest(".account-area")
         ) {
 
             accountMenu.classList.remove(
-                "active"
+                "show"
             );
 
-            accountButton.setAttribute(
-                "aria-expanded",
-                "false"
+        }
+
+    }
+);
+
+
+/* =========================================
+   LOAD ACCOUNT
+========================================= */
+
+async function loadAccount() {
+
+    const {
+        data: {
+            session
+        }
+    } =
+        await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+        currentUser = null;
+
+        document
+            .getElementById("accountName")
+            .textContent =
+                "Log In";
+
+        document
+            .getElementById("accountAvatar")
+            .textContent =
+                "?";
+
+        document
+            .getElementById("adminLink")
+            .style.display =
+                "none";
+
+        return;
+    }
+
+
+    currentUser =
+        session.user;
+
+
+    const {
+        data: profile,
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "username, avatar_url, is_admin"
+            )
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Could not load profile:",
+            error
+        );
+
+    }
+
+
+    const username =
+        profile?.username ||
+        currentUser.email?.split("@")[0] ||
+        "User";
+
+
+    document
+        .getElementById("accountName")
+        .textContent =
+            username;
+
+
+    const avatar =
+        document.getElementById(
+            "accountAvatar"
+        );
+
+
+    if (profile?.avatar_url) {
+
+        avatar.innerHTML =
+            `<img
+                src="${escapeHtml(profile.avatar_url)}"
+                alt="Profile"
+            >`;
+
+    } else {
+
+        avatar.textContent =
+            username
+                .charAt(0)
+                .toUpperCase();
+
+    }
+
+
+    const adminLink =
+        document.getElementById(
+            "adminLink"
+        );
+
+
+    if (
+        profile?.is_admin === true
+    ) {
+
+        adminLink.style.display =
+            "block";
+
+    } else {
+
+        adminLink.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+    .getElementById("logoutButton")
+    .addEventListener(
+        "click",
+        async function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            await supabaseClient.auth.signOut();
+
+            currentUser = null;
+
+            window.location.reload();
+
+        }
+    );
+
+
+/* =========================================
+   USER COUNT
+========================================= */
+
+async function loadUserCount() {
+
+    const userCount =
+        document.getElementById(
+            "userCount"
+        );
+
+
+    const {
+        count,
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
             );
-        }
-
-    }
-);
 
 
-/* USERNAME MODAL */
+    if (error) {
 
-changeUsernameButton.addEventListener(
-    "click",
-    function() {
-
-        accountMenu.classList.remove(
-            "active"
+        console.error(
+            "Could not load user count:",
+            error
         );
 
-        usernameMessage.textContent =
+        userCount.textContent =
+            "—";
+
+        return;
+    }
+
+
+    userCount.textContent =
+        Number(
+            count || 0
+        ).toLocaleString();
+
+}
+
+
+/* =========================================
+   GAME COUNT
+========================================= */
+
+function updateGameCount() {
+
+    const gameCount =
+        document.getElementById(
+            "gameCount"
+        );
+
+
+    gameCount.textContent =
+        (
+            4 +
+            communityGames.length
+        ).toLocaleString();
+
+}
+
+
+/* =========================================
+   COMMUNITY GAMES
+========================================= */
+
+async function loadCommunityGames() {
+
+    const container =
+        document.getElementById(
+            "communityGames"
+        );
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("community_games")
+            .select(
+                "id, title, description, author, category, code, created_at, creator_id"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Could not load community games:",
+            error
+        );
+
+        container.innerHTML =
+            `<div class="empty">
+                Could not load community games.
+            </div>`;
+
+        updateGameCount();
+
+        return;
+    }
+
+
+    communityGames =
+        data || [];
+
+
+    renderCommunityGames();
+
+    updateGameCount();
+
+}
+
+
+/* =========================================
+   RENDER COMMUNITY GAMES
+========================================= */
+
+function renderCommunityGames() {
+
+    const container =
+        document.getElementById(
+            "communityGames"
+        );
+
+
+    const search =
+        document
+            .getElementById(
+                "gameSearch"
+            )
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const filtered =
+        communityGames.filter(
+            function(game) {
+
+                return (
+
+                    (game.title || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (game.description || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (game.author || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (game.category || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                );
+
+            }
+        );
+
+
+    if (!filtered.length) {
+
+        container.innerHTML =
+            `<div class="empty">
+                No community games found.
+            </div>`;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        filtered
+            .map(
+                function(game) {
+
+                    return `
+
+                        <div
+                            class="community-card"
+                            data-game-id="${escapeHtml(game.id)}"
+                        >
+
+                            <span
+                                class="community-category"
+                            >
+                                ${escapeHtml(
+                                    game.category ||
+                                    "Game"
+                                )}
+                            </span>
+
+                            <h3>
+                                ${escapeHtml(
+                                    game.title ||
+                                    "Untitled Game"
+                                )}
+                            </h3>
+
+                            <p>
+                                ${escapeHtml(
+                                    game.description ||
+                                    "A community-created game."
+                                )}
+                            </p>
+
+                            <div
+                                class="community-author"
+                            >
+                                Made by
+                                ${escapeHtml(
+                                    game.author ||
+                                    "Unknown"
+                                )}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    container
+        .querySelectorAll(
+            ".community-card"
+        )
+        .forEach(
+            function(card) {
+
+                card.addEventListener(
+                    "click",
+                    function() {
+
+                        openCommunityGame(
+                            card.dataset.gameId
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+document
+    .getElementById("gameSearch")
+    .addEventListener(
+        "input",
+        renderCommunityGames
+    );
+
+
+/* =========================================
+   OPEN COMMUNITY GAME
+========================================= */
+
+async function openCommunityGame(
+    gameId
+) {
+
+    const game =
+        communityGames.find(
+            function(item) {
+
+                return item.id === gameId;
+
+            }
+        );
+
+
+    if (!game) {
+        return;
+    }
+
+
+    currentGameId =
+        game.id;
+
+
+    document
+        .getElementById(
+            "playerTitle"
+        )
+        .textContent =
+            game.title ||
+            "Game";
+
+
+    document
+        .getElementById(
+            "gameFrame"
+        )
+        .srcdoc =
+            game.code ||
+            "<h1>No game code</h1>";
+
+
+    document
+        .getElementById(
+            "playerOverlay"
+        )
+        .classList.add(
+            "show"
+        );
+
+
+    await startPlaySession(
+        game.id
+    );
+
+}
+
+
+/* =========================================
+   CLOSE GAME
+========================================= */
+
+document
+    .getElementById(
+        "closePlayer"
+    )
+    .addEventListener(
+        "click",
+        closeGame
+    );
+
+
+document
+    .getElementById(
+        "playerOverlay"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target.id ===
+                "playerOverlay"
+            ) {
+
+                closeGame();
+
+            }
+
+        }
+    );
+
+
+async function closeGame() {
+
+    await endPlaySession();
+
+
+    document
+        .getElementById(
+            "gameFrame"
+        )
+        .srcdoc =
             "";
 
-        newUsername.value =
-            currentProfile &&
-            currentProfile.username
-                ? currentProfile.username
-                : "";
 
-        usernameModal.classList.add(
-            "active"
+    document
+        .getElementById(
+            "playerOverlay"
+        )
+        .classList.remove(
+            "show"
         );
 
-        setTimeout(
-            function() {
-                newUsername.focus();
-            },
-            50
-        );
 
+    currentGameId =
+        null;
+
+}
+
+
+/* =========================================
+   PLAY TRACKING
+========================================= */
+
+async function startPlaySession(
+    gameId
+) {
+
+    playStartedAt =
+        Date.now();
+
+
+    if (!currentUser) {
+
+        currentPlaySessionId =
+            null;
+
+        return;
     }
-);
 
 
-/* CANCEL USERNAME */
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "game_play_sessions"
+            )
+            .insert({
+                game_id:
+                    gameId,
 
-cancelUsername.addEventListener(
-    "click",
-    function() {
+                user_id:
+                    currentUser.id
+            })
+            .select(
+                "id"
+            )
+            .single();
 
-        usernameModal.classList.remove(
-            "active"
+
+    if (error) {
+
+        console.error(
+            "Could not start play session:",
+            error
         );
 
-        usernameMessage.textContent =
-            "";
+        currentPlaySessionId =
+            null;
 
+        return;
     }
-);
 
 
-/* SAVE USERNAME */
+    currentPlaySessionId =
+        data.id;
 
-saveUsername.addEventListener(
-    "click",
-    async function() {
-
-        if (!currentSession) {
-
-            window.location.href =
-                "log-in.html";
-
-            return;
-        }
+}
 
 
-        const username =
-            newUsername.value.trim();
+async function endPlaySession() {
+
+    if (!playStartedAt) {
+        return;
+    }
 
 
-        if (username.length < 3) {
-
-            usernameMessage.textContent =
-                "Username must be at least 3 characters.";
-
-            return;
-        }
-
-
-        if (username.length > 30) {
-
-            usernameMessage.textContent =
-                "Username is too long.";
-
-            return;
-        }
+    const duration =
+        Math.max(
+            0,
+            Math.floor(
+                (
+                    Date.now() -
+                    playStartedAt
+                ) / 1000
+            )
+        );
 
 
-        saveUsername.disabled = true;
-
-        usernameMessage.textContent =
-            "Changing username...";
-
+    if (
+        currentUser &&
+        currentPlaySessionId
+    ) {
 
         const {
             error
         } =
             await supabaseClient
-                .from("profiles")
+                .from(
+                    "game_play_sessions"
+                )
                 .update({
-                    username: username
+
+                    ended_at:
+                        new Date()
+                            .toISOString(),
+
+                    duration_seconds:
+                        duration
+
                 })
-                .eq("id", currentSession.user.id);
-
-
-        saveUsername.disabled = false;
-
-
-        if (error) {
-
-            console.error(error);
-
-            if (
-                error.code === "23505"
-            ) {
-
-                usernameMessage.textContent =
-                    "That username is already taken.";
-
-            } else {
-
-                usernameMessage.textContent =
-                    "Could not change username.";
-
-            }
-
-            return;
-        }
-
-
-        currentProfile = {
-            username: username
-        };
-
-
-        updateAccountDisplay();
-
-
-        usernameMessage.textContent =
-            "Username changed!";
-
-
-        setTimeout(
-            function() {
-
-                usernameModal.classList.remove(
-                    "active"
+                .eq(
+                    "id",
+                    currentPlaySessionId
                 );
 
-                usernameMessage.textContent =
-                    "";
-
-            },
-            700
-        );
-
-    }
-);
-
-
-/* EMAIL MODAL */
-
-changeEmailButton.addEventListener(
-    "click",
-    function() {
-
-        accountMenu.classList.remove(
-            "active"
-        );
-
-        emailMessage.textContent =
-            "";
-
-        newEmail.value =
-            currentSession &&
-            currentSession.user
-                ? currentSession.user.email || ""
-                : "";
-
-        emailModal.classList.add(
-            "active"
-        );
-
-        setTimeout(
-            function() {
-                newEmail.focus();
-            },
-            50
-        );
-
-    }
-);
-
-
-/* CANCEL EMAIL */
-
-cancelEmail.addEventListener(
-    "click",
-    function() {
-
-        emailModal.classList.remove(
-            "active"
-        );
-
-        emailMessage.textContent =
-            "";
-
-    }
-);
-
-
-/* SAVE EMAIL */
-
-saveEmail.addEventListener(
-    "click",
-    async function() {
-
-        if (!currentSession) {
-
-            window.location.href =
-                "log-in.html";
-
-            return;
-        }
-
-
-        const email =
-            newEmail.value.trim();
-
-
-        if (!email) {
-
-            emailMessage.textContent =
-                "Enter an email address.";
-
-            return;
-        }
-
-
-        saveEmail.disabled = true;
-
-        emailMessage.textContent =
-            "Changing email...";
-
-
-        const {
-            error
-        } =
-            await supabaseClient.auth.updateUser({
-                email: email
-            });
-
-
-        saveEmail.disabled = false;
-
 
         if (error) {
 
-            console.error(error);
-
-            emailMessage.textContent =
-                error.message ||
-                "Could not change email.";
-
-            return;
-        }
-
-
-        emailMessage.textContent =
-            "Check your email to confirm the new address.";
-
-    }
-);
-
-
-/* CLOSE MODALS WHEN CLICKING OUTSIDE */
-
-usernameModal.addEventListener(
-    "click",
-    function(event) {
-
-        if (
-            event.target === usernameModal
-        ) {
-
-            usernameModal.classList.remove(
-                "active"
+            console.error(
+                "Could not end play session:",
+                error
             );
 
         }
 
     }
-);
 
 
-emailModal.addEventListener(
-    "click",
-    function(event) {
+    currentPlaySessionId =
+        null;
 
-        if (
-            event.target === emailModal
-        ) {
+    playStartedAt =
+        null;
 
-            emailModal.classList.remove(
-                "active"
-            );
-
-        }
-
-    }
-);
+}
 
 
-/* LOG OUT */
+/* =========================================
+   ESCAPE HTML
+========================================= */
 
-logoutButton.addEventListener(
-    "click",
-    async function() {
+function escapeHtml(value) {
 
-        logoutButton.disabled = true;
-
-        const {
-            error
-        } =
-            await supabaseClient.auth.signOut();
-
-
-        if (error) {
-
-            console.error(error);
-
-            logoutButton.disabled = false;
-
-            return;
-        }
-
-
-        currentSession = null;
-        currentProfile = null;
-
-        accountMenu.classList.remove(
-            "active"
+    return String(value)
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
         );
 
-        updateAccountDisplay();
-
-    }
-);
-
-
-/* AUTH STATE */
-
-supabaseClient.auth.onAuthStateChange(
-    async function(event, session) {
-
-        currentSession =
-            session;
-
-
-        if (session) {
-
-            const {
-                data: profile
-            } =
-                await supabaseClient
-                    .from("profiles")
-                    .select("username")
-                    .eq("id", session.user.id)
-                    .single();
-
-
-            currentProfile =
-                profile;
-
-        } else {
-
-            currentProfile =
-                null;
-
-        }
-
-
-        updateAccountDisplay();
-
-    }
-);
-
-
-/* LOAD COMMUNITY GAMES */
-
-async function loadCommunityGames() {
-
-    communityContainer.innerHTML = `
-        <div class="empty-community">
-            Loading community games...
-        </div>
-    `;
-
-    try {
-
-        const response = await fetch(
-            SUPABASE_URL +
-            "/rest/v1/community_games" +
-            "?select=id,title,description,author,category,code,created_at" +
-            "&order=created_at.desc",
-            {
-                headers: {
-                    "apikey": SUPABASE_KEY,
-                    "Authorization": "Bearer " + SUPABASE_KEY
-                }
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                "Could not load community games."
-            );
-        }
-
-        communityGames =
-            await response.json();
-
-        renderCommunityGames();
-
-    } catch (error) {
-
-        console.error(error);
-
-        communityContainer.innerHTML = `
-            <div class="empty-community">
-                Could not load community games.
-            </div>
-        `;
-    }
 }
 
 
-/* RENDER */
-
-function renderCommunityGames() {
-
-    const search =
-        searchInput.value.trim().toLowerCase();
-
-    const filtered =
-        communityGames.filter(game => {
-
-            const text = [
-                game.title || "",
-                game.description || "",
-                game.author || "",
-                game.category || ""
-            ]
-            .join(" ")
-            .toLowerCase();
-
-            return text.includes(search);
-        });
-
-
-    if (filtered.length === 0) {
-
-        communityContainer.innerHTML = `
-            <div class="empty-community">
-                ${
-                    search
-                        ? "No games matched your search."
-                        : "No community games have been published yet."
-                }
-            </div>
-        `;
-
-        return;
-    }
-
-
-    communityContainer.innerHTML = "";
-
-
-    filtered.forEach(game => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "community-card";
-
-
-        const category =
-            document.createElement("div");
-
-        category.className =
-            "community-category";
-
-        category.textContent =
-            game.category || "Other";
-
-
-        const title =
-            document.createElement("h3");
-
-        title.textContent =
-            game.title || "Untitled Game";
-
-
-        const description =
-            document.createElement("p");
-
-        description.textContent =
-            game.description ||
-            "No description provided.";
-
-
-        const author =
-            document.createElement("div");
-
-        author.className =
-            "community-author";
-
-        author.textContent =
-            "Created by " +
-            (game.author || "Anonymous");
-
-
-        const play =
-            document.createElement("button");
-
-        play.className =
-            "play-button";
-
-        play.type =
-            "button";
-
-        play.textContent =
-            "Play Game";
-
-
-        play.addEventListener(
-            "click",
-            function() {
-                openCommunityGame(game);
-            }
-        );
-
-
-        card.appendChild(category);
-        card.appendChild(title);
-        card.appendChild(description);
-        card.appendChild(author);
-        card.appendChild(play);
-
-        communityContainer.appendChild(card);
-
-    });
-}
-
-
-/* NORMALIZE GAME */
-
-function normalizeGameCode(code) {
-
-    const fixedCSS = `
-<style id="dougHub1280Viewport">
-html {
-    width: 1280px !important;
-    height: 720px !important;
-    min-width: 1280px !important;
-    min-height: 720px !important;
-    max-width: 1280px !important;
-    max-height: 720px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-}
-
-body {
-    width: 1280px !important;
-    height: 720px !important;
-    min-width: 1280px !important;
-    min-height: 720px !important;
-    max-width: 1280px !important;
-    max-height: 720px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-}
-</style>
-`;
-
-
-    if (/<head[\s>]/i.test(code)) {
-
-        return code.replace(
-            /<head([^>]*)>/i,
-            function(match) {
-                return match + fixedCSS;
-            }
-        );
-
-    }
-
-
-    return fixedCSS + code;
-}
-
-
-/* GAME SHELL */
-
-function createGameShell(code) {
-
-    const shell = `
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=1280,height=720,initial-scale=1.0"
->
-
-<style>
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: #070a16;
-}
-
-#gameSurface {
-    position: absolute;
-
-    width: 1280px;
-    height: 720px;
-
-    left: 0;
-    top: 0;
-
-    margin: 0;
-    padding: 0;
-
-    border: 0;
-
-    transform-origin: top left;
-
-    overflow: hidden;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<iframe
-    id="gameSurface"
-    sandbox="allow-scripts allow-pointer-lock"
-    scrolling="no"
-></iframe>
-
-
-<script>
-
-const GAME_WIDTH = 1280;
-const GAME_HEIGHT = 720;
-
-const surface =
-    document.getElementById("gameSurface");
-
-
-function fitGame() {
-
-    const width =
-        window.innerWidth;
-
-    const height =
-        window.innerHeight;
-
-
-    if (
-        width <= 0 ||
-        height <= 0
-    ) {
-        return;
-    }
-
-
-    const scale =
-        Math.min(
-            width / GAME_WIDTH,
-            height / GAME_HEIGHT
-        );
-
-
-    const scaledWidth =
-        GAME_WIDTH * scale;
-
-    const scaledHeight =
-        GAME_HEIGHT * scale;
-
-
-    const left =
-        (width - scaledWidth) / 2;
-
-    const top =
-        (height - scaledHeight) / 2;
-
-
-    surface.style.left =
-        left + "px";
-
-    surface.style.top =
-        top + "px";
-
-    surface.style.transform =
-        "scale(" + scale + ")";
-}
-
-
-window.addEventListener(
-    "resize",
-    fitGame
-);
-
-
-window.addEventListener(
-    "message",
-    function(event) {
-
-        if (
-            !event.data ||
-            event.data.type !== "dougHubLoadGame"
-        ) {
-            return;
-        }
-
-
-        surface.srcdoc =
-            event.data.code;
-
-
-        fitGame();
-
-    }
-);
-
-
-fitGame();
-
-<\/script>
-
-</body>
-</html>
-`;
-
-    return shell;
-}
-
-
-/* OPEN GAME */
-
-function openCommunityGame(game) {
-
-    const code =
-        (game.code || "").trim();
-
-
-    if (!code) {
-
-        alert(
-            "This game has no code."
-        );
-
-        return;
-    }
-
-
-    const normalizedCode =
-        normalizeGameCode(code);
-
-
-    playerTitle.textContent =
-        game.title ||
-        "Community Game";
-
-
-    playerOverlay.classList.add(
-        "active"
-    );
-
-
-    document.body.classList.add(
-        "game-open"
-    );
-
-
-    const oldFrame =
-        document.getElementById(
-            "gameFrame"
-        );
-
-
-    const newFrame =
-        document.createElement(
-            "iframe"
-        );
-
-
-    newFrame.id =
-        "gameFrame";
-
-    newFrame.title =
-        "Community Game";
-
-
-    newFrame.setAttribute(
-        "sandbox",
-        "allow-scripts allow-pointer-lock"
-    );
-
-
-    newFrame.setAttribute(
-        "scrolling",
-        "no"
-    );
-
-
-    oldFrame.replaceWith(
-        newFrame
-    );
-
-
-    newFrame.srcdoc =
-        createGameShell(
-            normalizedCode
-        );
-
-
-    newFrame.addEventListener(
-        "load",
-        function() {
-
-            newFrame.contentWindow.postMessage(
-                {
-                    type: "dougHubLoadGame",
-                    code: normalizedCode
-                },
-                "*"
-            );
-
-        }
-    );
-}
-
-
-/* CLOSE GAME */
-
-function closeGame() {
-
-    playerOverlay.classList.remove(
-        "active"
-    );
-
-    document.body.classList.remove(
-        "game-open"
-    );
-
-
-    const frame =
-        document.getElementById(
-            "gameFrame"
-        );
-
-
-    if (frame) {
-        frame.srcdoc = "";
-    }
-}
-
-
-/* CLOSE BUTTON */
-
-closePlayer.addEventListener(
-    "click",
-    closeGame
-);
-
-
-/* OUTSIDE */
-
-playerOverlay.addEventListener(
-    "click",
-    function(event) {
-
-        if (
-            event.target ===
-            playerOverlay
-        ) {
-            closeGame();
-        }
-
-    }
-);
-
-
-/* ESCAPE */
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Escape" &&
-            playerOverlay.classList.contains("active")
-        ) {
-            closeGame();
-        }
-
-    }
-);
-
-
-/* SEARCH */
-
-searchInput.addEventListener(
-    "input",
-    renderCommunityGames
-);
-
-
-/* START */
+/* =========================================
+   START
+========================================= */
 
 loadAccount();
 loadCommunityGames();
+loadUserCount();
 
 </script>
 

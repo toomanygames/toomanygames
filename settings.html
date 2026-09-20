@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DougHub Settings</title>
+
+<link rel="icon" href="DougHub.ico" type="image/x-icon">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="display.js"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Inter, Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.14), transparent 35%),
+    #02040a;
+  color: white;
+}
+
+body {
+  min-height: 100vh;
+}
+
+header {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(2,4,10,0.78);
+  backdrop-filter: blur(18px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: white;
+  font-weight: 800;
+  font-size: 21px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 8px 30px rgba(99,102,241,0.25);
+}
+
+.back-button {
+  text-decoration: none;
+  color: #c7c9d9;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.back-button:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+main {
+  width: min(900px, calc(100% - 28px));
+  margin: 42px auto 70px;
+}
+
+.page-header {
+  margin-bottom: 25px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 44px);
+  letter-spacing: -1px;
+}
+
+.page-header p {
+  margin: 8px 0 0;
+  color: #9da2b8;
+  font-size: 15px;
+}
+
+.settings-card {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 22px;
+  background: rgba(13,17,39,0.72);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.settings-section {
+  padding: 25px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.settings-section:last-child {
+  border-bottom: 0;
+}
+
+.section-title {
+  margin: 0 0 5px;
+  font-size: 20px;
+}
+
+.section-description {
+  margin: 0 0 20px;
+  color: #858ba3;
+  font-size: 14px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.setting-row:first-of-type {
+  border-top: 0;
+}
+
+.setting-info {
+  width: 190px;
+  flex-shrink: 0;
+}
+
+.setting-label {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.setting-help {
+  margin-top: 4px;
+  color: #777d95;
+  font-size: 12px;
+}
+
+.setting-control {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+}
+
+.setting-input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  color: white;
+  padding: 0 13px;
+  font: inherit;
+  outline: none;
+}
+
+.setting-input:focus {
+  border-color: rgba(129,140,248,0.75);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.setting-input::placeholder {
+  color: #73798f;
+}
+
+.update-button {
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.update-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.update-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.profile-area {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile-preview {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid rgba(167,139,250,0.35);
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.profile-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: 42px;
+  padding: 0 17px;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.upload-button:hover {
+  background: rgba(255,255,255,0.11);
+}
+
+#profilePictureInput {
+  display: none;
+}
+
+.upload-help {
+  color: #777d95;
+  font-size: 12px;
+}
+
+.status-message {
+  display: none;
+  margin-top: 20px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.status-message.success {
+  display: block;
+  background: rgba(74,222,128,0.1);
+  border: 1px solid rgba(74,222,128,0.22);
+  color: #86efac;
+}
+
+.status-message.error {
+  display: block;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.25);
+  color: #fca5a5;
+}
+
+.account-id {
+  color: #777d95;
+  font-family: monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.logout-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-button {
+  border: 1px solid rgba(239,68,68,0.3);
+  background: rgba(239,68,68,0.08);
+  color: #fca5a5;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout-button:hover {
+  background: rgba(239,68,68,0.14);
+}
+
+@media (max-width: 650px) {
+  header {
+    padding: 0 15px;
+  }
+
+  .brand {
+    font-size: 18px;
+  }
+
+  .brand-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .back-button {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  main {
+    width: calc(100% - 16px);
+    margin: 25px auto 45px;
+  }
+
+  .settings-section {
+    padding: 20px 17px;
+  }
+
+  .setting-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .setting-info {
+    width: auto;
+  }
+
+  .setting-control {
+    width: 100%;
+  }
+
+  .update-button {
+    padding: 0 15px;
+  }
+
+  .profile-area {
+    align-items: flex-start;
+  }
+
+  .logout-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .logout-button {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="brand">
+    <span class="brand-icon">D</span>
+    <span>DougHub</span>
+  </a>
+
+  <a href="index.html" class="back-button">
+    ← DougHub
+  </a>
+</header>
+
+<main>
+
+  <div class="page-header">
+    <h1>Account Settings</h1>
+    <p>Manage your DougHub account and profile.</p>
+  </div>
+
+  <div class="settings-card">
+
+    <section class="settings-section">
+
+      <h2 class="section-title">Profile</h2>
+      <p class="section-description">
+        Customize how other DougHub users see you.
+      </p>
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+          <div class="setting-label">Profile Picture</div>
+          <div class="setting-help">
+            Used for your DougHub profile and Chat.
+          </div>
+        </div>
+
+        <div class="profile-area">
+
+          <div class="profile-preview" id="profilePreview">
+            D
+          </div>
+
+          <div class="profile-actions">
+
+            <label class="upload-button" for="profilePictureInput">
+              Upload Picture
+            </label>
+
+            <input
+              type="file"
+              id="profilePictureInput"
+              accept="image/png,image/jpeg,image/webp"
+            >
+
+            <div class="upload-help">
+              PNG, JPG, or WebP • Max 2MB
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+          <div class="setting-label">Username</div>
+          <div class="setting-help">
+            Your public DougHub username.
+          </div>
+        </div>
+
+        <div class="setting-control">
+
+          <input
+            class="setting-input"
+            id="usernameInput"
+            type="text"
+            maxlength="30"
+            placeholder="Username"
+          >
+
+          <button
+            class="update-button"
+            id="usernameButton"
+          >
+            Update
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="settings-section">
+
+      <h2 class="section-title">Login Information</h2>
+      <p class="section-description">
+        Change the information you use to sign in.
+      </p>
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+          <div class="setting-label">Email</div>
+          <div class="setting-help">
+            Your account email address.
+          </div>
+        </div>
+
+        <div class="setting-control">
+
+          <input
+            class="setting-input"
+            id="emailInput"
+            type="email"
+            placeholder="Email address"
+          >
+
+          <button
+            class="update-button"
+            id="emailButton"
+          >
+            Update
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+          <div class="setting-label">Password</div>
+          <div class="setting-help">
+            Change your account password.
+          </div>
+        </div>
+
+        <div class="setting-control">
+
+          <input
+            class="setting-input"
+            id="passwordInput"
+            type="password"
+            placeholder="New password"
+          >
+
+          <button
+            class="update-button"
+            id="passwordButton"
+          >
+            Update
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="settings-section">
+
+      <h2 class="section-title">Account</h2>
+      <p class="section-description">
+        Information about your DougHub account.
+      </p>
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+          <div class="setting-label">Account ID</div>
+        </div>
+
+        <div class="account-id" id="accountId">
+          Loading...
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="settings-section">
+
+      <div class="logout-section">
+
+        <div>
+          <h2 class="section-title">Sign Out</h2>
+          <p class="section-description" style="margin-bottom:0;">
+            Sign out of your DougHub account on this device.
+          </p>
+        </div>
+
+        <button class="logout-button" id="logoutButton">
+          Log Out
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <div id="statusMessage" class="status-message"></div>
+
+</main>
+
+<script>
+const SUPABASE_URL = "https://agsqdqcsmsppcdqxlppj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const usernameInput = document.getElementById("usernameInput");
+const usernameButton = document.getElementById("usernameButton");
+
+const emailInput = document.getElementById("emailInput");
+const emailButton = document.getElementById("emailButton");
+
+const passwordInput = document.getElementById("passwordInput");
+const passwordButton = document.getElementById("passwordButton");
+
+const accountId = document.getElementById("accountId");
+
+const profilePreview = document.getElementById("profilePreview");
+const profilePictureInput = document.getElementById("profilePictureInput");
+
+const statusMessage = document.getElementById("statusMessage");
+const logoutButton = document.getElementById("logoutButton");
+
+let currentUser = null;
+
+function showStatus(message, type) {
+  statusMessage.textContent = message;
+  statusMessage.className = "status-message " + type;
+}
+
+function clearStatus() {
+  statusMessage.textContent = "";
+  statusMessage.className = "status-message";
+}
+
+function showDefaultAvatar(username) {
+  const letter =
+    (username || "D").trim().charAt(0).toUpperCase() || "D";
+
+  profilePreview.innerHTML = "";
+  profilePreview.textContent = letter;
+}
+
+function showAvatar(url, username) {
+  if (!url) {
+    showDefaultAvatar(username);
+    return;
+  }
+
+  profilePreview.innerHTML = "";
+
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "Profile picture";
+
+  img.onerror = () => {
+    showDefaultAvatar(username);
+  };
+
+  profilePreview.appendChild(img);
+}
+
+async function loadSettings() {
+  const {
+    data: {
+      session
+    }
+  } = await supabaseClient.auth.getSession();
+
+  if (!session) {
+    window.location.href = "log-in.html?redirect=settings.html";
+    return;
+  }
+
+  currentUser = session.user;
+
+  accountId.textContent = currentUser.id;
+  emailInput.value = currentUser.email || "";
+
+  const {
+    data: profile,
+    error
+  } = await supabaseClient
+    .from("profiles")
+    .select("username, avatar_url")
+    .eq("id", currentUser.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    showStatus("Could not load your profile.", "error");
+    return;
+  }
+
+  const username =
+    profile?.username ||
+    currentUser.user_metadata?.username ||
+    "";
+
+  usernameInput.value = username;
+
+  showAvatar(
+    profile?.avatar_url || "",
+    username
+  );
+}
+
+usernameButton.addEventListener("click", async () => {
+  clearStatus();
+
+  const username = usernameInput.value.trim();
+
+  if (!username) {
+    showStatus("Please enter a username.", "error");
+    return;
+  }
+
+  if (username.length < 2) {
+    showStatus("Username must be at least 2 characters.", "error");
+    return;
+  }
+
+  usernameButton.disabled = true;
+
+  const {
+    error
+  } = await supabaseClient
+    .from("profiles")
+    .update({
+      username: username
+    })
+    .eq("id", currentUser.id);
+
+  usernameButton.disabled = false;
+
+  if (error) {
+    console.error(error);
+    showStatus("Could not update your username.", "error");
+    return;
+  }
+
+  showStatus("Username updated successfully.", "success");
+});
+
+emailButton.addEventListener("click", async () => {
+  clearStatus();
+
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    showStatus("Please enter an email address.", "error");
+    return;
+  }
+
+  emailButton.disabled = true;
+
+  const {
+    error
+  } = await supabaseClient.auth.updateUser({
+    email: email
+  });
+
+  emailButton.disabled = false;
+
+  if (error) {
+    console.error(error);
+    showStatus(
+      error.message || "Could not update your email.",
+      "error"
+    );
+    return;
+  }
+
+  showStatus(
+    "Email update requested. Check your email if confirmation is required.",
+    "success"
+  );
+});
+
+passwordButton.addEventListener("click", async () => {
+  clearStatus();
+
+  const password = passwordInput.value;
+
+  if (!password) {
+    showStatus("Please enter a new password.", "error");
+    return;
+  }
+
+  if (password.length < 6) {
+    showStatus("Password must be at least 6 characters.", "error");
+    return;
+  }
+
+  passwordButton.disabled = true;
+
+  const {
+    error
+  } = await supabaseClient.auth.updateUser({
+    password: password
+  });
+
+  passwordButton.disabled = false;
+
+  if (error) {
+    console.error(error);
+    showStatus(
+      error.message || "Could not update your password.",
+      "error"
+    );
+    return;
+  }
+
+  passwordInput.value = "";
+
+  showStatus(
+    "Password updated successfully.",
+    "success"
+  );
+});
+
+profilePictureInput.addEventListener("change", async event => {
+  const file = event.target.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  clearStatus();
+
+  if (!file.type.startsWith("image/")) {
+    showStatus("Please choose an image file.", "error");
+    profilePictureInput.value = "";
+    return;
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    showStatus("The picture must be 2MB or smaller.", "error");
+    profilePictureInput.value = "";
+    return;
+  }
+
+  if (!currentUser) {
+    showStatus("You must be logged in.", "error");
+    return;
+  }
+
+  const extension =
+    file.name.split(".").pop().toLowerCase();
+
+  const allowedExtensions = [
+    "png",
+    "jpg",
+    "jpeg",
+    "webp"
+  ];
+
+  if (!allowedExtensions.includes(extension)) {
+    showStatus(
+      "Please use PNG, JPG, or WebP.",
+      "error"
+    );
+    profilePictureInput.value = "";
+    return;
+  }
+
+  profilePictureInput.disabled = true;
+
+  showStatus(
+    "Uploading your profile picture...",
+    "success"
+  );
+
+  const filePath =
+    currentUser.id + "/profile." + extension;
+
+  const {
+    error: uploadError
+  } = await supabaseClient
+    .storage
+    .from("avatars")
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: true,
+      contentType: file.type
+    });
+
+  if (uploadError) {
+    console.error(uploadError);
+
+    profilePictureInput.disabled = false;
+
+    showStatus(
+      "Could not upload the picture: " +
+      uploadError.message,
+      "error"
+    );
+
+    return;
+  }
+
+  const {
+    data: publicUrlData
+  } = supabaseClient
+    .storage
+    .from("avatars")
+    .getPublicUrl(filePath);
+
+  const publicUrl =
+    publicUrlData.publicUrl +
+    "?v=" +
+    Date.now();
+
+  const {
+    error: profileError
+  } = await supabaseClient
+    .from("profiles")
+    .update({
+      avatar_url: publicUrl
+    })
+    .eq("id", currentUser.id);
+
+  if (profileError) {
+    console.error(profileError);
+
+    profilePictureInput.disabled = false;
+
+    showStatus(
+      "The picture uploaded, but its profile URL could not be saved.",
+      "error"
+    );
+
+    return;
+  }
+
+  showAvatar(
+    publicUrl,
+    usernameInput.value
+  );
+
+  profilePictureInput.value = "";
+  profilePictureInput.disabled = false;
+
+  showStatus(
+    "Profile picture updated successfully!",
+    "success"
+  );
+});
+
+logoutButton.addEventListener("click", async () => {
+  logoutButton.disabled = true;
+
+  const {
+    error
+  } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    console.error(error);
+
+    logoutButton.disabled = false;
+
+    showStatus(
+      "Could not log out.",
+      "error"
+    );
+
+    return;
+  }
+
+  window.location.href = "index.html";
+});
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (!session) {
+    window.location.href =
+      "log-in.html?redirect=settings.html";
+  }
+});
+
+loadSettings();
+</script>
+
+</body>
+</html>
