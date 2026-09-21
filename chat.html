@@ -22,14 +22,20 @@ body {
   min-height: 100%;
   font-family: Inter, Arial, sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 35%),
-    radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.14), transparent 35%),
+    radial-gradient(circle at top left, rgba(99,102,241,0.18), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(168,85,247,0.14), transparent 35%),
     #02040a;
   color: white;
 }
 
 body {
   min-height: 100vh;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
 }
 
 header {
@@ -68,6 +74,12 @@ header {
   box-shadow: 0 8px 30px rgba(99,102,241,0.25);
 }
 
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .back-button {
   text-decoration: none;
   color: #c7c9d9;
@@ -77,6 +89,7 @@ header {
   border-radius: 12px;
   font-weight: 700;
   transition: 0.2s;
+  cursor: pointer;
 }
 
 .back-button:hover {
@@ -338,6 +351,28 @@ main {
   transform: none;
 }
 
+/* DMAIl NOTICE */
+
+.dmail-notice {
+  text-align: center;
+  padding: 0 15px 14px;
+  font-size: 13px;
+  color: #9ca3af;
+  background: rgba(2,4,10,0.3);
+}
+
+.dmail-notice a {
+  color: #3b82f6;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dmail-notice a:hover {
+  text-decoration: underline;
+}
+
+/* ERROR */
+
 .error {
   display: none;
   margin: 12px 20px 0;
@@ -351,7 +386,7 @@ main {
 
 /* MOBILE */
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
 
   header {
     padding: 0 15px;
@@ -409,6 +444,10 @@ main {
     min-width: 62px;
     padding: 0 13px;
   }
+
+  .dmail-notice {
+    padding-bottom: 12px;
+  }
 }
 </style>
 </head>
@@ -422,9 +461,16 @@ main {
     <span>DougHub Chat</span>
   </a>
 
-  <a href="index.html" class="back-button">
-    ← DougHub
-  </a>
+  <div class="header-buttons">
+
+    <a
+      href="index.html"
+      class="back-button"
+    >
+      ← DougHub
+    </a>
+
+  </div>
 
 </header>
 
@@ -490,6 +536,11 @@ main {
 
     </form>
 
+    <div class="dmail-notice">
+      For Direct Messages use
+      <a href="DMail.html">DMail</a>
+    </div>
+
   </div>
 
 </main>
@@ -507,6 +558,11 @@ const supabaseClient =
     SUPABASE_URL,
     SUPABASE_KEY
   );
+
+
+/* =========================================
+   COMMUNITY CHAT ELEMENTS
+========================================= */
 
 const messagesEl =
   document.getElementById("messages");
@@ -526,43 +582,60 @@ const currentUsernameEl =
 const errorBox =
   document.getElementById("errorBox");
 
+
+/* =========================================
+   STATE
+========================================= */
+
 let currentUser = null;
 let currentUsername = "Anonymous";
 let currentAvatarUrl = "";
+
 let loadingMessages = false;
 
 
-/* ERROR */
+/* =========================================
+   ERROR
+========================================= */
 
 function showError(message) {
 
-  errorBox.textContent = message;
-  errorBox.style.display = "block";
+  errorBox.textContent =
+    message;
+
+  errorBox.style.display =
+    "block";
 
 }
 
 function hideError() {
 
-  errorBox.style.display = "none";
+  errorBox.style.display =
+    "none";
 
 }
 
 
-/* HTML SAFETY */
+/* =========================================
+   HTML SAFETY
+========================================= */
 
 function escapeHtml(text) {
 
   const div =
     document.createElement("div");
 
-  div.textContent = text;
+  div.textContent =
+    text ?? "";
 
   return div.innerHTML;
 
 }
 
 
-/* TIME */
+/* =========================================
+   TIME
+========================================= */
 
 function formatTime(dateString) {
 
@@ -577,7 +650,9 @@ function formatTime(dateString) {
 }
 
 
-/* AVATAR */
+/* =========================================
+   AVATAR
+========================================= */
 
 function getInitial(username) {
 
@@ -591,7 +666,10 @@ function getInitial(username) {
 
 }
 
-function createAvatar(username, avatarUrl) {
+function createAvatar(
+  username,
+  avatarUrl
+) {
 
   const avatar =
     document.createElement("div");
@@ -604,15 +682,20 @@ function createAvatar(username, avatarUrl) {
     const img =
       document.createElement("img");
 
-    img.src = avatarUrl;
+    img.src =
+      avatarUrl;
 
     img.alt =
-      username + " profile picture";
+      username +
+      " profile picture";
 
     img.onerror = () => {
 
       avatar.innerHTML =
-        escapeHtml(getInitial(username));
+        "";
+
+      avatar.textContent =
+        getInitial(username);
 
     };
 
@@ -630,9 +713,13 @@ function createAvatar(username, avatarUrl) {
 }
 
 
-/* LOAD PROFILES */
+/* =========================================
+   LOAD PROFILES
+========================================= */
 
-async function loadProfiles(userIds) {
+async function loadProfiles(
+  userIds
+) {
 
   if (!userIds.length) {
     return {};
@@ -641,10 +728,16 @@ async function loadProfiles(userIds) {
   const {
     data,
     error
-  } = await supabaseClient
-    .from("profiles")
-    .select("id, username, avatar_url")
-    .in("id", userIds);
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select(
+        "id, username, avatar_url"
+      )
+      .in(
+        "id",
+        userIds
+      );
 
   if (error) {
 
@@ -659,21 +752,29 @@ async function loadProfiles(userIds) {
 
   const profiles = {};
 
-  (data || []).forEach(profile => {
+  (data || []).forEach(
+    profile => {
 
-    profiles[profile.id] =
-      profile;
+      profiles[
+        profile.id
+      ] =
+        profile;
 
-  });
+    }
+  );
 
   return profiles;
 
 }
 
 
-/* RENDER MESSAGES */
+/* =========================================
+   COMMUNITY CHAT
+========================================= */
 
-async function renderMessages(messages) {
+async function renderMessages(
+  messages
+) {
 
   if (!messages.length) {
 
@@ -692,95 +793,135 @@ async function renderMessages(messages) {
   const userIds = [
     ...new Set(
       messages
-        .map(message => message.user_id)
+        .map(
+          message =>
+            message.user_id
+        )
         .filter(Boolean)
     )
   ];
 
   const profiles =
-    await loadProfiles(userIds);
+    await loadProfiles(
+      userIds
+    );
 
-  messagesEl.innerHTML = "";
+  messagesEl.innerHTML =
+    "";
 
-  messages.forEach(message => {
+  messages.forEach(
+    message => {
 
-    const mine =
-      message.user_id === currentUser.id;
+      const mine =
+        message.user_id ===
+        currentUser.id;
 
-    const profile =
-      profiles[message.user_id];
+      const profile =
+        profiles[
+          message.user_id
+        ];
 
-    const username =
-      profile?.username ||
-      message.username ||
-      "Anonymous";
+      const username =
+        profile?.username ||
+        message.username ||
+        "Anonymous";
 
-    const avatarUrl =
-      profile?.avatar_url ||
-      "";
+      const avatarUrl =
+        profile?.avatar_url ||
+        "";
 
-    const row =
-      document.createElement("div");
+      const row =
+        document.createElement(
+          "div"
+        );
 
-    row.className =
-      "message-row " +
-      (mine ? "mine" : "theirs");
+      row.className =
+        "message-row " +
+        (
+          mine
+            ? "mine"
+            : "theirs"
+        );
 
-    const avatar =
-      createAvatar(
-        username,
-        avatarUrl
+      const avatar =
+        createAvatar(
+          username,
+          avatarUrl
+        );
+
+      const content =
+        document.createElement(
+          "div"
+        );
+
+      content.className =
+        "message-content";
+
+      const header =
+        document.createElement(
+          "div"
+        );
+
+      header.className =
+        "message-header";
+
+      header.innerHTML = `
+        <span class="message-username">
+          @${escapeHtml(username)}
+        </span>
+
+        <span class="message-time">
+          ${formatTime(message.created_at)}
+        </span>
+      `;
+
+      const bubble =
+        document.createElement(
+          "div"
+        );
+
+      bubble.className =
+        "message-bubble";
+
+      bubble.textContent =
+        message.message;
+
+      content.appendChild(
+        header
       );
 
-    const content =
-      document.createElement("div");
+      content.appendChild(
+        bubble
+      );
 
-    content.className =
-      "message-content";
+      if (mine) {
 
-    const header =
-      document.createElement("div");
+        row.appendChild(
+          content
+        );
 
-    header.className =
-      "message-header";
+        row.appendChild(
+          avatar
+        );
 
-    header.innerHTML = `
-      <span class="message-username">
-        @${escapeHtml(username)}
-      </span>
+      } else {
 
-      <span class="message-time">
-        ${formatTime(message.created_at)}
-      </span>
-    `;
+        row.appendChild(
+          avatar
+        );
 
-    const bubble =
-      document.createElement("div");
+        row.appendChild(
+          content
+        );
 
-    bubble.className =
-      "message-bubble";
+      }
 
-    bubble.textContent =
-      message.message;
-
-    content.appendChild(header);
-    content.appendChild(bubble);
-
-    if (mine) {
-
-      row.appendChild(content);
-      row.appendChild(avatar);
-
-    } else {
-
-      row.appendChild(avatar);
-      row.appendChild(content);
+      messagesEl.appendChild(
+        row
+      );
 
     }
-
-    messagesEl.appendChild(row);
-
-  });
+  );
 
   messagesEl.scrollTop =
     messagesEl.scrollHeight;
@@ -788,30 +929,34 @@ async function renderMessages(messages) {
 }
 
 
-/* LOAD CHAT */
-
 async function loadMessages() {
 
   if (loadingMessages) {
     return;
   }
 
-  loadingMessages = true;
+  loadingMessages =
+    true;
 
   const {
     data,
     error
-  } = await supabaseClient
-    .from("chat_messages")
-    .select(
-      "id, user_id, username, message, created_at"
-    )
-    .order("created_at", {
-      ascending: true
-    })
-    .limit(200);
+  } =
+    await supabaseClient
+      .from("chat_messages")
+      .select(
+        "id, user_id, username, message, created_at"
+      )
+      .order(
+        "created_at",
+        {
+          ascending: true
+        }
+      )
+      .limit(200);
 
-  loadingMessages = false;
+  loadingMessages =
+    false;
 
   if (error) {
 
@@ -819,7 +964,9 @@ async function loadMessages() {
       "Could not load chat messages."
     );
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
 
@@ -834,7 +981,130 @@ async function loadMessages() {
 }
 
 
-/* LOAD ACCOUNT */
+/* =========================================
+   SEND COMMUNITY MESSAGE
+========================================= */
+
+async function sendMessage() {
+
+  const text =
+    messageInput.value.trim();
+
+  if (!text) {
+    return;
+  }
+
+  if (!currentUser) {
+
+    window.location.href =
+      "log-in.html?redirect=chat.html";
+
+    return;
+
+  }
+
+  if (text.length > 1000) {
+
+    showError(
+      "Messages can only be 1000 characters long."
+    );
+
+    return;
+
+  }
+
+  sendButton.disabled =
+    true;
+
+  messageInput.disabled =
+    true;
+
+  hideError();
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from(
+        "chat_messages"
+      )
+      .insert({
+
+        user_id:
+          currentUser.id,
+
+        username:
+          currentUsername,
+
+        message:
+          text
+
+      });
+
+  sendButton.disabled =
+    false;
+
+  messageInput.disabled =
+    false;
+
+  messageInput.focus();
+
+  if (error) {
+
+    console.error(
+      error
+    );
+
+    showError(
+      "Could not send your message."
+    );
+
+    return;
+
+  }
+
+  messageInput.value =
+    "";
+
+  await loadMessages();
+
+}
+
+
+messageForm.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    await sendMessage();
+
+  }
+);
+
+
+messageInput.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey
+    ) {
+
+      event.preventDefault();
+
+      messageForm.requestSubmit();
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   LOAD ACCOUNT
+========================================= */
 
 async function loadAccount() {
 
@@ -843,7 +1113,9 @@ async function loadAccount() {
       session
     }
   } =
-    await supabaseClient.auth.getSession();
+    await supabaseClient
+      .auth
+      .getSession();
 
   if (!session) {
 
@@ -874,7 +1146,9 @@ async function loadAccount() {
 
   if (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
   }
 
@@ -901,7 +1175,8 @@ async function loadAccount() {
     "";
 
   currentUsernameEl.textContent =
-    "@" + currentUsername;
+    "@" +
+    currentUsername;
 
   await loadMessages();
 
@@ -910,112 +1185,9 @@ async function loadAccount() {
 }
 
 
-/* SEND MESSAGE */
-
-async function sendMessage() {
-
-  const text =
-    messageInput.value.trim();
-
-  if (!text) {
-    return;
-  }
-
-  if (!currentUser) {
-
-    window.location.href =
-      "log-in.html?redirect=chat.html";
-
-    return;
-
-  }
-
-  if (text.length > 1000) {
-
-    showError(
-      "Messages can only be 1000 characters long."
-    );
-
-    return;
-
-  }
-
-  sendButton.disabled = true;
-  messageInput.disabled = true;
-
-  hideError();
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("chat_messages")
-      .insert({
-        user_id: currentUser.id,
-        username: currentUsername,
-        message: text
-      });
-
-  sendButton.disabled = false;
-  messageInput.disabled = false;
-
-  messageInput.focus();
-
-  if (error) {
-
-    console.error(error);
-
-    showError(
-      "Could not send your message."
-    );
-
-    return;
-
-  }
-
-  messageInput.value = "";
-
-  await loadMessages();
-
-}
-
-
-/* FORM */
-
-messageForm.addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    await sendMessage();
-
-  }
-);
-
-
-/* ENTER TO SEND */
-
-messageInput.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "Enter" &&
-      !event.shiftKey
-    ) {
-
-      event.preventDefault();
-
-      messageForm.requestSubmit();
-
-    }
-
-  }
-);
-
-
-/* REFRESH */
+/* =========================================
+   REFRESH
+========================================= */
 
 function startChatRefresh() {
 
@@ -1023,13 +1195,15 @@ function startChatRefresh() {
     async () => {
 
       if (
-        document.visibilityState ===
+        document.visibilityState !==
         "visible"
       ) {
 
-        await loadMessages();
+        return;
 
       }
+
+      await loadMessages();
 
     },
     2000
@@ -1038,7 +1212,9 @@ function startChatRefresh() {
 }
 
 
-/* AUTH */
+/* =========================================
+   AUTH
+========================================= */
 
 supabaseClient.auth.onAuthStateChange(
   (event, session) => {
@@ -1053,6 +1229,10 @@ supabaseClient.auth.onAuthStateChange(
   }
 );
 
+
+/* =========================================
+   START
+========================================= */
 
 loadAccount();
 

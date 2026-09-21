@@ -2,36 +2,81 @@
     if (window.__DOUGHUB_DISPLAY_LOADED) return;
     window.__DOUGHUB_DISPLAY_LOADED = true;
 
-    const SUPABASE_URL = "https://agsqdqcsmsppcdqxlppj.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+    const SUPABASE_URL =
+        "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
 
     let supabaseClient = null;
     let currentUser = null;
+
     let warningQueue = [];
     let showingWarning = false;
+
     let banned = false;
+
     let checkTimer = null;
+    let presenceTimer = null;
+
+
+    /* =========================================
+       LOAD SUPABASE
+    ========================================= */
 
     function loadSupabase() {
+
         return new Promise((resolve, reject) => {
+
             if (window.supabase) {
                 resolve();
                 return;
             }
 
-            const script = document.createElement("script");
-            script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
+
+            const script =
+                document.createElement("script");
+
+            script.src =
+                "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+
+            script.onload =
+                resolve;
+
+            script.onerror =
+                reject;
+
+            document.head.appendChild(
+                script
+            );
+
         });
+
     }
 
-    function createStyles() {
-        if (document.getElementById("dougHubDisplayStyles")) return;
 
-        const style = document.createElement("style");
-        style.id = "dougHubDisplayStyles";
+    /* =========================================
+       CREATE DISPLAY STYLES
+    ========================================= */
+
+    function createStyles() {
+
+        if (
+            document.getElementById(
+                "dougHubDisplayStyles"
+            )
+        ) {
+            return;
+        }
+
+
+        const style =
+            document.createElement("style");
+
+        style.id =
+            "dougHubDisplayStyles";
+
 
         style.textContent = `
             #dougHubDisplayOverlay {
@@ -96,7 +141,11 @@
                 border: 0;
                 border-radius: 13px;
                 padding: 14px 18px;
-                background: linear-gradient(135deg, #6366f1, #a855f7);
+                background: linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #a855f7
+                );
                 color: white;
                 font-size: 15px;
                 font-weight: 800;
@@ -119,271 +168,771 @@
             }
         `;
 
-        document.head.appendChild(style);
+
+        document.head.appendChild(
+            style
+        );
+
     }
+
+
+    /* =========================================
+       PAGE LOCKING
+    ========================================= */
 
     function lockPage() {
-        document.documentElement.style.overflow = "hidden";
-        document.body.style.overflow = "hidden";
+
+        document.documentElement.style.overflow =
+            "hidden";
+
+        document.body.style.overflow =
+            "hidden";
+
     }
+
 
     function unlockPage() {
-        document.documentElement.style.overflow = "";
-        document.body.style.overflow = "";
+
+        document.documentElement.style.overflow =
+            "";
+
+        document.body.style.overflow =
+            "";
+
     }
 
+
     function removeOverlay() {
-        const overlay = document.getElementById("dougHubDisplayOverlay");
+
+        const overlay =
+            document.getElementById(
+                "dougHubDisplayOverlay"
+            );
+
 
         if (overlay) {
             overlay.remove();
         }
 
+
         unlockPage();
+
     }
 
+
     function createOverlay() {
+
         removeOverlay();
 
-        const overlay = document.createElement("div");
-        overlay.id = "dougHubDisplayOverlay";
 
-        const box = document.createElement("div");
-        box.id = "dougHubDisplayBox";
+        const overlay =
+            document.createElement("div");
 
-        overlay.appendChild(box);
-        document.body.appendChild(overlay);
+        overlay.id =
+            "dougHubDisplayOverlay";
+
+
+        const box =
+            document.createElement("div");
+
+        box.id =
+            "dougHubDisplayBox";
+
+
+        overlay.appendChild(
+            box
+        );
+
+        document.body.appendChild(
+            overlay
+        );
+
 
         lockPage();
 
+
         return box;
+
     }
+
+
+    /* =========================================
+       WARNING DISPLAY
+    ========================================= */
 
     function showWarning(warning) {
-        if (showingWarning || banned) return;
 
-        showingWarning = true;
-
-        const box = createOverlay();
-
-        const icon = document.createElement("div");
-        icon.id = "dougHubDisplayIcon";
-        icon.textContent = "⚠️";
-
-        const title = document.createElement("h2");
-        title.id = "dougHubDisplayTitle";
-        title.textContent = "DougHub Warning";
-
-        const message = document.createElement("div");
-        message.id = "dougHubDisplayMessage";
-        message.textContent = warning.message || "You have received a warning.";
-
-        const date = document.createElement("div");
-        date.id = "dougHubDisplayDate";
-
-        if (warning.created_at) {
-            date.textContent =
-                "Issued " +
-                new Date(warning.created_at).toLocaleString();
-        }
-
-        const button = document.createElement("button");
-        button.id = "dougHubDisplayButton";
-        button.textContent = "I Understand";
-
-        button.addEventListener("click", async function () {
-            button.disabled = true;
-            button.textContent = "Saving...";
-
-            try {
-                await supabaseClient
-                    .from("user_warnings")
-                    .update({
-                        read_at: new Date().toISOString()
-                    })
-                    .eq("id", warning.id)
-                    .eq("user_id", currentUser.id);
-
-                warningQueue.shift();
-            } catch (error) {
-                console.error("DougHub warning error:", error);
-            }
-
-            showingWarning = false;
-            removeOverlay();
-
-            setTimeout(showNextWarning, 100);
-        });
-
-        box.appendChild(icon);
-        box.appendChild(title);
-        box.appendChild(message);
-        box.appendChild(date);
-        box.appendChild(button);
-    }
-
-    function showNextWarning() {
-        if (banned || showingWarning) return;
-
-        if (warningQueue.length === 0) {
-            removeOverlay();
+        if (
+            showingWarning ||
+            banned
+        ) {
             return;
         }
 
-        showWarning(warningQueue[0]);
+
+        showingWarning =
+            true;
+
+
+        const box =
+            createOverlay();
+
+
+        const icon =
+            document.createElement("div");
+
+        icon.id =
+            "dougHubDisplayIcon";
+
+        icon.textContent =
+            "⚠️";
+
+
+        const title =
+            document.createElement("h2");
+
+        title.id =
+            "dougHubDisplayTitle";
+
+        title.textContent =
+            "DougHub Warning";
+
+
+        const message =
+            document.createElement("div");
+
+        message.id =
+            "dougHubDisplayMessage";
+
+        message.textContent =
+            warning.message ||
+            "You have received a warning.";
+
+
+        const date =
+            document.createElement("div");
+
+        date.id =
+            "dougHubDisplayDate";
+
+
+        if (warning.created_at) {
+
+            date.textContent =
+                "Issued " +
+                new Date(
+                    warning.created_at
+                ).toLocaleString();
+
+        }
+
+
+        const button =
+            document.createElement("button");
+
+        button.id =
+            "dougHubDisplayButton";
+
+        button.textContent =
+            "I Understand";
+
+
+        button.addEventListener(
+            "click",
+            async function () {
+
+                button.disabled =
+                    true;
+
+                button.textContent =
+                    "Saving...";
+
+
+                try {
+
+                    await supabaseClient
+                        .from("user_warnings")
+                        .update({
+                            read_at:
+                                new Date()
+                                    .toISOString()
+                        })
+                        .eq(
+                            "id",
+                            warning.id
+                        )
+                        .eq(
+                            "user_id",
+                            currentUser.id
+                        );
+
+
+                    warningQueue.shift();
+
+                } catch (error) {
+
+                    console.error(
+                        "DougHub warning error:",
+                        error
+                    );
+
+                }
+
+
+                showingWarning =
+                    false;
+
+
+                removeOverlay();
+
+
+                setTimeout(
+                    showNextWarning,
+                    100
+                );
+
+            }
+        );
+
+
+        box.appendChild(
+            icon
+        );
+
+        box.appendChild(
+            title
+        );
+
+        box.appendChild(
+            message
+        );
+
+        box.appendChild(
+            date
+        );
+
+        box.appendChild(
+            button
+        );
+
     }
 
+
+    function showNextWarning() {
+
+        if (
+            banned ||
+            showingWarning
+        ) {
+            return;
+        }
+
+
+        if (
+            warningQueue.length === 0
+        ) {
+
+            removeOverlay();
+
+            return;
+        }
+
+
+        showWarning(
+            warningQueue[0]
+        );
+
+    }
+
+
+    /* =========================================
+       BAN DISPLAY
+    ========================================= */
+
     function showBan(reason) {
-        if (banned) return;
 
-        banned = true;
-        showingWarning = false;
-        warningQueue = [];
+        if (banned) {
+            return;
+        }
 
-        const box = createOverlay();
 
-        const icon = document.createElement("div");
-        icon.id = "dougHubDisplayIcon";
-        icon.textContent = "🚫";
+        banned =
+            true;
 
-        const title = document.createElement("h2");
-        title.id = "dougHubDisplayTitle";
-        title.textContent = "DougHub Ban";
+        showingWarning =
+            false;
 
-        const message = document.createElement("div");
-        message.id = "dougHubDisplayMessage";
+        warningQueue =
+            [];
+
+
+        const box =
+            createOverlay();
+
+
+        const icon =
+            document.createElement("div");
+
+        icon.id =
+            "dougHubDisplayIcon";
+
+        icon.textContent =
+            "🚫";
+
+
+        const title =
+            document.createElement("h2");
+
+        title.id =
+            "dougHubDisplayTitle";
+
+        title.textContent =
+            "DougHub Ban";
+
+
+        const message =
+            document.createElement("div");
+
+        message.id =
+            "dougHubDisplayMessage";
+
         message.textContent =
             "Your DougHub account has been banned.";
 
-        const reasonBox = document.createElement("div");
-        reasonBox.id = "dougHubDisplayReason";
+
+        const reasonBox =
+            document.createElement("div");
+
+        reasonBox.id =
+            "dougHubDisplayReason";
+
 
         reasonBox.textContent =
-            reason && reason.trim()
+            reason &&
+            reason.trim()
                 ? "Reason: " + reason
                 : "No reason was provided.";
 
-        const date = document.createElement("div");
-        date.id = "dougHubDisplayDate";
+
+        const date =
+            document.createElement("div");
+
+        date.id =
+            "dougHubDisplayDate";
+
         date.textContent =
             "If you believe this is a mistake, contact a DougHub administrator.";
 
-        box.appendChild(icon);
-        box.appendChild(title);
-        box.appendChild(message);
-        box.appendChild(reasonBox);
-        box.appendChild(date);
+
+        box.appendChild(
+            icon
+        );
+
+        box.appendChild(
+            title
+        );
+
+        box.appendChild(
+            message
+        );
+
+        box.appendChild(
+            reasonBox
+        );
+
+        box.appendChild(
+            date
+        );
+
     }
 
-    async function checkAccount() {
-        if (!supabaseClient) return;
 
-        const result = await supabaseClient.auth.getSession();
+    /* =========================================
+       USER PRESENCE
+    ========================================= */
 
-        if (result.error) return;
+    async function updatePresence() {
 
-        const session = result.data.session;
-
-        if (!session || !session.user) {
-            currentUser = null;
-            banned = false;
-            warningQueue = [];
-            showingWarning = false;
-            removeOverlay();
+        if (
+            !supabaseClient ||
+            !currentUser ||
+            banned
+        ) {
             return;
         }
 
-        currentUser = session.user;
 
-        const profileResult = await supabaseClient
-            .from("profiles")
-            .select("is_banned, ban_reason")
-            .eq("id", currentUser.id)
-            .maybeSingle();
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("user_presence")
+                .upsert(
+                    {
+                        user_id:
+                            currentUser.id,
+
+                        last_seen_at:
+                            new Date()
+                                .toISOString()
+                    },
+                    {
+                        onConflict:
+                            "user_id"
+                    }
+                );
+
+
+        if (error) {
+
+            console.error(
+                "DougHub presence error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    function stopPresenceTracking() {
+
+        if (presenceTimer) {
+
+            clearInterval(
+                presenceTimer
+            );
+
+            presenceTimer =
+                null;
+
+        }
+
+    }
+
+
+    function startPresenceTracking() {
+
+        stopPresenceTracking();
+
+
+        if (
+            !currentUser ||
+            banned
+        ) {
+            return;
+        }
+
+
+        updatePresence();
+
+
+        /*
+            Update every 30 seconds.
+
+            The admin panel considers someone online
+            when their last_seen_at is within 2 minutes.
+        */
+
+        presenceTimer =
+            setInterval(
+                updatePresence,
+                30000
+            );
+
+    }
+
+
+    /* =========================================
+       ACCOUNT CHECK
+    ========================================= */
+
+    async function checkAccount() {
+
+        if (!supabaseClient) {
+            return;
+        }
+
+
+        const result =
+            await supabaseClient
+                .auth
+                .getSession();
+
+
+        if (result.error) {
+            return;
+        }
+
+
+        const session =
+            result.data.session;
+
+
+        if (
+            !session ||
+            !session.user
+        ) {
+
+            currentUser =
+                null;
+
+            banned =
+                false;
+
+            warningQueue =
+                [];
+
+            showingWarning =
+                false;
+
+
+            stopPresenceTracking();
+
+
+            removeOverlay();
+
+
+            return;
+        }
+
+
+        currentUser =
+            session.user;
+
+
+        const profileResult =
+            await supabaseClient
+                .from("profiles")
+                .select(
+                    "is_banned, ban_reason"
+                )
+                .eq(
+                    "id",
+                    currentUser.id
+                )
+                .maybeSingle();
+
 
         if (profileResult.error) {
+
             console.error(
                 "DougHub profile check error:",
                 profileResult.error
             );
+
             return;
         }
 
-        const profile = profileResult.data;
 
-        if (profile && profile.is_banned === true) {
-            showBan(profile.ban_reason);
+        const profile =
+            profileResult.data;
+
+
+        if (
+            profile &&
+            profile.is_banned === true
+        ) {
+
+            stopPresenceTracking();
+
+            showBan(
+                profile.ban_reason
+            );
+
             return;
         }
+
 
         if (banned) {
-            banned = false;
+
+            banned =
+                false;
+
             removeOverlay();
+
         }
 
+
+        startPresenceTracking();
+
+
         await loadWarnings();
+
     }
 
-    async function loadWarnings() {
-        if (!currentUser || banned) return;
 
-        const result = await supabaseClient
-            .from("user_warnings")
-            .select("id,message,created_at")
-            .eq("user_id", currentUser.id)
-            .is("read_at", null)
-            .order("created_at", {
-                ascending: true
-            });
+    /* =========================================
+       LOAD WARNINGS
+    ========================================= */
+
+    async function loadWarnings() {
+
+        if (
+            !currentUser ||
+            banned
+        ) {
+            return;
+        }
+
+
+        const result =
+            await supabaseClient
+                .from("user_warnings")
+                .select(
+                    "id,message,created_at"
+                )
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+                .is(
+                    "read_at",
+                    null
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                );
+
 
         if (result.error) {
+
             console.error(
                 "DougHub warning check error:",
                 result.error
             );
+
             return;
         }
 
-        warningQueue = result.data || [];
 
-        if (!showingWarning && warningQueue.length > 0) {
+        warningQueue =
+            result.data ||
+            [];
+
+
+        if (
+            !showingWarning &&
+            warningQueue.length > 0
+        ) {
+
             showNextWarning();
+
         }
+
     }
 
+
+    /* =========================================
+       PAGE VISIBILITY
+    ========================================= */
+
+    document.addEventListener(
+        "visibilitychange",
+        function () {
+
+            if (
+                document.visibilityState ===
+                "visible"
+            ) {
+
+                updatePresence();
+
+            }
+
+        }
+    );
+
+
+    window.addEventListener(
+        "focus",
+        function () {
+
+            updatePresence();
+
+        }
+    );
+
+
+    /* =========================================
+       INITIALIZE
+    ========================================= */
+
     async function initialize() {
+
         try {
+
             await loadSupabase();
 
-            supabaseClient = window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_KEY
-            );
+
+            supabaseClient =
+                window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_KEY
+                );
+
 
             createStyles();
 
+
             await checkAccount();
 
-            supabaseClient.auth.onAuthStateChange(function () {
-                setTimeout(checkAccount, 0);
-            });
 
-            checkTimer = setInterval(checkAccount, 5000);
+            supabaseClient.auth.onAuthStateChange(
+                function () {
+
+                    setTimeout(
+                        checkAccount,
+                        0
+                    );
+
+                }
+            );
+
+
+            checkTimer =
+                setInterval(
+                    checkAccount,
+                    5000
+                );
+
         } catch (error) {
+
             console.error(
                 "DougHub display system failed to initialize:",
                 error
             );
+
         }
+
     }
 
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initialize);
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize
+        );
+
     } else {
+
         initialize();
+
     }
+
 
     window.DougHubDisplay = {
-        refresh: checkAccount
+
+        refresh:
+            checkAccount
+
     };
+
 })();

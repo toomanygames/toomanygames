@@ -8,6 +8,9 @@
 
 <link rel="icon" href="DougHub.ico" type="image/x-icon">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="display.js"></script>
+
 <style>
 * {
     box-sizing: border-box;
@@ -34,7 +37,8 @@ a {
 }
 
 button,
-input {
+input,
+textarea {
     font: inherit;
 }
 
@@ -86,50 +90,65 @@ header {
 .nav {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: flex-end;
+    gap: 22px;
+    margin-left: auto;
 }
 
-.nav-btn {
+.nav-link {
+    position: relative;
+
     display: inline-flex;
     align-items: center;
-    justify-content: center;
 
-    padding: 10px 15px;
+    color: #aaa9bb;
 
-    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
 
-    color: #c9c8d8;
-
-    border: 1px solid rgba(255,255,255,0.08);
-
-    background: rgba(255,255,255,0.035);
-
-    transition: 0.2s;
-
-    cursor: pointer;
+    transition:
+        color 0.2s,
+        transform 0.2s;
 }
 
-.nav-btn:hover {
+.nav-link:hover {
     color: white;
-
-    background:
-        rgba(255,255,255,0.08);
-
     transform: translateY(-1px);
 }
 
-.create-btn {
-    background:
-        linear-gradient(135deg, #6366f1, #8b5cf6);
-
-    color: white;
-
-    border: none;
+.dmail-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
 }
 
-.create-btn:hover {
-    background:
-        linear-gradient(135deg, #7477ff, #9b6bff);
+.dmail-badge {
+    display: none;
+
+    min-width: 18px;
+    height: 18px;
+
+    padding: 0 5px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    background: #ef4444;
+    color: white;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    line-height: 18px;
+
+    box-shadow:
+        0 0 12px rgba(239,68,68,0.45);
+}
+
+.dmail-badge.show {
+    display: inline-flex;
 }
 
 /* ACCOUNT */
@@ -183,7 +202,6 @@ header {
 .account-avatar img {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
 }
 
@@ -255,11 +273,10 @@ header {
 
 main {
     width: min(1200px, calc(100% - 32px));
-
     margin: auto;
 }
 
-/* HERO */
+/* BIG TOP SECTION */
 
 .hero {
     padding: 55px 0 30px;
@@ -469,6 +486,62 @@ main {
 
     font-size:
         13px;
+}
+
+/* CREATE GAME */
+
+.hero-create-button {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-top: 28px;
+
+    padding: 13px 22px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366f1,
+            #8b5cf6
+        );
+
+    border: none;
+
+    font-size:
+        14px;
+
+    font-weight:
+        800;
+
+    box-shadow:
+        0 10px 30px rgba(99,102,241,0.25);
+
+    transition:
+        0.2s;
+}
+
+.hero-create-button:hover {
+    transform:
+        translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #7477ff,
+            #9b6bff
+        );
+
+    box-shadow:
+        0 14px 35px rgba(99,102,241,0.35);
 }
 
 /* SECTIONS */
@@ -791,6 +864,166 @@ main {
         18px;
 }
 
+/* FEEDBACK */
+
+.feedback-section {
+    padding:
+        20px 0 45px;
+}
+
+.feedback-card {
+    padding:
+        28px;
+
+    border-radius:
+        22px;
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.065),
+            rgba(255,255,255,0.025)
+        );
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.22);
+
+    backdrop-filter:
+        blur(15px);
+}
+
+.feedback-card h2 {
+    margin:
+        0 0 7px;
+
+    font-size:
+        24px;
+}
+
+.feedback-card p {
+    margin:
+        0 0 18px;
+
+    color:
+        #858ca1;
+}
+
+#feedbackMessage {
+    width:
+        100%;
+
+    min-height:
+        130px;
+
+    resize:
+        vertical;
+
+    padding:
+        14px;
+
+    border-radius:
+        13px;
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+
+    outline:
+        none;
+
+    color:
+        white;
+
+    background:
+        rgba(2,4,10,0.65);
+}
+
+#feedbackMessage:focus {
+    border-color:
+        rgba(99,102,241,0.6);
+}
+
+.feedback-bottom {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        12px;
+
+    margin-top:
+        10px;
+}
+
+#feedbackCount {
+    color:
+        #666d82;
+
+    font-size:
+        12px;
+}
+
+#feedbackButton {
+    border:
+        none;
+
+    border-radius:
+        11px;
+
+    padding:
+        11px 17px;
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366f1,
+            #a855f7
+        );
+
+    cursor:
+        pointer;
+
+    font-weight:
+        800;
+}
+
+#feedbackButton:hover {
+    filter:
+        brightness(1.12);
+}
+
+#feedbackButton:disabled {
+    opacity:
+        0.55;
+
+    cursor:
+        not-allowed;
+}
+
+#feedbackStatus {
+    min-height:
+        18px;
+
+    margin-top:
+        10px;
+
+    color:
+        #858ca1;
+
+    font-size:
+        13px;
+}
+
 /* PLAYER */
 
 .player-overlay {
@@ -1073,13 +1306,71 @@ footer {
             0 15px;
     }
 
-    .nav-btn:not(.create-btn) {
-        display:
-            none;
+    .nav {
+        gap:
+            12px;
+    }
+
+    .nav-link {
+        font-size:
+            13px;
     }
 }
 
 @media (max-width: 600px) {
+
+    header {
+        height:
+            auto;
+
+        min-height:
+            72px;
+
+        padding:
+            10px 15px;
+
+        gap:
+            10px;
+    }
+
+    .logo {
+        font-size:
+            18px;
+    }
+
+    .logo-icon {
+        width:
+            34px;
+
+        height:
+            34px;
+    }
+
+    .nav {
+        gap:
+            9px;
+
+        flex-wrap:
+            wrap;
+
+        justify-content:
+            flex-end;
+    }
+
+    .nav-link {
+        font-size:
+            12px;
+    }
+
+    .account-btn {
+        padding:
+            5px 7px;
+    }
+
+    .account-btn span {
+        display:
+            none;
+    }
 
     .hero-card {
         padding:
@@ -1119,6 +1410,24 @@ footer {
         min-width:
             140px;
     }
+
+    .feedback-card {
+        padding:
+            20px;
+    }
+
+    .feedback-bottom {
+        align-items:
+            stretch;
+
+        flex-direction:
+            column;
+    }
+
+    #feedbackButton {
+        width:
+            100%;
+    }
 }
 </style>
 </head>
@@ -1134,22 +1443,40 @@ footer {
 
     <div class="nav">
 
-        <!-- THESE ARE ALWAYS NORMAL LINKS -->
         <a
-            href="Scripting/scripting.html"
-            class="nav-btn create-btn"
+            href="index.html"
+            class="nav-link"
         >
-            + Create a Game
+            Home
+        </a>
+
+        <a
+            href="DougTube.html"
+            class="nav-link"
+        >
+            DougTube
+        </a>
+
+        <a
+            href="DMail.html"
+            class="nav-link dmail-nav"
+        >
+            <span>DMail</span>
+            <span
+                id="dmailBadge"
+                class="dmail-badge"
+            >
+                0
+            </span>
         </a>
 
         <a
             href="chat.html"
-            class="nav-btn"
+            class="nav-link"
         >
             Community Chat
         </a>
 
-        <!-- ACCOUNT -->
         <div class="account-area">
 
             <button
@@ -1177,7 +1504,7 @@ footer {
             >
 
                 <a href="my-games.html">
-                    My Games
+                    My Games &amp; Videos
                 </a>
 
                 <a
@@ -1185,6 +1512,14 @@ footer {
                     id="adminLink"
                 >
                     Admin Panel
+                </a>
+
+                <a
+                    href="inbox.html"
+                    id="feedbackInboxLink"
+                    style="display:none;"
+                >
+                    Feedback
                 </a>
 
                 <a href="settings.html">
@@ -1262,6 +1597,13 @@ footer {
 
             </div>
 
+            <a
+                href="Scripting/scripting.html"
+                class="hero-create-button"
+            >
+                + Create a Game
+            </a>
+
         </div>
 
     </section>
@@ -1292,10 +1634,7 @@ footer {
                 href="Games/pig-clicker.html"
                 class="game-card"
             >
-
-                <div class="game-icon">
-                    🐷
-                </div>
+                <div class="game-icon">🐷</div>
 
                 <h3>
                     Pig Clicker
@@ -1308,17 +1647,13 @@ footer {
                 <div class="play-label">
                     PLAY →
                 </div>
-
             </a>
 
             <a
                 href="Games/rebirth-clicker.html"
                 class="game-card"
             >
-
-                <div class="game-icon">
-                    🔄
-                </div>
+                <div class="game-icon">🔄</div>
 
                 <h3>
                     Rebirth Clicker
@@ -1331,17 +1666,13 @@ footer {
                 <div class="play-label">
                     PLAY →
                 </div>
-
             </a>
 
             <a
                 href="Games/racing.html"
                 class="game-card"
             >
-
-                <div class="game-icon">
-                    🏎️
-                </div>
+                <div class="game-icon">🏎️</div>
 
                 <h3>
                     Doug Racing
@@ -1354,17 +1685,13 @@ footer {
                 <div class="play-label">
                     PLAY →
                 </div>
-
             </a>
 
             <a
                 href="Games/puzzle.html"
                 class="game-card"
             >
-
-                <div class="game-icon">
-                    🧩
-                </div>
+                <div class="game-icon">🧩</div>
 
                 <h3>
                     Doug Puzzle
@@ -1377,7 +1704,6 @@ footer {
                 <div class="play-label">
                     PLAY →
                 </div>
-
             </a>
 
         </div>
@@ -1403,15 +1729,21 @@ footer {
             </div>
 
             <input
+                type="search"
                 id="gameSearch"
                 class="search-box"
-                type="search"
-                placeholder="Search games..."
-                autocomplete="new-password"
+                name="q"
+                placeholder="Search DougHub..."
+                autocomplete="off"
                 autocorrect="off"
                 autocapitalize="off"
                 spellcheck="false"
-                name="dh-game-search"
+                inputmode="search"
+                aria-label="Search DougHub"
+                data-form-type="other"
+                data-lpignore="true"
+                data-1p-ignore="true"
+                readonly
             >
 
         </div>
@@ -1424,6 +1756,47 @@ footer {
             <div class="empty">
                 Loading community games...
             </div>
+
+        </div>
+
+    </section>
+
+    <!-- FEEDBACK -->
+
+    <section class="feedback-section">
+
+        <div class="feedback-card">
+
+            <h2>
+                💬 Send Feedback
+            </h2>
+
+            <p>
+                Have an idea, found a bug, or want to tell me something?
+            </p>
+
+            <textarea
+                id="feedbackMessage"
+                maxlength="2000"
+                placeholder="Write your feedback here..."
+            ></textarea>
+
+            <div class="feedback-bottom">
+
+                <span id="feedbackCount">
+                    0 / 2000
+                </span>
+
+                <button
+                    id="feedbackButton"
+                    type="button"
+                >
+                    Send Feedback
+                </button>
+
+            </div>
+
+            <div id="feedbackStatus"></div>
 
         </div>
 
@@ -1488,6 +1861,7 @@ footer {
             id="passwordInput"
             type="password"
             placeholder="Password"
+            autocomplete="current-password"
         >
 
         <div class="modal-buttons">
@@ -1513,8 +1887,6 @@ footer {
     </div>
 
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
@@ -1548,47 +1920,37 @@ const accountButton =
 const accountMenu =
     document.getElementById("accountMenu");
 
+if (accountButton) {
 
-/*
-    IMPORTANT:
+    accountButton.addEventListener(
+        "click",
+        async function(event) {
 
-    If logged OUT:
-    Clicking the account button sends
-    the user to log-in.html.
+            event.preventDefault();
+            event.stopPropagation();
 
-    If logged IN:
-    Clicking the account button opens
-    the dropdown.
-*/
+            if (!currentUser) {
 
-accountButton.addEventListener(
-    "click",
-    async function(event) {
+                window.location.href =
+                    "log-in.html";
 
-        event.preventDefault();
-        event.stopPropagation();
+                return;
+            }
 
-        if (!currentUser) {
-
-            window.location.href =
-                "log-in.html";
-
-            return;
+            accountMenu.classList.toggle("show");
         }
+    );
 
-        accountMenu.classList.toggle("show");
-    }
-);
+}
 
-
-/* Close dropdown when clicking elsewhere */
 
 document.addEventListener(
     "click",
     function(event) {
 
         if (
-            !event.target.closest(".account-area")
+            !event.target.closest(".account-area") &&
+            accountMenu
         ) {
 
             accountMenu.classList.remove(
@@ -1614,7 +1976,6 @@ async function loadAccount() {
     } =
         await supabaseClient.auth.getSession();
 
-
     if (!session) {
 
         currentUser = null;
@@ -1634,13 +1995,18 @@ async function loadAccount() {
             .style.display =
                 "none";
 
+        document
+            .getElementById("feedbackInboxLink")
+            .style.display =
+                "none";
+
+        await loadDMailCount();
+
         return;
     }
 
-
     currentUser =
         session.user;
-
 
     const {
         data: profile,
@@ -1657,7 +2023,6 @@ async function loadAccount() {
             )
             .maybeSingle();
 
-
     if (error) {
 
         console.error(
@@ -1667,24 +2032,20 @@ async function loadAccount() {
 
     }
 
-
     const username =
         profile?.username ||
         currentUser.email?.split("@")[0] ||
         "User";
-
 
     document
         .getElementById("accountName")
         .textContent =
             username;
 
-
     const avatar =
         document.getElementById(
             "accountAvatar"
         );
-
 
     if (profile?.avatar_url) {
 
@@ -1703,12 +2064,15 @@ async function loadAccount() {
 
     }
 
-
     const adminLink =
         document.getElementById(
             "adminLink"
         );
 
+    const feedbackInboxLink =
+        document.getElementById(
+            "feedbackInboxLink"
+        );
 
     if (
         profile?.is_admin === true
@@ -1717,10 +2081,110 @@ async function loadAccount() {
         adminLink.style.display =
             "block";
 
+        feedbackInboxLink.style.display =
+            "block";
+
     } else {
 
         adminLink.style.display =
             "none";
+
+        feedbackInboxLink.style.display =
+            "none";
+
+    }
+
+    await loadDMailCount();
+
+}
+
+
+/* =========================================
+   DMAIL COUNT
+========================================= */
+
+async function loadDMailCount() {
+
+    const badge =
+        document.getElementById(
+            "dmailBadge"
+        );
+
+    if (!badge) {
+        return;
+    }
+
+    if (!currentUser) {
+
+        badge.textContent =
+            "0";
+
+        badge.classList.remove(
+            "show"
+        );
+
+        return;
+    }
+
+    const {
+        count,
+        error
+    } =
+        await supabaseClient
+            .from("direct_messages")
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
+            )
+            .eq(
+                "receiver_id",
+                currentUser.id
+            );
+
+    if (error) {
+
+        console.error(
+            "Could not load DMail count:",
+            error
+        );
+
+        badge.textContent =
+            "0";
+
+        badge.classList.remove(
+            "show"
+        );
+
+        return;
+    }
+
+    const messageCount =
+        Number(
+            count || 0
+        );
+
+    if (messageCount > 0) {
+
+        badge.textContent =
+            messageCount > 99
+                ? "99+"
+                : messageCount;
+
+        badge.classList.add(
+            "show"
+        );
+
+    } else {
+
+        badge.textContent =
+            "0";
+
+        badge.classList.remove(
+            "show"
+        );
 
     }
 
@@ -1731,9 +2195,14 @@ async function loadAccount() {
    LOGOUT
 ========================================= */
 
-document
-    .getElementById("logoutButton")
-    .addEventListener(
+const logoutButton =
+    document.getElementById(
+        "logoutButton"
+    );
+
+if (logoutButton) {
+
+    logoutButton.addEventListener(
         "click",
         async function(event) {
 
@@ -1749,6 +2218,8 @@ document
         }
     );
 
+}
+
 
 /* =========================================
    USER COUNT
@@ -1760,7 +2231,6 @@ async function loadUserCount() {
         document.getElementById(
             "userCount"
         );
-
 
     const {
         count,
@@ -1776,7 +2246,6 @@ async function loadUserCount() {
                 }
             );
 
-
     if (error) {
 
         console.error(
@@ -1789,7 +2258,6 @@ async function loadUserCount() {
 
         return;
     }
-
 
     userCount.textContent =
         Number(
@@ -1809,7 +2277,6 @@ function updateGameCount() {
         document.getElementById(
             "gameCount"
         );
-
 
     gameCount.textContent =
         (
@@ -1831,7 +2298,6 @@ async function loadCommunityGames() {
             "communityGames"
         );
 
-
     const {
         data,
         error
@@ -1847,7 +2313,6 @@ async function loadCommunityGames() {
                     ascending: false
                 }
             );
-
 
     if (error) {
 
@@ -1866,10 +2331,8 @@ async function loadCommunityGames() {
         return;
     }
 
-
     communityGames =
         data || [];
-
 
     renderCommunityGames();
 
@@ -1889,16 +2352,17 @@ function renderCommunityGames() {
             "communityGames"
         );
 
+    const searchInput =
+        document.getElementById(
+            "gameSearch"
+        );
 
     const search =
-        document
-            .getElementById(
-                "gameSearch"
-            )
-            .value
-            .toLowerCase()
-            .trim();
-
+        searchInput
+            ? searchInput.value
+                .toLowerCase()
+                .trim()
+            : "";
 
     const filtered =
         communityGames.filter(
@@ -1933,7 +2397,6 @@ function renderCommunityGames() {
             }
         );
 
-
     if (!filtered.length) {
 
         container.innerHTML =
@@ -1943,7 +2406,6 @@ function renderCommunityGames() {
 
         return;
     }
-
 
     container.innerHTML =
         filtered
@@ -1998,7 +2460,6 @@ function renderCommunityGames() {
             )
             .join("");
 
-
     container
         .querySelectorAll(
             ".community-card"
@@ -2024,15 +2485,46 @@ function renderCommunityGames() {
 
 
 /* =========================================
-   SEARCH
+   SEARCH AUTOFILL PROTECTION + SEARCH
 ========================================= */
 
-document
-    .getElementById("gameSearch")
-    .addEventListener(
-        "input",
-        renderCommunityGames
+const gameSearch =
+    document.getElementById(
+        "gameSearch"
     );
+
+if (gameSearch) {
+
+    gameSearch.addEventListener(
+        "focus",
+        function() {
+
+            gameSearch.readOnly =
+                false;
+
+        }
+    );
+
+    gameSearch.addEventListener(
+        "click",
+        function() {
+
+            gameSearch.readOnly =
+                false;
+
+        }
+    );
+
+    gameSearch.addEventListener(
+        "input",
+        function() {
+
+            renderCommunityGames();
+
+        }
+    );
+
+}
 
 
 /* =========================================
@@ -2052,15 +2544,12 @@ async function openCommunityGame(
             }
         );
 
-
     if (!game) {
         return;
     }
 
-
     currentGameId =
         game.id;
-
 
     document
         .getElementById(
@@ -2070,7 +2559,6 @@ async function openCommunityGame(
             game.title ||
             "Game";
 
-
     document
         .getElementById(
             "gameFrame"
@@ -2079,7 +2567,6 @@ async function openCommunityGame(
             game.code ||
             "<h1>No game code</h1>";
 
-
     document
         .getElementById(
             "playerOverlay"
@@ -2087,7 +2574,6 @@ async function openCommunityGame(
         .classList.add(
             "show"
         );
-
 
     await startPlaySession(
         game.id
@@ -2100,21 +2586,29 @@ async function openCommunityGame(
    CLOSE GAME
 ========================================= */
 
-document
-    .getElementById(
+const closePlayer =
+    document.getElementById(
         "closePlayer"
-    )
-    .addEventListener(
+    );
+
+if (closePlayer) {
+
+    closePlayer.addEventListener(
         "click",
         closeGame
     );
 
+}
 
-document
-    .getElementById(
+
+const playerOverlay =
+    document.getElementById(
         "playerOverlay"
-    )
-    .addEventListener(
+    );
+
+if (playerOverlay) {
+
+    playerOverlay.addEventListener(
         "click",
         function(event) {
 
@@ -2130,11 +2624,12 @@ document
         }
     );
 
+}
+
 
 async function closeGame() {
 
     await endPlaySession();
-
 
     document
         .getElementById(
@@ -2143,7 +2638,6 @@ async function closeGame() {
         .srcdoc =
             "";
 
-
     document
         .getElementById(
             "playerOverlay"
@@ -2151,7 +2645,6 @@ async function closeGame() {
         .classList.remove(
             "show"
         );
-
 
     currentGameId =
         null;
@@ -2170,7 +2663,6 @@ async function startPlaySession(
     playStartedAt =
         Date.now();
 
-
     if (!currentUser) {
 
         currentPlaySessionId =
@@ -2178,7 +2670,6 @@ async function startPlaySession(
 
         return;
     }
-
 
     const {
         data,
@@ -2200,7 +2691,6 @@ async function startPlaySession(
             )
             .single();
 
-
     if (error) {
 
         console.error(
@@ -2214,7 +2704,6 @@ async function startPlaySession(
         return;
     }
 
-
     currentPlaySessionId =
         data.id;
 
@@ -2227,7 +2716,6 @@ async function endPlaySession() {
         return;
     }
 
-
     const duration =
         Math.max(
             0,
@@ -2238,7 +2726,6 @@ async function endPlaySession() {
                 ) / 1000
             )
         );
-
 
     if (
         currentUser &&
@@ -2267,7 +2754,6 @@ async function endPlaySession() {
                     currentPlaySessionId
                 );
 
-
         if (error) {
 
             console.error(
@@ -2279,12 +2765,188 @@ async function endPlaySession() {
 
     }
 
-
     currentPlaySessionId =
         null;
 
     playStartedAt =
         null;
+
+}
+
+
+/* =========================================
+   FEEDBACK
+========================================= */
+
+const feedbackMessage =
+    document.getElementById(
+        "feedbackMessage"
+    );
+
+const feedbackButton =
+    document.getElementById(
+        "feedbackButton"
+    );
+
+const feedbackStatus =
+    document.getElementById(
+        "feedbackStatus"
+    );
+
+const feedbackCount =
+    document.getElementById(
+        "feedbackCount"
+    );
+
+
+function updateFeedbackCount() {
+
+    feedbackCount.textContent =
+        `${feedbackMessage.value.length.toLocaleString()} / 2000`;
+
+}
+
+
+if (feedbackMessage) {
+
+    feedbackMessage.addEventListener(
+        "input",
+        updateFeedbackCount
+    );
+
+}
+
+
+if (feedbackButton) {
+
+    feedbackButton.addEventListener(
+        "click",
+        async function() {
+
+            const message =
+                feedbackMessage.value.trim();
+
+            feedbackStatus.textContent =
+                "";
+
+            feedbackStatus.style.color =
+                "#858ca1";
+
+            if (!message) {
+
+                feedbackStatus.textContent =
+                    "Please write some feedback first.";
+
+                return;
+            }
+
+            if (message.length > 2000) {
+
+                feedbackStatus.textContent =
+                    "Your feedback is too long.";
+
+                return;
+            }
+
+            feedbackButton.disabled =
+                true;
+
+            feedbackButton.textContent =
+                "Sending...";
+
+            try {
+
+                const {
+                    data: {
+                        user
+                    }
+                } =
+                    await supabaseClient
+                        .auth
+                        .getUser();
+
+                if (!user) {
+
+                    feedbackStatus.textContent =
+                        "Please log in before sending feedback.";
+
+                    return;
+                }
+
+                const {
+                    data: profile
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .select(
+                            "username"
+                        )
+                        .eq(
+                            "id",
+                            user.id
+                        )
+                        .maybeSingle();
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .from("feedback")
+                        .insert({
+
+                            user_id:
+                                user.id,
+
+                            username:
+                                profile?.username ||
+                                "Unknown User",
+
+                            message:
+                                message
+
+                        });
+
+                if (error) {
+                    throw error;
+                }
+
+                feedbackMessage.value =
+                    "";
+
+                updateFeedbackCount();
+
+                feedbackStatus.textContent =
+                    "Thanks! Your feedback was sent.";
+
+                feedbackStatus.style.color =
+                    "#22c55e";
+
+            } catch (error) {
+
+                console.error(
+                    "Feedback error:",
+                    error
+                );
+
+                feedbackStatus.textContent =
+                    error.message ||
+                    "Could not send your feedback.";
+
+                feedbackStatus.style.color =
+                    "#ef4444";
+
+            } finally {
+
+                feedbackButton.disabled =
+                    false;
+
+                feedbackButton.textContent =
+                    "Send Feedback";
+
+            }
+
+        }
+    );
 
 }
 
@@ -2327,6 +2989,7 @@ function escapeHtml(value) {
 loadAccount();
 loadCommunityGames();
 loadUserCount();
+updateFeedbackCount();
 
 </script>
 

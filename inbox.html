@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>DougHub Inbox</title>
+
+<link
+    rel="icon"
+    href="DougHub.ico"
+    type="image/x-icon"
+>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="display.js"></script>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+    color: white;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(99,102,241,.18),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 85% 85%,
+            rgba(168,85,247,.14),
+            transparent 32%
+        ),
+        #02040a;
+}
+
+body {
+    padding: 28px;
+}
+
+.container {
+    width: min(1000px, 100%);
+    margin: auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.logo span {
+    color: #6366f1;
+}
+
+.subtitle {
+    margin-top: 5px;
+
+    color: #858ca1;
+
+    font-size: 14px;
+}
+
+.back {
+    color: white;
+    text-decoration: none;
+
+    padding: 10px 15px;
+
+    border-radius: 11px;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    background: rgba(255,255,255,.05);
+
+    font-weight: 700;
+}
+
+.back:hover {
+    background: rgba(255,255,255,.1);
+}
+
+.card {
+    border: 1px solid rgba(255,255,255,.09);
+
+    background: rgba(13,17,39,.72);
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+
+    backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.25);
+}
+
+.card h2 {
+    margin: 0 0 5px;
+}
+
+.status {
+    color: #858ca1;
+    font-size: 13px;
+}
+
+.feedback {
+    padding: 18px;
+
+    margin-top: 12px;
+
+    border-radius: 15px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    background: rgba(255,255,255,.035);
+}
+
+.feedback-top {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 10px;
+}
+
+.username {
+    color: #c4b5fd;
+
+    font-weight: 800;
+}
+
+.time {
+    color: #73798f;
+
+    font-size: 12px;
+}
+
+.feedback-message {
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    color: #d7d9e5;
+
+    line-height: 1.55;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+
+    margin-top: 14px;
+}
+
+button {
+    border: 1px solid rgba(255,255,255,.1);
+
+    border-radius: 9px;
+
+    padding: 9px 13px;
+
+    color: white;
+
+    background: rgba(255,255,255,.08);
+
+    cursor: pointer;
+
+    font-weight: 700;
+}
+
+button:hover {
+    background: rgba(99,102,241,.2);
+}
+
+.delete {
+    background: rgba(239,68,68,.12);
+
+    border-color:
+        rgba(239,68,68,.25);
+}
+
+.delete:hover {
+    background: rgba(239,68,68,.25);
+}
+
+.empty {
+    padding: 35px;
+
+    text-align: center;
+
+    color: #73798f;
+}
+
+#loading {
+    text-align: center;
+
+    padding: 60px;
+
+    color: #a78bfa;
+}
+
+#error {
+    display: none;
+
+    text-align: center;
+
+    padding: 60px;
+
+    color: #ef4444;
+}
+
+@media (max-width: 650px) {
+
+    body {
+        padding: 15px;
+    }
+
+    header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .feedback-top {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<header>
+
+    <div>
+
+        <div class="logo">
+            Doug<span>Hub</span> Inbox
+        </div>
+
+        <div class="subtitle">
+            Feedback from the DougHub community
+        </div>
+
+    </div>
+
+
+    <a
+        class="back"
+        href="index.html"
+    >
+        ← DougHub
+    </a>
+
+</header>
+
+
+<div id="loading">
+    Checking admin permissions...
+</div>
+
+
+<div id="error">
+    Access denied. Admins only.
+</div>
+
+
+<div
+    id="inboxContent"
+    style="display:none;"
+>
+
+
+    <div class="card">
+
+        <h2>
+            💬 Feedback
+        </h2>
+
+        <div
+            class="status"
+            id="feedbackStatus"
+        >
+            Loading feedback...
+        </div>
+
+        <div id="feedbackList"></div>
+
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+const loading =
+    document.getElementById("loading");
+
+const errorEl =
+    document.getElementById("error");
+
+const inboxContent =
+    document.getElementById("inboxContent");
+
+const feedbackList =
+    document.getElementById("feedbackList");
+
+const feedbackStatus =
+    document.getElementById("feedbackStatus");
+
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value ?? "";
+
+    return div.innerHTML;
+}
+
+
+function formatTime(value) {
+
+    return new Date(value)
+        .toLocaleString();
+
+}
+
+
+async function checkAdmin() {
+
+    const {
+        data: {
+            user
+        }
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+
+        window.location.href =
+            "log-in.html?redirect=inbox.html";
+
+        return false;
+    }
+
+
+    const {
+        data: profile,
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select("is_admin")
+            .eq("id", user.id)
+            .maybeSingle();
+
+
+    if (
+        error ||
+        !profile ||
+        profile.is_admin !== true
+    ) {
+
+        loading.style.display =
+            "none";
+
+        errorEl.style.display =
+            "block";
+
+        return false;
+    }
+
+
+    loading.style.display =
+        "none";
+
+    inboxContent.style.display =
+        "block";
+
+
+    return true;
+}
+
+
+async function loadFeedback() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("feedback")
+            .select(
+                "id,user_id,username,message,created_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        feedbackStatus.textContent =
+            "Could not load feedback.";
+
+        return;
+    }
+
+
+    feedbackStatus.textContent =
+        `${data.length} feedback message${
+            data.length === 1
+                ? ""
+                : "s"
+        }`;
+
+
+    if (!data.length) {
+
+        feedbackList.innerHTML =
+            `
+            <div class="empty">
+                No feedback yet.
+            </div>
+            `;
+
+        return;
+    }
+
+
+    feedbackList.innerHTML = "";
+
+
+    data.forEach(item => {
+
+        const element =
+            document.createElement("div");
+
+        element.className =
+            "feedback";
+
+
+        element.innerHTML = `
+
+            <div class="feedback-top">
+
+                <span class="username">
+                    @${escapeHtml(
+                        item.username ||
+                        "Unknown User"
+                    )}
+                </span>
+
+                <span class="time">
+                    ${formatTime(
+                        item.created_at
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="feedback-message">
+                ${escapeHtml(
+                    item.message
+                )}
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="delete"
+                    onclick="deleteFeedback('${item.id}')"
+                >
+                    🗑️ Delete
+                </button>
+
+            </div>
+
+        `;
+
+
+        feedbackList.appendChild(
+            element
+        );
+
+    });
+
+}
+
+
+async function deleteFeedback(id) {
+
+    if (
+        !confirm(
+            "Delete this feedback message?"
+        )
+    ) {
+        return;
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("feedback")
+            .delete()
+            .eq("id", id);
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not delete feedback."
+        );
+
+        return;
+    }
+
+
+    await loadFeedback();
+
+}
+
+
+async function start() {
+
+    const allowed =
+        await checkAdmin();
+
+
+    if (!allowed) {
+        return;
+    }
+
+
+    await loadFeedback();
+
+}
+
+
+start();
+
+</script>
+
+
+</body>
+</html>

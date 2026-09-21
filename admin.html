@@ -96,7 +96,8 @@ header {
 .message,
 .game,
 .warning-item,
-.user-item {
+.user-item,
+.activity-item {
     margin-bottom: 10px;
     padding: 15px;
     border-radius: 13px;
@@ -328,6 +329,12 @@ button:disabled {
     font-weight: 800;
 }
 
+.user-offline {
+    color: #73798f;
+    font-size: 12px;
+    font-weight: 800;
+}
+
 .user-banned {
     color: #fca5a5;
     font-size: 12px;
@@ -353,6 +360,100 @@ button:disabled {
     font-weight: 800;
 }
 
+.online-badge {
+    display: inline-block;
+    margin-right: 7px;
+    color: #86efac;
+    font-weight: 900;
+}
+
+.offline-badge {
+    display: inline-block;
+    margin-right: 7px;
+    color: #73798f;
+    font-weight: 900;
+}
+
+.activity-username {
+    color: #c4b5fd;
+    font-weight: 800;
+}
+
+.activity-status-online {
+    color: #86efac;
+    font-weight: 800;
+}
+
+.activity-status-offline {
+    color: #73798f;
+    font-weight: 700;
+}
+
+/* DOUGTUBE MODERATION */
+
+.video-moderation-item {
+    margin-bottom: 14px;
+    padding: 16px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.045);
+}
+
+.video-moderation-preview {
+    width: 100%;
+    max-height: 360px;
+    display: block;
+    margin-top: 12px;
+    border-radius: 12px;
+    background: #000;
+}
+
+.video-moderation-title {
+    color: white;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.video-moderation-description {
+    margin-top: 9px;
+    color: #b7bbcb;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.video-moderation-info {
+    margin-top: 7px;
+    color: #73798f;
+    font-size: 12px;
+}
+
+.video-moderation-stats {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    color: #aaa9bb;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.video-moderation-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.video-delete-button {
+    background: rgba(239,68,68,.12);
+    border-color: rgba(239,68,68,.3);
+    color: #fca5a5;
+}
+
+.video-delete-button:hover {
+    background: rgba(239,68,68,.22);
+}
+
 @media (max-width: 700px) {
     body {
         padding: 15px;
@@ -366,6 +467,11 @@ button:disabled {
     .top-row {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .video-moderation-stats {
+        flex-direction: column;
+        gap: 6px;
     }
 }
 </style>
@@ -397,8 +503,6 @@ button:disabled {
 
 <div id="adminArea" style="display:none;">
 
-<!-- USER MANAGEMENT -->
-
 <div class="card">
 
     <h2>👥 Users</h2>
@@ -411,8 +515,17 @@ button:disabled {
 
 </div>
 
+<div class="card">
 
-<!-- WARNINGS -->
+    <h2>📊 User Activity</h2>
+
+    <div class="status" id="activityStatus">
+        Loading activity...
+    </div>
+
+    <div id="activityList"></div>
+
+</div>
 
 <div class="card">
 
@@ -476,9 +589,6 @@ button:disabled {
 
 </div>
 
-
-<!-- BANS -->
-
 <div class="card">
 
     <h2>🚫 Ban Accounts</h2>
@@ -541,9 +651,6 @@ button:disabled {
 
 </div>
 
-
-<!-- RECENT WARNINGS -->
-
 <div class="card">
 
     <h2>📋 Recent Warnings</h2>
@@ -559,9 +666,6 @@ button:disabled {
 
 </div>
 
-
-<!-- CHAT -->
-
 <div class="card">
 
     <h2>💬 Chat Messages</h2>
@@ -573,9 +677,6 @@ button:disabled {
     <div id="chatMessages"></div>
 
 </div>
-
-
-<!-- GAMES -->
 
 <div class="card">
 
@@ -589,9 +690,25 @@ button:disabled {
 
 </div>
 
-</div>
+<!-- DOUGTUBE MODERATION -->
+
+<div class="card">
+
+    <h2>🎬 DougTube Video Moderation</h2>
+
+    <div
+        class="status"
+        id="videoModerationStatus"
+    >
+        Loading DougTube videos...
+    </div>
+
+    <div id="dougTubeVideos"></div>
+
 </div>
 
+</div>
+</div>
 
 <script>
 
@@ -606,7 +723,6 @@ const supabaseClient =
         SUPABASE_URL,
         SUPABASE_KEY
     );
-
 
 const loading =
     document.getElementById("loading");
@@ -668,14 +784,22 @@ const chatStatus =
 const gameStatus =
     document.getElementById("gameStatus");
 
+const activityList =
+    document.getElementById("activityList");
+
+const activityStatus =
+    document.getElementById("activityStatus");
+
+const dougTubeVideos =
+    document.getElementById("dougTubeVideos");
+
+const videoModerationStatus =
+    document.getElementById("videoModerationStatus");
 
 let currentAdminUser = null;
 let allUsers = [];
+let presenceMap = new Map();
 
-
-/* =========================================
-   ADMIN CHECK
-========================================= */
 
 async function checkAdmin() {
 
@@ -683,7 +807,6 @@ async function checkAdmin() {
         data: { session },
         error: sessionError
     } = await supabaseClient.auth.getSession();
-
 
     if (sessionError) {
 
@@ -695,7 +818,6 @@ async function checkAdmin() {
         return false;
     }
 
-
     if (!session) {
 
         window.location.href =
@@ -704,20 +826,18 @@ async function checkAdmin() {
         return false;
     }
 
-
     currentAdminUser =
         session.user;
-
 
     const {
         data: profile,
         error: profileError
-    } = await supabaseClient
-        .from("profiles")
-        .select("username,is_admin")
-        .eq("id", session.user.id)
-        .maybeSingle();
-
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select("username,is_admin")
+            .eq("id", session.user.id)
+            .maybeSingle();
 
     if (profileError) {
 
@@ -733,7 +853,6 @@ async function checkAdmin() {
         return false;
     }
 
-
     if (!profile || profile.is_admin !== true) {
 
         loading.innerHTML = `
@@ -746,7 +865,6 @@ async function checkAdmin() {
         return false;
     }
 
-
     loading.style.display =
         "none";
 
@@ -757,15 +875,10 @@ async function checkAdmin() {
 }
 
 
-/* =========================================
-   LOAD ALL USERS
-========================================= */
-
 async function loadUsers() {
 
     usersStatus.textContent =
         "Loading users...";
-
 
     const {
         data,
@@ -783,7 +896,6 @@ async function loadUsers() {
                 }
             );
 
-
     if (error) {
 
         console.error(error);
@@ -800,27 +912,19 @@ async function loadUsers() {
         return;
     }
 
-
     allUsers =
         data || [];
-
 
     usersStatus.textContent =
         allUsers.length +
         " user" +
         (allUsers.length === 1 ? "" : "s");
 
-
     populateUserSelects();
 
     renderUsers();
-
 }
 
-
-/* =========================================
-   POPULATE USER DROPDOWNS
-========================================= */
 
 function populateUserSelects() {
 
@@ -836,13 +940,11 @@ function populateUserSelects() {
         </option>
     `;
 
-
     allUsers.forEach(user => {
 
         const username =
             user.username ||
             "User";
-
 
         const warningOption =
             document.createElement("option");
@@ -856,7 +958,6 @@ function populateUserSelects() {
         warningUser.appendChild(
             warningOption
         );
-
 
         const banOption =
             document.createElement("option");
@@ -882,15 +983,10 @@ function populateUserSelects() {
 }
 
 
-/* =========================================
-   RENDER USER LIST
-========================================= */
-
 function renderUsers() {
 
     usersList.innerHTML =
         "";
-
 
     if (!allUsers.length) {
 
@@ -900,7 +996,6 @@ function renderUsers() {
         return;
     }
 
-
     allUsers.forEach(user => {
 
         const item =
@@ -909,17 +1004,14 @@ function renderUsers() {
         item.className =
             "user-item";
 
-
         const top =
             document.createElement("div");
 
         top.className =
             "top-row";
 
-
         const left =
             document.createElement("div");
-
 
         const name =
             document.createElement("div");
@@ -933,7 +1025,6 @@ function renderUsers() {
                 user.username ||
                 "User"
             );
-
 
         if (user.is_admin) {
 
@@ -949,16 +1040,13 @@ function renderUsers() {
             name.appendChild(
                 badge
             );
-
         }
-
 
         const info =
             document.createElement("div");
 
         info.className =
             "user-info";
-
 
         if (user.is_banned) {
 
@@ -967,22 +1055,36 @@ function renderUsers() {
 
         } else {
 
-            info.innerHTML =
-                '<span class="user-active">● Active</span>';
+            const presence =
+                presenceMap.get(user.id);
 
+            const online =
+                presence &&
+                isRecentlyActive(
+                    presence.last_seen_at
+                );
+
+            if (online) {
+
+                info.innerHTML =
+                    '<span class="user-active">● Online</span>';
+
+            } else {
+
+                info.innerHTML =
+                    '<span class="user-offline">● Offline</span>';
+
+            }
         }
-
 
         left.appendChild(name);
         left.appendChild(info);
-
 
         const buttons =
             document.createElement("div");
 
         buttons.className =
             "buttons";
-
 
         if (user.is_banned) {
 
@@ -998,7 +1100,6 @@ function renderUsers() {
             unbanButton.textContent =
                 "♻️ Unban";
 
-
             unbanButton.addEventListener(
                 "click",
                 function() {
@@ -1009,7 +1110,6 @@ function renderUsers() {
 
                 }
             );
-
 
             buttons.appendChild(
                 unbanButton
@@ -1029,7 +1129,6 @@ function renderUsers() {
             banButton.textContent =
                 "🚫 Ban";
 
-
             banButton.addEventListener(
                 "click",
                 function() {
@@ -1038,17 +1137,13 @@ function renderUsers() {
                         user.id;
 
                     document
-                        .getElementById(
-                            "banReason"
-                        )
+                        .getElementById("banReason")
                         .focus();
 
                     window.scrollTo({
                         top:
                             document
-                                .getElementById(
-                                    "banUser"
-                                )
+                                .getElementById("banUser")
                                 .getBoundingClientRect()
                                 .top +
                             window.scrollY -
@@ -1060,20 +1155,15 @@ function renderUsers() {
                 }
             );
 
-
             buttons.appendChild(
                 banButton
             );
-
         }
-
 
         top.appendChild(left);
         top.appendChild(buttons);
 
-
         item.appendChild(top);
-
 
         if (user.is_banned && user.ban_reason) {
 
@@ -1090,9 +1180,7 @@ function renderUsers() {
             item.appendChild(
                 reason
             );
-
         }
-
 
         usersList.appendChild(
             item
@@ -1103,9 +1191,211 @@ function renderUsers() {
 }
 
 
-/* =========================================
-   SEND WARNING
-========================================= */
+function isRecentlyActive(lastSeen) {
+
+    if (!lastSeen) {
+        return false;
+    }
+
+    const timestamp =
+        new Date(lastSeen).getTime();
+
+    if (!Number.isFinite(timestamp)) {
+        return false;
+    }
+
+    const age =
+        Date.now() - timestamp;
+
+    return age <= 2 * 60 * 1000;
+}
+
+
+async function loadUserActivity() {
+
+    activityStatus.textContent =
+        "Loading activity...";
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("user_presence")
+            .select(
+                "user_id,last_seen_at"
+            );
+
+    if (error) {
+
+        console.error(error);
+
+        activityStatus.textContent =
+            "Could not load activity.";
+
+        activityList.innerHTML = `
+            <div class="error">
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+
+        return;
+    }
+
+    presenceMap =
+        new Map();
+
+    (data || []).forEach(row => {
+
+        presenceMap.set(
+            row.user_id,
+            row
+        );
+
+    });
+
+    renderUsers();
+
+    const activeUsers =
+        allUsers.filter(user => {
+
+            if (user.is_banned) {
+                return false;
+            }
+
+            const presence =
+                presenceMap.get(
+                    user.id
+                );
+
+            return (
+                presence &&
+                isRecentlyActive(
+                    presence.last_seen_at
+                )
+            );
+
+        });
+
+    activityStatus.textContent =
+        activeUsers.length +
+        " user" +
+        (activeUsers.length === 1 ? "" : "s") +
+        " currently active";
+
+    activityList.innerHTML =
+        "";
+
+    if (!allUsers.length) {
+
+        activityList.innerHTML =
+            '<div class="empty">No users found.</div>';
+
+        return;
+    }
+
+    allUsers.forEach(user => {
+
+        const presence =
+            presenceMap.get(
+                user.id
+            );
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "activity-item";
+
+        const top =
+            document.createElement("div");
+
+        top.className =
+            "top-row";
+
+        const name =
+            document.createElement("div");
+
+        name.className =
+            "activity-username";
+
+        name.textContent =
+            "@" +
+            (
+                user.username ||
+                "User"
+            );
+
+        const status =
+            document.createElement("div");
+
+        if (user.is_banned) {
+
+            status.className =
+                "user-banned";
+
+            status.textContent =
+                "🚫 BANNED";
+
+        } else if (
+            presence &&
+            isRecentlyActive(
+                presence.last_seen_at
+            )
+        ) {
+
+            status.className =
+                "activity-status-online";
+
+            status.textContent =
+                "● ONLINE";
+
+        } else {
+
+            status.className =
+                "activity-status-offline";
+
+            status.textContent =
+                "● OFFLINE";
+        }
+
+        top.appendChild(name);
+        top.appendChild(status);
+
+        const lastSeen =
+            document.createElement("div");
+
+        lastSeen.className =
+            "time";
+
+        if (presence && presence.last_seen_at) {
+
+            const date =
+                new Date(
+                    presence.last_seen_at
+                );
+
+            lastSeen.textContent =
+                "Last seen: " +
+                date.toLocaleString();
+
+        } else {
+
+            lastSeen.textContent =
+                "No activity recorded yet.";
+        }
+
+        item.appendChild(top);
+        item.appendChild(lastSeen);
+
+        activityList.appendChild(
+            item
+        );
+
+    });
+
+}
+
 
 async function sendWarning() {
 
@@ -1115,10 +1405,8 @@ async function sendWarning() {
     const message =
         warningMessage.value.trim();
 
-
     warningResult.style.display =
         "none";
-
 
     if (!userId) {
 
@@ -1129,7 +1417,6 @@ async function sendWarning() {
         return;
     }
 
-
     if (!message) {
 
         alert(
@@ -1139,13 +1426,11 @@ async function sendWarning() {
         return;
     }
 
-
     sendWarningButton.disabled =
         true;
 
     sendWarningButton.textContent =
         "Sending...";
-
 
     const {
         error
@@ -1159,13 +1444,11 @@ async function sendWarning() {
                     message
             });
 
-
     sendWarningButton.disabled =
         false;
 
     sendWarningButton.textContent =
         "⚠️ Send Warning";
-
 
     if (error) {
 
@@ -1184,13 +1467,11 @@ async function sendWarning() {
         return;
     }
 
-
     warningMessage.value =
         "";
 
     warningUser.value =
         "";
-
 
     warningResult.className =
         "success";
@@ -1201,15 +1482,9 @@ async function sendWarning() {
     warningResult.style.display =
         "block";
 
-
     await loadWarnings();
-
 }
 
-
-/* =========================================
-   BAN ACCOUNT
-========================================= */
 
 async function banAccount() {
 
@@ -1219,10 +1494,8 @@ async function banAccount() {
     const reason =
         banReason.value.trim();
 
-
     banResult.style.display =
         "none";
-
 
     if (!userId) {
 
@@ -1233,7 +1506,6 @@ async function banAccount() {
         return;
     }
 
-
     if (!reason) {
 
         alert(
@@ -1243,13 +1515,11 @@ async function banAccount() {
         return;
     }
 
-
     const selectedUser =
         allUsers.find(
             user =>
                 user.id === userId
         );
-
 
     if (!selectedUser) {
 
@@ -1260,8 +1530,10 @@ async function banAccount() {
         return;
     }
 
-
-    if (selectedUser.id === currentAdminUser.id) {
+    if (
+        selectedUser.id ===
+        currentAdminUser.id
+    ) {
 
         alert(
             "You cannot ban your own admin account."
@@ -1269,7 +1541,6 @@ async function banAccount() {
 
         return;
     }
-
 
     if (!confirm(
         "Are you sure you want to ban @" +
@@ -1280,13 +1551,11 @@ async function banAccount() {
         return;
     }
 
-
     banAccountButton.disabled =
         true;
 
     banAccountButton.textContent =
         "Banning...";
-
 
     const {
         error
@@ -1306,13 +1575,11 @@ async function banAccount() {
                 userId
             );
 
-
     banAccountButton.disabled =
         false;
 
     banAccountButton.textContent =
         "🚫 Ban Account";
-
 
     if (error) {
 
@@ -1331,13 +1598,11 @@ async function banAccount() {
         return;
     }
 
-
     banReason.value =
         "";
 
     banUser.value =
         "";
-
 
     banResult.className =
         "success";
@@ -1348,15 +1613,9 @@ async function banAccount() {
     banResult.style.display =
         "block";
 
-
     await loadUsers();
-
 }
 
-
-/* =========================================
-   UNBAN ACCOUNT
-========================================= */
 
 async function unbanAccount(userId) {
 
@@ -1366,11 +1625,9 @@ async function unbanAccount(userId) {
                 item.id === userId
         );
 
-
     if (!user) {
         return;
     }
-
 
     if (!confirm(
         "Are you sure you want to unban @" +
@@ -1380,7 +1637,6 @@ async function unbanAccount(userId) {
 
         return;
     }
-
 
     const {
         error
@@ -1400,7 +1656,6 @@ async function unbanAccount(userId) {
                 userId
             );
 
-
     if (error) {
 
         console.error(error);
@@ -1413,21 +1668,14 @@ async function unbanAccount(userId) {
         return;
     }
 
-
     await loadUsers();
-
 }
 
-
-/* =========================================
-   LOAD WARNINGS
-========================================= */
 
 async function loadWarnings() {
 
     warningsListStatus.textContent =
         "Loading warnings...";
-
 
     const {
         data,
@@ -1446,7 +1694,6 @@ async function loadWarnings() {
             )
             .limit(100);
 
-
     if (error) {
 
         console.error(error);
@@ -1463,7 +1710,6 @@ async function loadWarnings() {
         return;
     }
 
-
     if (!data || data.length === 0) {
 
         warningsListStatus.textContent =
@@ -1475,7 +1721,6 @@ async function loadWarnings() {
         return;
     }
 
-
     const userIds =
         [
             ...new Set(
@@ -1485,7 +1730,6 @@ async function loadWarnings() {
                 )
             )
         ];
-
 
     const {
         data: users
@@ -1498,10 +1742,8 @@ async function loadWarnings() {
                 userIds
             );
 
-
     const usernameMap =
         new Map();
-
 
     (users || []).forEach(user => {
 
@@ -1513,16 +1755,13 @@ async function loadWarnings() {
 
     });
 
-
     warningsListStatus.textContent =
         data.length +
         " warning" +
         (data.length === 1 ? "" : "s");
 
-
     warningsList.innerHTML =
         "";
-
 
     data.forEach(warning => {
 
@@ -1532,13 +1771,11 @@ async function loadWarnings() {
         item.className =
             "warning-item";
 
-
         const top =
             document.createElement("div");
 
         top.className =
             "top-row";
-
 
         const username =
             document.createElement("span");
@@ -1555,7 +1792,6 @@ async function loadWarnings() {
                 "Unknown User"
             );
 
-
         const time =
             document.createElement("span");
 
@@ -1567,10 +1803,8 @@ async function loadWarnings() {
                 warning.created_at
             ).toLocaleString();
 
-
         top.appendChild(username);
         top.appendChild(time);
-
 
         const text =
             document.createElement("div");
@@ -1580,7 +1814,6 @@ async function loadWarnings() {
 
         text.textContent =
             warning.message;
-
 
         const readStatus =
             document.createElement("div");
@@ -1593,13 +1826,11 @@ async function loadWarnings() {
                 ? "✓ Read by user"
                 : "● Unread";
 
-
         const buttons =
             document.createElement("div");
 
         buttons.className =
             "buttons";
-
 
         const deleteButton =
             document.createElement("button");
@@ -1613,7 +1844,6 @@ async function loadWarnings() {
         deleteButton.textContent =
             "🗑️ Delete";
 
-
         deleteButton.addEventListener(
             "click",
             function() {
@@ -1625,28 +1855,23 @@ async function loadWarnings() {
             }
         );
 
-
         buttons.appendChild(
             deleteButton
         );
-
 
         item.appendChild(top);
         item.appendChild(text);
         item.appendChild(readStatus);
         item.appendChild(buttons);
 
-
-        warningsList.appendChild(item);
+        warningsList.appendChild(
+            item
+        );
 
     });
 
 }
 
-
-/* =========================================
-   DELETE WARNING
-========================================= */
 
 async function deleteWarning(id) {
 
@@ -1655,7 +1880,6 @@ async function deleteWarning(id) {
     )) {
         return;
     }
-
 
     const {
         error
@@ -1667,7 +1891,6 @@ async function deleteWarning(id) {
                 "id",
                 id
             );
-
 
     if (error) {
 
@@ -1681,21 +1904,14 @@ async function deleteWarning(id) {
         return;
     }
 
-
     await loadWarnings();
-
 }
 
-
-/* =========================================
-   CHAT
-========================================= */
 
 async function loadChatMessages() {
 
     chatStatus.textContent =
         "Loading messages...";
-
 
     const {
         data,
@@ -1714,7 +1930,6 @@ async function loadChatMessages() {
             )
             .limit(200);
 
-
     if (error) {
 
         console.error(error);
@@ -1731,16 +1946,13 @@ async function loadChatMessages() {
         return;
     }
 
-
     chatStatus.textContent =
         data.length +
         " message" +
         (data.length === 1 ? "" : "s");
 
-
     chatMessages.innerHTML =
         "";
-
 
     if (data.length === 0) {
 
@@ -1750,7 +1962,6 @@ async function loadChatMessages() {
         return;
     }
 
-
     data.forEach(message => {
 
         const item =
@@ -1759,13 +1970,11 @@ async function loadChatMessages() {
         item.className =
             "message";
 
-
         const top =
             document.createElement("div");
 
         top.className =
             "top-row";
-
 
         const username =
             document.createElement("span");
@@ -1780,7 +1989,6 @@ async function loadChatMessages() {
                 "Anonymous"
             );
 
-
         const time =
             document.createElement("span");
 
@@ -1792,10 +2000,8 @@ async function loadChatMessages() {
                 message.created_at
             ).toLocaleString();
 
-
         top.appendChild(username);
         top.appendChild(time);
-
 
         const text =
             document.createElement("div");
@@ -1807,13 +2013,11 @@ async function loadChatMessages() {
             message.message ||
             "";
 
-
         const buttons =
             document.createElement("div");
 
         buttons.className =
             "buttons";
-
 
         const deleteButton =
             document.createElement("button");
@@ -1827,7 +2031,6 @@ async function loadChatMessages() {
         deleteButton.textContent =
             "🗑️ Delete";
 
-
         deleteButton.addEventListener(
             "click",
             function() {
@@ -1839,16 +2042,13 @@ async function loadChatMessages() {
             }
         );
 
-
         buttons.appendChild(
             deleteButton
         );
 
-
         item.appendChild(top);
         item.appendChild(text);
         item.appendChild(buttons);
-
 
         chatMessages.appendChild(item);
 
@@ -1857,10 +2057,6 @@ async function loadChatMessages() {
 }
 
 
-/* =========================================
-   DELETE CHAT MESSAGE
-========================================= */
-
 async function deleteMessage(id) {
 
     if (!confirm(
@@ -1868,7 +2064,6 @@ async function deleteMessage(id) {
     )) {
         return;
     }
-
 
     const {
         error
@@ -1880,7 +2075,6 @@ async function deleteMessage(id) {
                 "id",
                 id
             );
-
 
     if (error) {
 
@@ -1894,21 +2088,14 @@ async function deleteMessage(id) {
         return;
     }
 
-
     await loadChatMessages();
-
 }
 
-
-/* =========================================
-   LOAD GAMES
-========================================= */
 
 async function loadGames() {
 
     gameStatus.textContent =
         "Loading games...";
-
 
     const {
         data,
@@ -1926,7 +2113,6 @@ async function loadGames() {
                 }
             );
 
-
     if (error) {
 
         console.error(error);
@@ -1943,16 +2129,13 @@ async function loadGames() {
         return;
     }
 
-
     gameStatus.textContent =
         data.length +
         " game" +
         (data.length === 1 ? "" : "s");
 
-
     communityGames.innerHTML =
         "";
-
 
     if (data.length === 0) {
 
@@ -1961,7 +2144,6 @@ async function loadGames() {
 
         return;
     }
-
 
     data.forEach(game => {
 
@@ -1972,10 +2154,6 @@ async function loadGames() {
 }
 
 
-/* =========================================
-   CREATE GAME
-========================================= */
-
 function createGameElement(game) {
 
     const item =
@@ -1984,17 +2162,14 @@ function createGameElement(game) {
     item.className =
         "game";
 
-
     const top =
         document.createElement("div");
 
     top.className =
         "top-row";
 
-
     const titleArea =
         document.createElement("div");
-
 
     const title =
         document.createElement("div");
@@ -2005,7 +2180,6 @@ function createGameElement(game) {
     title.textContent =
         game.title ||
         "Untitled Game";
-
 
     const info =
         document.createElement("div");
@@ -2029,12 +2203,10 @@ function createGameElement(game) {
             game.created_at
         ).toLocaleString();
 
-
     titleArea.appendChild(title);
     titleArea.appendChild(info);
 
     top.appendChild(titleArea);
-
 
     const description =
         document.createElement("div");
@@ -2046,13 +2218,11 @@ function createGameElement(game) {
         game.description ||
         "No description.";
 
-
     const buttons =
         document.createElement("div");
 
     buttons.className =
         "buttons";
-
 
     const editButton =
         document.createElement("button");
@@ -2066,7 +2236,6 @@ function createGameElement(game) {
     editButton.textContent =
         "✏️ Edit";
 
-
     const deleteButton =
         document.createElement("button");
 
@@ -2079,14 +2248,11 @@ function createGameElement(game) {
     deleteButton.textContent =
         "🗑️ Delete";
 
-
     buttons.appendChild(editButton);
     buttons.appendChild(deleteButton);
 
-
     const editor =
         createEditor(game);
-
 
     editButton.addEventListener(
         "click",
@@ -2099,7 +2265,6 @@ function createGameElement(game) {
         }
     );
 
-
     deleteButton.addEventListener(
         "click",
         function() {
@@ -2111,21 +2276,15 @@ function createGameElement(game) {
         }
     );
 
-
     item.appendChild(top);
     item.appendChild(description);
     item.appendChild(buttons);
     item.appendChild(editor);
 
-
     communityGames.appendChild(item);
 
 }
 
-
-/* =========================================
-   CREATE FIELD
-========================================= */
 
 function createField(
     labelText,
@@ -2139,40 +2298,30 @@ function createField(
     wrapper.className =
         "field";
 
-
     const label =
         document.createElement("label");
 
     label.textContent =
         labelText;
 
-
     const input =
         type === "textarea"
             ? document.createElement("textarea")
             : document.createElement("input");
 
-
     input.value =
         value ||
         "";
 
-
     wrapper.appendChild(label);
     wrapper.appendChild(input);
-
 
     return {
         wrapper: wrapper,
         input: input
     };
-
 }
 
-
-/* =========================================
-   GAME EDITOR
-========================================= */
 
 function createEditor(game) {
 
@@ -2182,14 +2331,12 @@ function createEditor(game) {
     editor.className =
         "editor";
 
-
     const titleField =
         createField(
             "Title",
             game.title,
             "input"
         );
-
 
     const descriptionField =
         createField(
@@ -2198,7 +2345,6 @@ function createEditor(game) {
             "textarea"
         );
 
-
     const authorField =
         createField(
             "Creator",
@@ -2206,13 +2352,11 @@ function createEditor(game) {
             "input"
         );
 
-
     const categoryWrapper =
         document.createElement("div");
 
     categoryWrapper.className =
         "field";
-
 
     const categoryLabel =
         document.createElement("label");
@@ -2220,10 +2364,8 @@ function createEditor(game) {
     categoryLabel.textContent =
         "Category";
 
-
     const category =
         document.createElement("select");
-
 
     const categories = [
         "Arcade",
@@ -2232,7 +2374,6 @@ function createEditor(game) {
         "Clicker",
         "Other"
     ];
-
 
     categories.forEach(value => {
 
@@ -2245,7 +2386,6 @@ function createEditor(game) {
         option.textContent =
             value;
 
-
         if (
             value ===
             game.category
@@ -2253,14 +2393,13 @@ function createEditor(game) {
 
             option.selected =
                 true;
-
         }
 
-
-        category.appendChild(option);
+        category.appendChild(
+            option
+        );
 
     });
-
 
     categoryWrapper.appendChild(
         categoryLabel
@@ -2270,7 +2409,6 @@ function createEditor(game) {
         category
     );
 
-
     const codeField =
         createField(
             "Game Code",
@@ -2278,17 +2416,14 @@ function createEditor(game) {
             "textarea"
         );
 
-
     codeField.input.className =
         "code-input";
-
 
     const buttons =
         document.createElement("div");
 
     buttons.className =
         "buttons";
-
 
     const saveButton =
         document.createElement("button");
@@ -2302,7 +2437,6 @@ function createEditor(game) {
     saveButton.textContent =
         "💾 Save Changes";
 
-
     const cancelButton =
         document.createElement("button");
 
@@ -2312,7 +2446,6 @@ function createEditor(game) {
     cancelButton.textContent =
         "Cancel";
 
-
     buttons.appendChild(
         saveButton
     );
@@ -2320,7 +2453,6 @@ function createEditor(game) {
     buttons.appendChild(
         cancelButton
     );
-
 
     cancelButton.addEventListener(
         "click",
@@ -2332,7 +2464,6 @@ function createEditor(game) {
 
         }
     );
-
 
     saveButton.addEventListener(
         "click",
@@ -2350,7 +2481,6 @@ function createEditor(game) {
             const newCode =
                 codeField.input.value;
 
-
             if (!title) {
 
                 alert(
@@ -2359,7 +2489,6 @@ function createEditor(game) {
 
                 return;
             }
-
 
             if (!newCode.trim()) {
 
@@ -2370,13 +2499,11 @@ function createEditor(game) {
                 return;
             }
 
-
             saveButton.disabled =
                 true;
 
             saveButton.textContent =
                 "Saving...";
-
 
             const {
                 error
@@ -2401,13 +2528,11 @@ function createEditor(game) {
                         game.id
                     );
 
-
             saveButton.disabled =
                 false;
 
             saveButton.textContent =
                 "💾 Save Changes";
-
 
             if (error) {
 
@@ -2421,12 +2546,10 @@ function createEditor(game) {
                 return;
             }
 
-
             await loadGames();
 
         }
     );
-
 
     editor.appendChild(
         titleField.wrapper
@@ -2452,15 +2575,9 @@ function createEditor(game) {
         buttons
     );
 
-
     return editor;
-
 }
 
-
-/* =========================================
-   DELETE GAME
-========================================= */
 
 async function deleteGame(id) {
 
@@ -2469,7 +2586,6 @@ async function deleteGame(id) {
     )) {
         return;
     }
-
 
     const {
         error
@@ -2481,7 +2597,6 @@ async function deleteGame(id) {
                 "id",
                 id
             );
-
 
     if (error) {
 
@@ -2495,9 +2610,542 @@ async function deleteGame(id) {
         return;
     }
 
-
     await loadGames();
+}
 
+
+/* =========================================
+   DOUGTUBE MODERATION
+========================================= */
+
+async function loadDougTubeVideos() {
+
+    videoModerationStatus.textContent =
+        "Loading DougTube videos...";
+
+    dougTubeVideos.innerHTML =
+        "";
+
+    const {
+        data: videos,
+        error
+    } =
+        await supabaseClient
+            .from("dougtube_videos")
+            .select(
+                "id,creator_id,title,description,video_url,created_at,view_count"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+    if (error) {
+
+        console.error(
+            "Could not load DougTube videos:",
+            error
+        );
+
+        videoModerationStatus.textContent =
+            "Could not load DougTube videos.";
+
+        dougTubeVideos.innerHTML = `
+            <div class="error">
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+
+        return;
+    }
+
+    if (!videos || videos.length === 0) {
+
+        videoModerationStatus.textContent =
+            "0 videos";
+
+        dougTubeVideos.innerHTML =
+            '<div class="empty">No DougTube videos have been uploaded.</div>';
+
+        return;
+    }
+
+    const creatorIds =
+        [
+            ...new Set(
+                videos.map(
+                    video =>
+                        video.creator_id
+                )
+            )
+        ];
+
+    const videoIds =
+        videos.map(
+            video =>
+                video.id
+        );
+
+    const [
+        profilesResult,
+        likesResult,
+        commentsResult
+    ] =
+        await Promise.all([
+
+            supabaseClient
+                .from("profiles")
+                .select(
+                    "id,username"
+                )
+                .in(
+                    "id",
+                    creatorIds
+                ),
+
+            supabaseClient
+                .from("dougtube_likes")
+                .select(
+                    "video_id"
+                )
+                .in(
+                    "video_id",
+                    videoIds
+                ),
+
+            supabaseClient
+                .from("dougtube_comments")
+                .select(
+                    "video_id"
+                )
+                .in(
+                    "video_id",
+                    videoIds
+                )
+
+        ]);
+
+    if (profilesResult.error) {
+        console.error(
+            "Could not load DougTube creators:",
+            profilesResult.error
+        );
+    }
+
+    if (likesResult.error) {
+        console.error(
+            "Could not load DougTube likes:",
+            likesResult.error
+        );
+    }
+
+    if (commentsResult.error) {
+        console.error(
+            "Could not load DougTube comments:",
+            commentsResult.error
+        );
+    }
+
+    const usernameMap =
+        new Map();
+
+    (profilesResult.data || []).forEach(
+        profile => {
+
+            usernameMap.set(
+                profile.id,
+                profile.username ||
+                "Unknown User"
+            );
+
+        }
+    );
+
+    const likeCounts =
+        new Map();
+
+    (likesResult.data || []).forEach(
+        like => {
+
+            likeCounts.set(
+                like.video_id,
+                (
+                    likeCounts.get(
+                        like.video_id
+                    ) ||
+                    0
+                ) + 1
+            );
+
+        }
+    );
+
+    const commentCounts =
+        new Map();
+
+    (commentsResult.data || []).forEach(
+        comment => {
+
+            commentCounts.set(
+                comment.video_id,
+                (
+                    commentCounts.get(
+                        comment.video_id
+                    ) ||
+                    0
+                ) + 1
+            );
+
+        }
+    );
+
+    videoModerationStatus.textContent =
+        videos.length +
+        " video" +
+        (
+            videos.length === 1
+                ? ""
+                : "s"
+        );
+
+    videos.forEach(
+        video => {
+
+            createDougTubeModerationItem(
+                video,
+                usernameMap.get(
+                    video.creator_id
+                ) ||
+                "Unknown User",
+                likeCounts.get(
+                    video.id
+                ) ||
+                0,
+                commentCounts.get(
+                    video.id
+                ) ||
+                0
+            );
+
+        }
+    );
+
+}
+
+
+function createDougTubeModerationItem(
+    video,
+    creatorName,
+    likeCount,
+    commentCount
+) {
+
+    const item =
+        document.createElement("div");
+
+    item.className =
+        "video-moderation-item";
+
+    const top =
+        document.createElement("div");
+
+    top.className =
+        "top-row";
+
+    const title =
+        document.createElement("div");
+
+    title.className =
+        "video-moderation-title";
+
+    title.textContent =
+        video.title ||
+        "Untitled Video";
+
+    const date =
+        document.createElement("div");
+
+    date.className =
+        "video-moderation-info";
+
+    date.textContent =
+        new Date(
+            video.created_at
+        ).toLocaleString();
+
+    top.appendChild(title);
+    top.appendChild(date);
+
+    const description =
+        document.createElement("div");
+
+    description.className =
+        "video-moderation-description";
+
+    description.textContent =
+        video.description ||
+        "No description.";
+
+    const creator =
+        document.createElement("div");
+
+    creator.className =
+        "video-moderation-info";
+
+    creator.textContent =
+        "Creator: @" +
+        creatorName;
+
+    const stats =
+        document.createElement("div");
+
+    stats.className =
+        "video-moderation-stats";
+
+    const views =
+        document.createElement("span");
+
+    views.textContent =
+        "👁️ " +
+        Number(
+            video.view_count ||
+            0
+        ).toLocaleString() +
+        " views";
+
+    const likes =
+        document.createElement("span");
+
+    likes.textContent =
+        "❤️ " +
+        Number(
+            likeCount
+        ).toLocaleString() +
+        " likes";
+
+    const comments =
+        document.createElement("span");
+
+    comments.textContent =
+        "💬 " +
+        Number(
+            commentCount
+        ).toLocaleString() +
+        " comments";
+
+    stats.appendChild(
+        views
+    );
+
+    stats.appendChild(
+        likes
+    );
+
+    stats.appendChild(
+        comments
+    );
+
+    const videoElement =
+        document.createElement("video");
+
+    videoElement.className =
+        "video-moderation-preview";
+
+    videoElement.controls =
+        true;
+
+    videoElement.preload =
+        "metadata";
+
+    videoElement.src =
+        video.video_url;
+
+    videoElement.playsInline =
+        true;
+
+    const actions =
+        document.createElement("div");
+
+    actions.className =
+        "video-moderation-actions";
+
+    const deleteButton =
+        document.createElement("button");
+
+    deleteButton.type =
+        "button";
+
+    deleteButton.className =
+        "delete-button video-delete-button";
+
+    deleteButton.textContent =
+        "🗑️ Delete Video";
+
+    deleteButton.addEventListener(
+        "click",
+        function() {
+
+            deleteDougTubeVideo(
+                video
+            );
+
+        }
+    );
+
+    actions.appendChild(
+        deleteButton
+    );
+
+    item.appendChild(
+        top
+    );
+
+    item.appendChild(
+        creator
+    );
+
+    item.appendChild(
+        description
+    );
+
+    item.appendChild(
+        stats
+    );
+
+    item.appendChild(
+        videoElement
+    );
+
+    item.appendChild(
+        actions
+    );
+
+    dougTubeVideos.appendChild(
+        item
+    );
+
+}
+
+
+function getDougTubeStoragePath(
+    videoUrl
+) {
+
+    if (!videoUrl) {
+        return null;
+    }
+
+    try {
+
+        const url =
+            new URL(
+                videoUrl
+            );
+
+        const marker =
+            "/storage/v1/object/public/dougtube-videos/";
+
+        const index =
+            url.pathname.indexOf(
+                marker
+            );
+
+        if (index === -1) {
+            return null;
+        }
+
+        return decodeURIComponent(
+            url.pathname.substring(
+                index +
+                marker.length
+            )
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Could not determine DougTube storage path:",
+            error
+        );
+
+        return null;
+    }
+
+}
+
+
+async function deleteDougTubeVideo(
+    video
+) {
+
+    if (!confirm(
+        "Are you sure you want to permanently delete this DougTube video?\n\n" +
+        "Title: " +
+        (video.title || "Untitled Video")
+    )) {
+
+        return;
+    }
+
+    const storagePath =
+        getDougTubeStoragePath(
+            video.video_url
+        );
+
+    if (storagePath) {
+
+        const {
+            error: storageError
+        } =
+            await supabaseClient
+                .storage
+                .from(
+                    "dougtube-videos"
+                )
+                .remove([
+                    storagePath
+                ]);
+
+        if (storageError) {
+
+            console.error(
+                "Could not delete DougTube storage file:",
+                storageError
+            );
+
+        }
+
+    }
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("dougtube_videos")
+            .delete()
+            .eq(
+                "id",
+                video.id
+            );
+
+    if (error) {
+
+        console.error(
+            "Could not delete DougTube video:",
+            error
+        );
+
+        alert(
+            "Could not delete the video:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+    await loadDougTubeVideos();
 }
 
 
@@ -2518,7 +3166,7 @@ function escapeHtml(value) {
 
 
 /* =========================================
-   BUTTON EVENTS
+   BUTTONS
 ========================================= */
 
 sendWarningButton.addEventListener(
@@ -2533,7 +3181,7 @@ banAccountButton.addEventListener(
 
 
 /* =========================================
-   START
+   START ADMIN PANEL
 ========================================= */
 
 async function startAdminPanel() {
@@ -2541,18 +3189,27 @@ async function startAdminPanel() {
     const allowed =
         await checkAdmin();
 
-
     if (!allowed) {
         return;
     }
-
 
     await Promise.all([
         loadUsers(),
         loadWarnings(),
         loadChatMessages(),
-        loadGames()
+        loadGames(),
+        loadUserActivity(),
+        loadDougTubeVideos()
     ]);
+
+    setInterval(
+        function() {
+
+            loadUserActivity();
+
+        },
+        10000
+    );
 
 }
 
