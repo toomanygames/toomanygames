@@ -2417,12 +2417,56 @@ async function loadUserCount() {
    GAME COUNT
 ========================================= */
 
-function updateGameCount() {
+async function updateGameCount() {
 
     const gameCount =
         document.getElementById(
             "gameCount"
         );
+
+    if (!gameCount) {
+        return;
+    }
+
+    /* The homepage does not render the game cards, so count published
+       Community Games directly for its hero total. */
+    if (!document.getElementById("communityGames")) {
+
+        const {
+            count,
+            error
+        } =
+            await supabaseClient
+                .from("community_games")
+                .select(
+                    "id",
+                    {
+                        count: "exact",
+                        head: true
+                    }
+                );
+
+        if (error) {
+
+            console.error(
+                "Could not load community game count:",
+                error
+            );
+
+            gameCount.textContent =
+                "4";
+
+            return;
+        }
+
+        gameCount.textContent =
+            (
+                4 +
+                Number(count || 0)
+            ).toLocaleString();
+
+        return;
+    }
 
     gameCount.textContent =
         (
@@ -2446,6 +2490,7 @@ async function loadCommunityGames() {
 
     /* Community Games live on douggames.html. */
     if (!container) {
+        await updateGameCount();
         return;
     }
 
