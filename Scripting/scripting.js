@@ -1,10 +1,3 @@
-const SUPABASE_URL =
-    "https://agsqdqcsmsppcdqxlppj.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
-
-
 const codeEditor =
     document.getElementById("codeEditor");
 
@@ -73,11 +66,8 @@ function updateEditor() {
         return;
     }
 
-    const code =
-        codeEditor.value;
-
-    const lines =
-        code.split("\n");
+    const code = codeEditor.value;
+    const lines = code.split("\n");
 
     if (lineNumbers) {
 
@@ -174,8 +164,10 @@ function runGame() {
         "allow-scripts"
     );
 
-    newFrame.scrolling =
-        "no";
+    newFrame.setAttribute(
+        "scrolling",
+        "no"
+    );
 
     newFrame.style.position =
         "absolute";
@@ -205,38 +197,53 @@ function runGame() {
         oldFrame.replaceWith(newFrame);
     }
 
+
+    /* =========================
+       FORCE GAME TO 1280x720
+    ========================= */
+
     const viewportCSS = `
 <style id="dougHubPreviewViewport">
 
 html {
     width: 1280px !important;
     height: 720px !important;
+
     min-width: 1280px !important;
     min-height: 720px !important;
+
     max-width: 1280px !important;
     max-height: 720px !important;
+
     margin: 0 !important;
     padding: 0 !important;
+
     overflow: hidden !important;
 }
 
 body {
     width: 1280px !important;
     height: 720px !important;
+
     min-width: 1280px !important;
     min-height: 720px !important;
+
     max-width: 1280px !important;
     max-height: 720px !important;
+
     margin: 0 !important;
     padding: 0 !important;
+
     overflow: hidden !important;
 }
 
 </style>
 `;
 
+
     let finalCode =
         code;
+
 
     if (/<head[\s>]/i.test(code)) {
 
@@ -244,29 +251,39 @@ body {
             code.replace(
                 /<head([^>]*)>/i,
                 function(match) {
-                    return match + viewportCSS;
+
+                    return (
+                        match +
+                        viewportCSS
+                    );
+
                 }
             );
 
     } else {
 
         finalCode =
-            viewportCSS + code;
+            viewportCSS +
+            code;
     }
 
-    requestAnimationFrame(function() {
 
-        if (
-            currentVersion !==
-            previewVersion
-        ) {
-            return;
+    requestAnimationFrame(
+        function() {
+
+            if (
+                currentVersion !==
+                previewVersion
+            ) {
+                return;
+            }
+
+            newFrame.srcdoc =
+                finalCode;
+
         }
+    );
 
-        newFrame.srcdoc =
-            finalCode;
-
-    });
 
     newFrame.onload =
         function() {
@@ -277,10 +294,14 @@ body {
             ) {
 
                 if (previewStatus) {
+
                     previewStatus.textContent =
                         "Running";
+
                 }
+
             }
+
         };
 }
 
@@ -310,6 +331,7 @@ function clearCode() {
         );
 
     if (frame) {
+
         frame.srcdoc =
             "";
 
@@ -318,11 +340,13 @@ function clearCode() {
     }
 
     if (placeholder) {
+
         placeholder.style.display =
             "flex";
     }
 
     if (previewStatus) {
+
         previewStatus.textContent =
             "Waiting";
     }
@@ -355,12 +379,15 @@ async function publishGame() {
     const code =
         codeEditor.value.trim();
 
+
     publishMessage.textContent =
         "";
 
     publishMessage.style.color =
         "";
 
+
+    /* TITLE */
 
     if (!title) {
 
@@ -371,6 +398,8 @@ async function publishGame() {
     }
 
 
+    /* CODE */
+
     if (!code) {
 
         publishMessage.textContent =
@@ -379,6 +408,8 @@ async function publishGame() {
         return;
     }
 
+
+    /* SIZE */
 
     if (code.length > 500000) {
 
@@ -398,20 +429,38 @@ async function publishGame() {
 
     try {
 
+        /*
+          Use the Supabase client
+          that was already created
+          in scripting.html.
+        */
+
+        if (
+            typeof supabaseClient ===
+            "undefined"
+        ) {
+
+            throw new Error(
+                "Supabase is not loaded."
+            );
+        }
+
+
         const {
             data: {
                 session
-            }
+            },
+            error: sessionError
         } =
-            await window.supabase
-                .createClient(
-                    SUPABASE_URL,
-                    SUPABASE_KEY
-                )
-                .auth.getSession()
-                .then(result =>
-                    result.data
-                );
+            await supabaseClient.auth.getSession();
+
+
+        if (sessionError) {
+
+            throw new Error(
+                sessionError.message
+            );
+        }
 
 
         if (
@@ -425,12 +474,9 @@ async function publishGame() {
         }
 
 
-        const supabaseClient =
-            window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_KEY
-            );
-
+        /*
+          Publish
+        */
 
         const {
             data,
@@ -439,13 +485,24 @@ async function publishGame() {
             await supabaseClient
                 .from("community_games")
                 .insert({
+
                     title: title,
-                    description: description,
-                    author: author,
-                    category: category,
-                    code: code,
+
+                    description:
+                        description,
+
+                    author:
+                        author,
+
+                    category:
+                        category,
+
+                    code:
+                        code,
+
                     creator_id:
                         session.user.id
+
                 })
                 .select()
                 .single();
@@ -464,6 +521,10 @@ async function publishGame() {
             );
         }
 
+
+        /* =========================
+           SHOW RESULT
+        ========================= */
 
         resultTitle.textContent =
             data.title;
@@ -500,7 +561,10 @@ async function publishGame() {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Publish error:",
+            error
+        );
 
         publishMessage.textContent =
             error.message ||
@@ -526,11 +590,19 @@ async function publishGame() {
 
 if (codeEditor) {
 
+    /*
+      Typing
+    */
+
     codeEditor.addEventListener(
         "input",
         updateEditor
     );
 
+
+    /*
+      Scroll line numbers
+    */
 
     codeEditor.addEventListener(
         "scroll",
@@ -540,14 +612,23 @@ if (codeEditor) {
 
                 lineNumbers.scrollTop =
                     codeEditor.scrollTop;
+
             }
+
         }
     );
 
 
+    /*
+      Keyboard controls
+    */
+
     codeEditor.addEventListener(
         "keydown",
         function(event) {
+
+
+            /* TAB */
 
             if (
                 event.key ===
@@ -585,21 +666,31 @@ if (codeEditor) {
             }
 
 
+            /* CTRL + ENTER */
+
             if (
-                (event.ctrlKey ||
-                    event.metaKey) &&
+                (
+                    event.ctrlKey ||
+                    event.metaKey
+                ) &&
                 event.key.toLowerCase() ===
-                    "enter"
+                "enter"
             ) {
 
                 event.preventDefault();
 
                 runGame();
             }
+
         }
     );
+
 }
 
+
+/* =========================
+   RUN BUTTON
+========================= */
 
 if (runButton) {
 
@@ -607,8 +698,13 @@ if (runButton) {
         "click",
         runGame
     );
+
 }
 
+
+/* =========================
+   CLEAR BUTTON
+========================= */
 
 if (clearButton) {
 
@@ -616,8 +712,13 @@ if (clearButton) {
         "click",
         clearCode
     );
+
 }
 
+
+/* =========================
+   PUBLISH BUTTON
+========================= */
 
 if (publishButton) {
 
@@ -625,11 +726,12 @@ if (publishButton) {
         "click",
         publishGame
     );
+
 }
 
 
 /* =========================
-   START EDITOR
+   START
 ========================= */
 
 updateEditor();

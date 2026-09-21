@@ -9,6 +9,7 @@
   <script src="../display.js"></script>
   <style>
     * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       width: 100%;
@@ -21,12 +22,14 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
+
     body {
       display: flex;
       align-items: center;
       justify-content: center;
       padding: max(18px, env(safe-area-inset-top)) 12px max(18px, env(safe-area-inset-bottom));
     }
+
     .screen {
       width: min(980px, 100%);
       height: min(100vh - 24px, 860px);
@@ -38,6 +41,7 @@
       display: flex;
       flex-direction: column;
     }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -46,11 +50,14 @@
       padding: 12px 16px;
       border-bottom: 1px solid rgba(90,40,20,0.08);
       font-weight: 800;
+      gap: 10px;
     }
+
     .coins {
       font-size: clamp(20px, 3vw, 30px);
       letter-spacing: 0.04em;
     }
+
     .btn {
       appearance: none;
       border: none;
@@ -61,12 +68,15 @@
       background: #fff7ed;
       color: #3b2319;
       box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+      cursor: pointer;
     }
+
     .content {
       display: flex;
       flex: 1;
       min-height: 0;
     }
+
     .left {
       flex: 1.2;
       padding: 20px;
@@ -76,6 +86,7 @@
       justify-content: center;
       gap: 18px;
     }
+
     .pig-wrap {
       width: min(70vw, 320px);
       aspect-ratio: 1;
@@ -84,6 +95,7 @@
       user-select: none;
       position: relative;
     }
+
     .pig {
       width: 100%;
       height: 100%;
@@ -98,8 +110,13 @@
       position: relative;
       overflow: hidden;
       touch-action: manipulation;
+      cursor: pointer;
     }
-    .pig:active { transform: scale(0.96); }
+
+    .pig:active {
+      transform: scale(0.96);
+    }
+
     .pig::before {
       content: "";
       position: absolute;
@@ -111,6 +128,7 @@
       background: rgba(255,255,255,0.25);
       filter: blur(10px);
     }
+
     .burst {
       position: absolute;
       font-size: 28px;
@@ -118,23 +136,35 @@
       color: #7c2d12;
       animation: floatUp 0.6s ease-out forwards;
       pointer-events: none;
+      z-index: 5;
     }
+
     @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(10px) scale(0.9); }
-      100% { opacity: 0; transform: translateY(-52px) scale(1.3); }
+      0% {
+        opacity: 1;
+        transform: translateY(10px) scale(0.9);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-52px) scale(1.3);
+      }
     }
+
     .tap {
       font-size: clamp(20px, 3vw, 30px);
       font-weight: 900;
       text-align: center;
       letter-spacing: 0.04em;
     }
+
     .fever-label {
       font-size: 14px;
       font-weight: 800;
       text-align: center;
       opacity: 0.8;
     }
+
     .fever-hud {
       position: fixed;
       left: 14px;
@@ -145,10 +175,12 @@
       flex-direction: column;
       gap: 4px;
     }
+
     .fever-hud .fever-label {
       text-align: left;
       color: #7c2d12;
     }
+
     .fever-bar {
       width: 100%;
       height: 14px;
@@ -157,12 +189,14 @@
       border-radius: 999px;
       overflow: hidden;
     }
+
     .fever-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #f97316, #facc15);
       transition: width 0.15s ease;
     }
+
     .right {
       width: min(38vw, 390px);
       background: rgba(255,255,255,0.12);
@@ -170,6 +204,7 @@
       padding: 16px 14px 20px;
       overflow: auto;
     }
+
     .panel {
       background: rgba(255,255,255,0.14);
       border: 1px solid rgba(90,40,20,0.08);
@@ -177,12 +212,14 @@
       padding: 12px 12px 10px;
       margin-bottom: 12px;
     }
+
     .panel h3 {
       margin: 0 0 10px;
       font-size: 16px;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
+
     .upg {
       display: flex;
       align-items: center;
@@ -195,15 +232,18 @@
       margin-bottom: 8px;
       min-height: 62px;
     }
+
     .upg.locked {
       opacity: 0.48;
     }
+
     .upg-info {
       display: flex;
       align-items: center;
       gap: 8px;
       min-width: 0;
     }
+
     .upg-icon {
       width: 40px;
       height: 40px;
@@ -215,18 +255,22 @@
       border: 1px solid rgba(90,40,20,0.10);
       border-radius: 10px;
     }
+
     .upg-details {
       min-width: 0;
     }
+
     .upg-name {
       font-weight: 800;
       font-size: 15px;
     }
+
     .upg-cost {
       font-size: 12px;
       opacity: 0.8;
       margin-top: 2px;
     }
+
     .upg-btn {
       border: none;
       background: linear-gradient(180deg, #facc15, #f59e0b);
@@ -236,15 +280,51 @@
       min-width: 72px;
       padding: 10px 10px;
       font-size: 12px;
+      cursor: pointer;
     }
+
     .upg-btn:disabled {
       opacity: 0.45;
+      cursor: not-allowed;
     }
+
+    .rebirth-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(180deg, #c084fc, #9333ea);
+      color: white;
+      font-weight: 900;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(126,34,206,0.25);
+    }
+
+    .rebirth-btn.space-ready {
+      background: linear-gradient(180deg, #4ade80, #16a34a);
+      box-shadow: 0 8px 18px rgba(22,163,74,0.28);
+    }
+
+    .rebirth-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .space-note {
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.75;
+      margin-top: 7px;
+    }
+
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
+
     .stat {
       background: rgba(255,255,255,0.12);
       border: 1px solid rgba(90,40,20,0.08);
@@ -253,11 +333,13 @@
       text-align: center;
       font-size: 12px;
     }
+
     .stat strong {
       display: block;
       font-size: 18px;
       margin-top: 2px;
     }
+
     .achievement {
       display: flex;
       align-items: center;
@@ -269,29 +351,46 @@
       padding: 8px 10px;
       margin-bottom: 8px;
     }
+
     .achievement.locked {
       opacity: 0.48;
     }
+
     .achievement .title {
       font-weight: 800;
       font-size: 14px;
     }
+
     .achievement .reward {
       font-size: 11px;
       opacity: 0.8;
     }
+
     .achievement .badge {
       font-size: 18px;
     }
+
     @media (max-width: 700px) {
-      .content { flex-direction: column; }
-      .right { width: 100%; border-left: none; border-top: 1px solid rgba(90,40,20,0.08); }
-      .left { padding-bottom: 8px; }
+      .content {
+        flex-direction: column;
+      }
+
+      .right {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid rgba(90,40,20,0.08);
+      }
+
+      .left {
+        padding-bottom: 8px;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="screen">
+
     <div class="topbar">
       <div class="coins" id="coins">0 coins</div>
       <button class="btn" id="homeBtn">Home</button>
@@ -299,37 +398,67 @@
 
     <div class="fever-hud">
       <div class="fever-label" id="feverLabel">Fever ready</div>
-      <div class="fever-bar"><div class="fever-fill" id="feverFill"></div></div>
+      <div class="fever-bar">
+        <div class="fever-fill" id="feverFill"></div>
+      </div>
     </div>
 
     <div class="content">
+
       <div class="left">
         <div class="pig-wrap">
           <div class="pig" id="pig">🐷</div>
         </div>
+
         <div class="tap" id="tapText">+1 per tap</div>
       </div>
 
       <div class="right">
+
         <div class="panel">
           <h3>Stats</h3>
+
           <div class="stats">
-            <div class="stat">Per tap<strong id="perTapStat">1</strong></div>
-            <div class="stat">Auto<strong id="autoStat">0/s</strong></div>
-            <div class="stat">Fever<strong id="feverStat">0%</strong></div>
-            <div class="stat">Rebirths<strong id="rebirthStat">0</strong></div>
+            <div class="stat">
+              Per tap
+              <strong id="perTapStat">1</strong>
+            </div>
+
+            <div class="stat">
+              Auto
+              <strong id="autoStat">0/s</strong>
+            </div>
+
+            <div class="stat">
+              Fever
+              <strong id="feverStat">0%</strong>
+            </div>
+
+            <div class="stat">
+              Rebirths
+              <strong id="rebirthStat">0</strong>
+            </div>
           </div>
         </div>
 
         <div class="panel">
           <h3>Store</h3>
           <div id="store"></div>
+
+          <button class="rebirth-btn" id="rebirthBtn" disabled>
+            Rebirth
+          </button>
+
+          <div class="space-note" id="rebirthNote">
+            Reach 100 nonillion coins to unlock
+          </div>
         </div>
 
         <div class="panel">
           <h3>Achievements</h3>
           <div id="achievements"></div>
         </div>
+
       </div>
     </div>
   </div>
@@ -347,33 +476,50 @@
     const feverLabel = document.getElementById('feverLabel');
     const autoStat = document.getElementById('autoStat');
     const rebirthStat = document.getElementById('rebirthStat');
+    const rebirthBtn = document.getElementById('rebirthBtn');
+    const rebirthNote = document.getElementById('rebirthNote');
 
-    const formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+    const formatter = new Intl.NumberFormat('en-US', {
+      maximumFractionDigits: 0
+    });
+
     const saveKey = 'pig-clicker-save-v1';
+    const REBIRTH_COST = 1e32;
 
     let audioCtx = null;
+    let lastStatsSave = 0;
 
     function ensureAudio() {
       if (!audioCtx) {
         const Ctx = window.AudioContext || window.webkitAudioContext;
         if (Ctx) audioCtx = new Ctx();
       }
-      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
     }
 
     function playTone(freq, duration, type, gainValue = 0.04, delay = 0) {
       if (!audioCtx) return;
+
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
+
       osc.type = type;
       osc.frequency.value = freq;
+
       gain.gain.value = 0.0001;
+
       osc.connect(gain);
       gain.connect(audioCtx.destination);
+
       const now = audioCtx.currentTime + delay;
+
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
       osc.start(now);
       osc.stop(now + duration + 0.03);
     }
@@ -393,19 +539,27 @@
 
     function playOinkSfx() {
       ensureAudio();
+
       if (!audioCtx) return;
+
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
+
       osc.type = 'sawtooth';
       gain.gain.value = 0.0001;
+
       osc.connect(gain);
       gain.connect(audioCtx.destination);
+
       const now = audioCtx.currentTime;
+
       osc.frequency.setValueAtTime(220, now);
       osc.frequency.exponentialRampToValueAtTime(90, now + 0.18);
+
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.exponentialRampToValueAtTime(0.06, now + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
       osc.start(now);
       osc.stop(now + 0.25);
     }
@@ -428,9 +582,11 @@
       feverTimer: 0,
       playTimeSeconds: 0,
       rebirths: 0,
+      spaceUnlocked: false,
       storeComplete: false,
       achievements: {},
       readyAchievements: {},
+
       upgrades: [
         { id: 'piglet', name: 'Piglet', icon: '🐷', cost: 15, unlockAt: 1, value: 1, type: 'tap', owned: 0 },
         { id: 'snout', name: 'Snout', icon: '🐽', cost: 100, unlockAt: 10, value: 5, type: 'tap', owned: 0 },
@@ -445,29 +601,30 @@
         { id: 'moon', name: 'Moon Auto Pig', icon: '🌙', cost: 300000000, unlockAt: 7000, value: 10000000, type: 'auto', owned: 0 },
         { id: 'queen', name: 'Queen Pig', icon: '👑', cost: 2000000000, unlockAt: 15000, value: 75000000, type: 'tap', owned: 0 },
         { id: 'galaxy', name: 'Galaxy Auto Pig', icon: '🌌', cost: 15000000000, unlockAt: 35000, value: 500000000, type: 'auto', owned: 0 },
-        { id: 'cluster', name: 'Cluster Pig', icon: '✨', cost: 100e9, costLabel: '100 billion', unlockAt: 100e9, value: 4e9, type: 'tap', owned: 0 },
-        { id: 'nebula', name: 'Nebula Auto Pig', icon: '☁️', cost: 1e12, costLabel: '1 trillion', unlockAt: 1e12, value: 30e9, type: 'auto', owned: 0 },
-        { id: 'supernova', name: 'Supernova Pig', icon: '💥', cost: 10e12, costLabel: '10 trillion', unlockAt: 10e12, value: 250e9, type: 'tap', owned: 0 },
-        { id: 'blackHole', name: 'Black Hole Auto Pig', icon: '🕳️', cost: 100e12, costLabel: '100 trillion', unlockAt: 100e12, value: 2e12, type: 'auto', owned: 0 },
-        { id: 'universe', name: 'Universe Pig', icon: '🌍', cost: 1e15, costLabel: '1 quadrillion', unlockAt: 1e15, value: 15e12, type: 'tap', owned: 0 },
-        { id: 'quad10', name: 'Ten Quadrillion Auto Pig', icon: '🛸', cost: 10e15, costLabel: '10 quadrillion', unlockAt: 10e15, value: 120e12, type: 'auto', owned: 0 },
-        { id: 'quad100', name: 'Hundred Quadrillion Pig', icon: '🌎', cost: 100e15, costLabel: '100 quadrillion', unlockAt: 100e15, value: 1e15, type: 'tap', owned: 0 },
-        { id: 'multiverse', name: 'Multiverse Auto Pig', icon: '🌀', cost: 1e18, costLabel: '1 quintillion', unlockAt: 1e18, value: 1e15, type: 'auto', owned: 0 },
-        { id: 'quint10', name: 'Ten Quintillion Pig', icon: '🌐', cost: 10e18, costLabel: '10 quintillion', unlockAt: 10e18, value: 8e15, type: 'tap', owned: 0 },
-        { id: 'quint100', name: 'Hundred Quintillion Auto Pig', icon: '🤖', cost: 100e18, costLabel: '100 quintillion', unlockAt: 100e18, value: 70e15, type: 'auto', owned: 0 },
-        { id: 'dimension', name: 'Dimension Pig', icon: '🔮', cost: 1e21, costLabel: '1 sextillion', unlockAt: 1e21, value: 1e18, type: 'tap', owned: 0 },
-        { id: 'sext10', name: 'Ten Sextillion Auto Pig', icon: '⚙️', cost: 10e21, costLabel: '10 sextillion', unlockAt: 10e21, value: 8e18, type: 'auto', owned: 0 },
-        { id: 'sext100', name: 'Hundred Sextillion Pig', icon: '🧿', cost: 100e21, costLabel: '100 sextillion', unlockAt: 100e21, value: 70e18, type: 'tap', owned: 0 },
-        { id: 'eternity', name: 'Eternity Auto Pig', icon: '♾️', cost: 1e24, costLabel: '1 septillion', unlockAt: 1e24, value: 1e21, type: 'auto', owned: 0 },
-        { id: 'sept10', name: 'Ten Septillion Pig', icon: '⏳', cost: 10e24, costLabel: '10 septillion', unlockAt: 10e24, value: 8e21, type: 'tap', owned: 0 },
-        { id: 'sept100', name: 'Hundred Septillion Auto Pig', icon: '⏱️', cost: 100e24, costLabel: '100 septillion', unlockAt: 100e24, value: 70e21, type: 'auto', owned: 0 },
-        { id: 'octillion', name: 'Octillion Pig', icon: '🌠', cost: 1e27, costLabel: '1 octillion', unlockAt: 1e27, value: 1e24, type: 'tap', owned: 0 },
-        { id: 'oct10', name: 'Ten Octillion Auto Pig', icon: '🛰️', cost: 10e27, costLabel: '10 octillion', unlockAt: 10e27, value: 8e24, type: 'auto', owned: 0 },
-        { id: 'oct100', name: 'Hundred Octillion Pig', icon: '🌟', cost: 100e27, costLabel: '100 octillion', unlockAt: 100e27, value: 70e24, type: 'tap', owned: 0 },
-        { id: 'nonillion10', name: 'Ten Nonillion Auto Pig', icon: '💫', cost: 10e30, costLabel: '10 nonillion', unlockAt: 10e30, value: 1e28, type: 'auto', owned: 0 },
-        { id: 'nonillion100', name: 'Hundred Nonillion Pig', icon: '⭐', cost: 100e30, costLabel: '100 nonillion', unlockAt: 100e30, value: 1e29, type: 'tap', owned: 0 },
+        { id: 'cluster', name: 'Cluster Pig', icon: '✨', cost: 100e9, unlockAt: 100e9, value: 4e9, type: 'tap', owned: 0 },
+        { id: 'nebula', name: 'Nebula Auto Pig', icon: '☁️', cost: 1e12, unlockAt: 1e12, value: 30e9, type: 'auto', owned: 0 },
+        { id: 'supernova', name: 'Supernova Pig', icon: '💥', cost: 10e12, unlockAt: 10e12, value: 250e9, type: 'tap', owned: 0 },
+        { id: 'blackHole', name: 'Black Hole Auto Pig', icon: '🕳️', cost: 100e12, unlockAt: 100e12, value: 2e12, type: 'auto', owned: 0 },
+        { id: 'universe', name: 'Universe Pig', icon: '🌍', cost: 1e15, unlockAt: 1e15, value: 15e12, type: 'tap', owned: 0 },
+        { id: 'quad10', name: 'Ten Quadrillion Auto Pig', icon: '🛸', cost: 10e15, unlockAt: 10e15, value: 120e12, type: 'auto', owned: 0 },
+        { id: 'quad100', name: 'Hundred Quadrillion Pig', icon: '🌎', cost: 100e15, unlockAt: 100e15, value: 1e15, type: 'tap', owned: 0 },
+        { id: 'multiverse', name: 'Multiverse Auto Pig', icon: '🌀', cost: 1e18, unlockAt: 1e18, value: 1e15, type: 'auto', owned: 0 },
+        { id: 'quint10', name: 'Ten Quintillion Pig', icon: '🌐', cost: 10e18, unlockAt: 10e18, value: 8e15, type: 'tap', owned: 0 },
+        { id: 'quint100', name: 'Hundred Quintillion Auto Pig', icon: '🤖', cost: 100e18, unlockAt: 100e18, value: 70e15, type: 'auto', owned: 0 },
+        { id: 'dimension', name: 'Dimension Pig', icon: '🔮', cost: 1e21, unlockAt: 1e21, value: 1e18, type: 'tap', owned: 0 },
+        { id: 'sext10', name: 'Ten Sextillion Auto Pig', icon: '⚙️', cost: 10e21, unlockAt: 10e21, value: 8e18, type: 'auto', owned: 0 },
+        { id: 'sext100', name: 'Hundred Sextillion Pig', icon: '🧿', cost: 100e21, unlockAt: 100e21, value: 70e18, type: 'tap', owned: 0 },
+        { id: 'eternity', name: 'Eternity Auto Pig', icon: '♾️', cost: 1e24, unlockAt: 1e24, value: 1e21, type: 'auto', owned: 0 },
+        { id: 'sept10', name: 'Ten Septillion Pig', icon: '⏳', cost: 10e24, unlockAt: 10e24, value: 8e21, type: 'tap', owned: 0 },
+        { id: 'sept100', name: 'Hundred Septillion Auto Pig', icon: '⏱️', cost: 100e24, unlockAt: 100e24, value: 70e21, type: 'auto', owned: 0 },
+        { id: 'octillion', name: 'Octillion Pig', icon: '🌠', cost: 1e27, unlockAt: 1e27, value: 1e24, type: 'tap', owned: 0 },
+        { id: 'oct10', name: 'Ten Octillion Auto Pig', icon: '🛰️', cost: 10e27, unlockAt: 10e27, value: 8e24, type: 'auto', owned: 0 },
+        { id: 'oct100', name: 'Hundred Octillion Pig', icon: '🌟', cost: 100e27, unlockAt: 100e27, value: 70e24, type: 'tap', owned: 0 },
+        { id: 'nonillion10', name: 'Ten Nonillion Auto Pig', icon: '💫', cost: 10e30, unlockAt: 10e30, value: 1e28, type: 'auto', owned: 0 },
+        { id: 'nonillion100', name: 'Hundred Nonillion Pig', icon: '⭐', cost: 100e30, unlockAt: 100e30, value: 1e29, type: 'tap', owned: 0 },
         { id: 'quint', name: 'Nonillion Auto Pig', icon: '🐖', cost: 999e30, costLabel: '999 nonillion', unlockAt: 999e30, value: 1e30, type: 'auto', owned: 0 }
       ],
+
       achievementDefs: [
         { id: 'firstTap', name: 'First Pig', goal: 1, reward: 25, description: 'Earn 1 coin', metric: 'totalCoins' },
         { id: 'pigFarm', name: 'Pig Farmer', goal: 100, reward: 200, description: 'Reach 100 coins', metric: 'totalCoins' },
@@ -482,26 +639,39 @@
         { id: 'sextillionSnout', name: 'Sextillion Snout', goal: 1e21, reward: 1e22, description: 'Reach 1 sextillion total coins', metric: 'totalCoins' },
         { id: 'septillionSty', name: 'Septillion Sty', goal: 1e24, reward: 1e25, description: 'Reach 1 septillion total coins', metric: 'totalCoins' },
         { id: 'octillionOinker', name: 'Octillion Oinker', goal: 1e27, reward: 1e28, description: 'Reach 1 octillion total coins', metric: 'totalCoins' },
-        { id: 'nonillionLegend', name: 'Nonillion Legend', goal: 1e30, reward: 1e29, description: 'Reach 1 nonillion total coins', metric: 'totalCoins' }
+        { id: 'nonillionLegend', name: 'Nonillion Legend', goal: 1e30, reward: 1e29, description: 'Reach 1 nonillion total coins', metric: 'totalCoins' },
+        { id: 'rebirthReady', name: 'Beyond the Farm', goal: REBIRTH_COST, reward: 1e31, description: 'Reach 100 nonillion coins', metric: 'totalCoins' }
       ]
     };
 
     let state = JSON.parse(JSON.stringify(defaultState));
-    let lastStatsSave = 0;
 
     function loadState() {
       const raw = localStorage.getItem(saveKey);
+
       if (!raw) return;
+
       try {
         const parsed = JSON.parse(raw);
-        state = { ...JSON.parse(JSON.stringify(defaultState)), ...parsed };
+
+        state = {
+          ...JSON.parse(JSON.stringify(defaultState)),
+          ...parsed
+        };
+
         state.upgrades = defaultState.upgrades.map((base) => {
           const saved = (parsed.upgrades || []).find((u) => u.id === base.id);
-          return { ...base, owned: saved?.owned ?? base.owned };
+
+          return {
+            ...base,
+            owned: saved?.owned ?? base.owned
+          };
         });
+
         state.achievementDefs = defaultState.achievementDefs;
         state.achievements = parsed.achievements || {};
         state.readyAchievements = parsed.readyAchievements || {};
+        state.spaceUnlocked = !!parsed.spaceUnlocked;
       } catch (e) {
         console.log('Save failed to load');
       }
@@ -514,7 +684,9 @@
 
     function formatNumber(num) {
       if (!Number.isFinite(num)) return '∞';
+
       const scales = [
+        [1e32, '100 nonillion+'],
         [1e30, 'nonillion'],
         [1e27, 'octillion'],
         [1e24, 'septillion'],
@@ -525,8 +697,17 @@
         [1e9, 'billion'],
         [1e6, 'million']
       ];
+
       const scale = scales.find(([value]) => num >= value);
-      if (scale) return (Math.floor((num / scale[0]) * 10) / 10).toFixed(1) + ' ' + scale[1];
+
+      if (scale) {
+        if (scale[0] === 1e32) return '100+ nonillion';
+
+        return (
+          Math.floor((num / scale[0]) * 10) / 10
+        ).toFixed(1) + ' ' + scale[1];
+      }
+
       return formatter.format(Math.floor(num));
     }
 
@@ -544,24 +725,73 @@
 
     function refreshHud() {
       coinEl.textContent = formatNumber(state.coins) + ' coins';
-      tapText.textContent = '+' + formatNumber(state.perTap * getMultiplier()) + ' per tap';
+
+      tapText.textContent =
+        '+' +
+        formatNumber(state.perTap * getMultiplier()) +
+        ' per tap';
+
       perTapStat.textContent = formatNumber(state.perTap);
       autoStat.textContent = formatNumber(state.autoPerSecond) + '/s';
-      feverStat.textContent = Math.min(100, Math.round(state.feverMeter)) + '%';
-      feverFill.style.width = (Math.min(100, Math.max(0, state.feverMeter))) + '%';
-      feverLabel.textContent = state.feverActive ? 'Fever time!' : (state.feverMeter >= 100 ? 'Fever ready' : 'Build fever');
-      rebirthStat.textContent = formatNumber(state.rebirths || 0);
+
+      feverStat.textContent =
+        Math.min(100, Math.round(state.feverMeter)) + '%';
+
+      feverFill.style.width =
+        Math.min(100, Math.max(0, state.feverMeter)) + '%';
+
+      feverLabel.textContent =
+        state.feverActive
+          ? 'Fever time!'
+          : state.feverMeter >= 100
+            ? 'Fever ready'
+            : 'Build fever';
+
+      rebirthStat.textContent =
+        formatNumber(state.rebirths || 0);
+
+      updateRebirthButton();
+    }
+
+    function updateRebirthButton() {
+      if (state.spaceUnlocked) {
+        rebirthBtn.disabled = false;
+        rebirthBtn.classList.add('space-ready');
+        rebirthBtn.textContent = '🚀 Go to Space';
+        rebirthNote.textContent = 'Your space adventure is ready!';
+        return;
+      }
+
+      rebirthBtn.classList.remove('space-ready');
+
+      if (state.coins >= REBIRTH_COST) {
+        rebirthBtn.disabled = false;
+        rebirthBtn.textContent = '♻️ Rebirth';
+        rebirthNote.textContent =
+          'Reset your farm and unlock the Space Pig world!';
+      } else {
+        rebirthBtn.disabled = true;
+        rebirthBtn.textContent = '🔒 Rebirth';
+        rebirthNote.textContent =
+          'Reach 100 nonillion coins to unlock';
+      }
     }
 
     function claimAchievement(id) {
       if (!state.readyAchievements[id] || state.achievements[id]) return;
+
       const def = state.achievementDefs.find((a) => a.id === id);
+
       if (!def) return;
+
       state.achievements[id] = true;
       delete state.readyAchievements[id];
+
       state.coins += def.reward;
       state.totalCoins += def.reward;
+
       playRewardSfx();
+
       refreshHud();
       checkAchievements();
       renderAchievements();
@@ -569,38 +799,50 @@
     }
 
     function isAchievementReady(ach) {
-      if (ach.metric === 'totalCoins') return state.totalCoins >= ach.goal;
-      if (ach.id === 'tapBoost') return state.perTap >= ach.goal;
-      if (ach.id === 'autoCrew') {
-        return state.upgrades.filter((upg) => upg.type === 'auto').reduce((sum, upg) => sum + upg.owned, 0) >= ach.goal;
+      if (ach.metric === 'totalCoins') {
+        return state.totalCoins >= ach.goal;
       }
+
+      if (ach.id === 'tapBoost') {
+        return state.perTap >= ach.goal;
+      }
+
+      if (ach.id === 'autoCrew') {
+        return state.upgrades
+          .filter((upg) => upg.type === 'auto')
+          .reduce((sum, upg) => sum + upg.owned, 0) >= ach.goal;
+      }
+
       return ach.id === 'feverTime' && state.feverActive;
     }
 
     function checkAchievements() {
       let hasNewReadyAchievement = false;
+
       state.achievementDefs.forEach((ach) => {
-        if (!state.achievements[ach.id] && !state.readyAchievements[ach.id] && isAchievementReady(ach)) {
+        if (
+          !state.achievements[ach.id] &&
+          !state.readyAchievements[ach.id] &&
+          isAchievementReady(ach)
+        ) {
           state.readyAchievements[ach.id] = true;
           hasNewReadyAchievement = true;
         }
       });
-      if (hasNewReadyAchievement) renderAchievements();
+
+      if (hasNewReadyAchievement) {
+        renderAchievements();
+      }
     }
 
     function addCoins(n) {
-      const storeNeedsRefresh = state.upgrades.some((upg) => {
-        const button = storeEl.querySelector('[data-upgrade-id="' + upg.id + '"]');
-        const shouldBeDisabled = !isUnlocked(upg) || state.coins + n < upg.cost;
-        return button && button.disabled !== shouldBeDisabled;
-      });
       state.coins += n;
       state.totalCoins += n;
+
       refreshHud();
       checkAchievements();
-      if (storeNeedsRefresh || state.upgrades.some((upg) => isUnlocked(upg) && !storeEl.querySelector('[data-upgrade-id="' + upg.id + '"]'))) {
-        renderStore();
-      }
+
+      renderStore();
       saveState();
     }
 
@@ -610,38 +852,61 @@
 
     function addFever(amount) {
       if (state.feverActive) {
-        state.feverTimer = Math.min(FEVER_MAX_TIME, state.feverTimer + FEVER_TIME_PER_CLICK);
+        state.feverTimer = Math.min(
+          FEVER_MAX_TIME,
+          state.feverTimer + FEVER_TIME_PER_CLICK
+        );
+
         refreshHud();
         return;
       }
+
       state.feverMeter += amount;
+
       if (state.feverMeter >= 100) {
         state.feverMeter = 100;
         state.feverActive = true;
         state.feverTimer = FEVER_BASE_TIME;
+
         playRewardSfx();
       }
+
       refreshHud();
     }
 
     function updateFever(dt) {
       if (state.feverActive) {
         state.feverTimer -= dt;
-        state.feverMeter = Math.max(0, Math.min(100, (state.feverTimer / FEVER_MAX_TIME) * 100));
+
+        state.feverMeter = Math.max(
+          0,
+          Math.min(
+            100,
+            (state.feverTimer / FEVER_MAX_TIME) * 100
+          )
+        );
+
         if (state.feverTimer <= 0) {
           state.feverActive = false;
           state.feverTimer = 0;
           state.feverMeter = 0;
         }
       } else {
-        state.feverMeter = Math.max(0, state.feverMeter - dt * 8);
+        state.feverMeter = Math.max(
+          0,
+          state.feverMeter - dt * 8
+        );
       }
+
       refreshHud();
     }
 
-    function rebirth() {
-      if (!state.upgrades.every((upg) => upg.owned > 0)) return;
+    function doRebirth() {
+      if (state.coins < REBIRTH_COST) return;
+
       state.rebirths = (state.rebirths || 0) + 1;
+      state.spaceUnlocked = true;
+
       state.coins = 0;
       state.perTap = 1;
       state.pigs = 0;
@@ -649,25 +914,41 @@
       state.feverMeter = 0;
       state.feverActive = false;
       state.feverTimer = 0;
-      state.upgrades.forEach((upg) => { upg.owned = 0; });
+
+      state.upgrades.forEach((upg) => {
+        upg.owned = 0;
+      });
+
       playRewardSfx();
+
       refreshHud();
       renderStore();
       renderAchievements();
       saveState();
     }
 
+    function goToSpace() {
+      if (!state.spaceUnlocked) return;
+
+      window.location.href = 'pig-clicker-space.html';
+    }
+
     function buyUpgrade(upg) {
       if (!isUnlocked(upg) || state.coins < upg.cost) return;
+
       state.coins -= upg.cost;
       upg.owned += 1;
+
       if (upg.type === 'tap') {
         state.perTap += upg.value;
       } else if (upg.type === 'auto') {
         state.autoPerSecond += upg.value;
       }
+
       state.pigs += 1;
+
       playBuySfx();
+
       refreshHud();
       renderStore();
       checkAchievements();
@@ -676,91 +957,194 @@
 
     function renderStore() {
       storeEl.innerHTML = '';
+
       state.upgrades.forEach((upg) => {
         const unlocked = isUnlocked(upg);
+
         const row = document.createElement('div');
-        row.className = 'upg' + (unlocked ? '' : ' locked');
+
+        row.className =
+          'upg' + (unlocked ? '' : ' locked');
 
         const left = document.createElement('div');
         left.className = 'upg-info';
-        const bonus = upg.type === 'auto'
-          ? '+' + formatNumber(upg.value) + ' pigs/s'
-          : '+' + formatNumber(upg.value) + ' click';
-        const cost = upg.costLabel || formatNumber(upg.cost);
+
+        const bonus =
+          upg.type === 'auto'
+            ? '+' + formatNumber(upg.value) + ' pigs/s'
+            : '+' + formatNumber(upg.value) + ' click';
+
+        const cost =
+          upg.costLabel || formatNumber(upg.cost);
+
         const availability = unlocked
           ? 'Cost: ' + cost
-          : (upg.costLabel ? 'Cost: ' + cost + ' • Unlock: ' + formatNumber(upg.unlockAt) : 'Unlock: ' + formatNumber(upg.unlockAt));
-        left.innerHTML = '<div class="upg-icon" aria-hidden="true">' + upg.icon + '</div><div class="upg-details"><div class="upg-name">' + upg.name + '</div><div class="upg-cost">' + bonus + ' • ' + availability + ' • Owned: ' + upg.owned + '</div></div>';
+          : upg.costLabel
+            ? 'Cost: ' + cost + ' • Unlock: ' + formatNumber(upg.unlockAt)
+            : 'Unlock: ' + formatNumber(upg.unlockAt);
+
+        left.innerHTML =
+          '<div class="upg-icon" aria-hidden="true">' +
+          upg.icon +
+          '</div>' +
+
+          '<div class="upg-details">' +
+          '<div class="upg-name">' +
+          upg.name +
+          '</div>' +
+
+          '<div class="upg-cost">' +
+          bonus +
+          ' • ' +
+          availability +
+          ' • Owned: ' +
+          upg.owned +
+          '</div>' +
+
+          '</div>';
 
         const btn = document.createElement('button');
+
         btn.className = 'upg-btn';
         btn.dataset.upgradeId = upg.id;
-        btn.textContent = unlocked ? 'Buy' : 'Locked';
-        btn.disabled = !unlocked || state.coins < upg.cost;
-        btn.addEventListener('click', () => buyUpgrade(upg));
+
+        btn.textContent =
+          unlocked ? 'Buy' : 'Locked';
+
+        btn.disabled =
+          !unlocked ||
+          state.coins < upg.cost;
+
+        btn.addEventListener(
+          'click',
+          () => buyUpgrade(upg)
+        );
 
         row.appendChild(left);
         row.appendChild(btn);
+
         storeEl.appendChild(row);
       });
     }
 
     function renderAchievements() {
       achievementsEl.innerHTML = '';
+
       state.achievementDefs.forEach((ach) => {
-        const claimed = !!state.achievements[ach.id];
-        const ready = !!state.readyAchievements[ach.id];
+        const claimed =
+          !!state.achievements[ach.id];
+
+        const ready =
+          !!state.readyAchievements[ach.id];
+
         const row = document.createElement('div');
-        row.className = 'achievement' + (claimed || ready ? '' : ' locked');
+
+        row.className =
+          'achievement' +
+          (claimed || ready ? '' : ' locked');
 
         const titleWrap = document.createElement('div');
-        titleWrap.innerHTML = '<div class="title">' + ach.name + '</div><div class="reward">' + ach.description + ' • +' + formatNumber(ach.reward) + '</div>';
 
-        const badge = document.createElement(ready && !claimed ? 'button' : 'div');
+        titleWrap.innerHTML =
+          '<div class="title">' +
+          ach.name +
+          '</div>' +
+
+          '<div class="reward">' +
+          ach.description +
+          ' • +' +
+          formatNumber(ach.reward) +
+          '</div>';
+
+        const badge =
+          document.createElement(
+            ready && !claimed ? 'button' : 'div'
+          );
+
         badge.className = 'badge';
+
         if (claimed) {
           badge.textContent = '✅';
         } else if (ready) {
           badge.className = 'upg-btn';
           badge.textContent = 'Claim';
-          badge.addEventListener('click', () => claimAchievement(ach.id));
+
+          badge.addEventListener(
+            'click',
+            () => claimAchievement(ach.id)
+          );
         } else {
           badge.textContent = '🔒';
         }
 
         row.appendChild(titleWrap);
         row.appendChild(badge);
+
         achievementsEl.appendChild(row);
       });
     }
 
     function makeBurst() {
       const burst = document.createElement('div');
-      const value = state.feverActive ? state.perTap * 3 : state.perTap;
+
+      const value =
+        state.feverActive
+          ? state.perTap * 3
+          : state.perTap;
+
       burst.className = 'burst';
-      burst.textContent = '+' + formatNumber(value);
+
+      burst.textContent =
+        '+' + formatNumber(value);
+
       burst.style.left = '50%';
       burst.style.top = '50%';
-      burst.style.transform = 'translate(-50%, -50%)';
+
       pigEl.appendChild(burst);
-      setTimeout(() => burst.remove(), 500);
+
+      setTimeout(() => {
+        burst.remove();
+      }, 500);
     }
 
     pigEl.addEventListener('pointerdown', (event) => {
       event.preventDefault();
+
       ensureAudio();
-      const gain = state.perTap * getMultiplier() * getRebirthMultiplier();
+
+      const gain =
+        state.perTap *
+        getMultiplier() *
+        getRebirthMultiplier();
+
       addCoins(gain);
       addFever(10);
+
       playClickSfx();
       playOinkSfx();
+
       makeBurst();
+    });
+
+    rebirthBtn.addEventListener('click', () => {
+      if (state.spaceUnlocked) {
+        goToSpace();
+      } else {
+        doRebirth();
+      }
     });
 
     homeBtn.addEventListener('click', () => {
       if (window.parent !== window) {
-        window.parent.postMessage({ type: 'DougHub-home' }, '*');
-        window.parent.postMessage({ type: 'pig-clicker-home' }, '*');
+        window.parent.postMessage(
+          { type: 'DougHub-home' },
+          '*'
+        );
+
+        window.parent.postMessage(
+          { type: 'pig-clicker-home' },
+          '*'
+        );
       } else {
         window.location.href = 'DougHub.html';
       }
@@ -768,21 +1152,38 @@
 
     window.addEventListener('message', (event) => {
       if (event.data?.type === 'pig-clicker-reset') {
-        state = JSON.parse(JSON.stringify(defaultState));
-        lastStatsSave = 0;
+        state =
+          JSON.parse(
+            JSON.stringify(defaultState)
+          );
+
         saveState();
         renderStore();
         renderAchievements();
         refreshHud();
-      } else if (event.data?.type === 'pig-clicker-rebirth') {
-        rebirth();
+
+      } else if (
+        event.data?.type === 'pig-clicker-rebirth'
+      ) {
+        if (state.coins >= REBIRTH_COST) {
+          doRebirth();
+        }
       }
     });
 
     function gameLoop(ts) {
-      if (!gameLoop.last) gameLoop.last = ts;
-      const dt = Math.min(0.1, (ts - gameLoop.last) / 1000);
+      if (!gameLoop.last) {
+        gameLoop.last = ts;
+      }
+
+      const dt =
+        Math.min(
+          0.1,
+          (ts - gameLoop.last) / 1000
+        );
+
       gameLoop.last = ts;
+
       state.playTimeSeconds += dt;
 
       if (ts - lastStatsSave >= 5000) {
@@ -791,19 +1192,31 @@
       }
 
       if (state.autoPerSecond > 0) {
-        const autoGain = state.autoPerSecond * (state.feverActive ? 3 : 1) * getRebirthMultiplier() * dt;
+        const autoGain =
+          state.autoPerSecond *
+          (state.feverActive ? 3 : 1) *
+          getRebirthMultiplier() *
+          dt;
+
         addCoins(autoGain);
       }
 
       updateFever(dt);
+
       requestAnimationFrame(gameLoop);
     }
 
-    window.addEventListener('pointerdown', ensureAudio, { once: true });
+    window.addEventListener(
+      'pointerdown',
+      ensureAudio,
+      { once: true }
+    );
+
     loadState();
     renderStore();
     renderAchievements();
     refreshHud();
+
     requestAnimationFrame(gameLoop);
   </script>
 </body>

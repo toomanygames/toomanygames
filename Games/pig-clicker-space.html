@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <title>Pig Clicker: Space</title>
+
+  <script src="../display.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          rgba(2, 7, 30, 0.2),
+          rgba(2, 7, 30, 0.2)
+        ),
+        url("https://preview.redd.it/kurzgesagt-4k-wallpapers-3840x2160-v0-nnwid4yeouhb1.png?width=3840&format=png&auto=webp&s=947d2bd541aebeab61c76f1cd0539d8283559c6e")
+        center center / cover fixed no-repeat;
+
+      color: #eef6ff;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        Arial,
+        sans-serif;
+
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding:
+        max(18px, env(safe-area-inset-top))
+        12px
+        max(18px, env(safe-area-inset-bottom));
+    }
+
+    .screen {
+      width: min(1050px, 100%);
+      height: min(100vh - 24px, 880px);
+
+      background: rgba(4, 12, 35, 0.60);
+
+      border:
+        1px solid rgba(180, 220, 255, 0.22);
+
+      border-radius: 28px;
+
+      box-shadow:
+        0 18px 60px rgba(0, 0, 0, 0.5),
+        inset 0 0 50px rgba(60, 120, 255, 0.08);
+
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+
+      overflow: hidden;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 10px;
+
+      background: rgba(3, 12, 35, 0.60);
+
+      padding: 12px 16px;
+
+      border-bottom:
+        1px solid rgba(160, 210, 255, 0.14);
+
+      font-weight: 800;
+    }
+
+    .fragments {
+      font-size: clamp(18px, 3vw, 29px);
+      letter-spacing: 0.035em;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn {
+      appearance: none;
+
+      border: none;
+      border-radius: 18px;
+
+      padding: 10px 18px;
+
+      font-weight: 800;
+      font-size: 16px;
+
+      background:
+        rgba(235, 247, 255, 0.9);
+
+      color: #07152d;
+
+      box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.22);
+
+      cursor: pointer;
+    }
+
+    .content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .left {
+      flex: 1.2;
+
+      padding: 20px;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 18px;
+    }
+
+    .pig-wrap {
+      width: min(70vw, 330px);
+      aspect-ratio: 1;
+
+      display: grid;
+      place-items: center;
+
+      position: relative;
+    }
+
+    .pig {
+      width: 100%;
+      height: 100%;
+
+      display: grid;
+      place-items: center;
+
+      font-size: clamp(100px, 21vw, 200px);
+
+      border-radius: 35px;
+
+      background:
+        radial-gradient(
+          circle at 30% 25%,
+          rgba(255,255,255,0.75) 0%,
+          rgba(185,225,255,0.30) 20%,
+          rgba(20,75,130,0.32) 55%,
+          rgba(2,20,55,0.72) 100%
+        );
+
+      border:
+        3px solid rgba(180,230,255,0.38);
+
+      box-shadow:
+        inset 0 10px 25px rgba(255,255,255,0.2),
+        inset 0 -15px 30px rgba(0,0,0,0.22),
+        0 20px 50px rgba(0,0,0,0.4),
+        0 0 35px rgba(70,170,255,0.22);
+
+      transition:
+        transform 0.08s ease;
+
+      position: relative;
+      overflow: hidden;
+
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    .pig:active {
+      transform: scale(0.95);
+    }
+
+    .pig::before {
+      content: "";
+
+      position: absolute;
+
+      width: 58%;
+      height: 30%;
+
+      left: 21%;
+      top: 13%;
+
+      border-radius: 50%;
+
+      background:
+        rgba(255,255,255,0.24);
+
+      filter: blur(12px);
+    }
+
+    .pig::after {
+      content: "✦";
+
+      position: absolute;
+
+      right: 13%;
+      top: 13%;
+
+      font-size: 25px;
+
+      color: rgba(255,255,255,0.9);
+
+      animation:
+        sparkle 1.8s infinite ease-in-out;
+    }
+
+    @keyframes sparkle {
+      0%, 100% {
+        opacity: 0.25;
+        transform: scale(0.8) rotate(0deg);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.3) rotate(20deg);
+      }
+    }
+
+    .helmet {
+  position: absolute;
+  width: 70%;
+  height: 48%;
+  left: 15%;
+  top: 30%;
+  border-radius: 50% 50% 45% 45%;
+  background: linear-gradient(180deg, rgba(240,250,255,0.38), rgba(80,150,220,0.16));
+  border: 5px solid rgba(220,245,255,0.8);
+  box-shadow:
+    inset 0 5px 12px rgba(255,255,255,0.4),
+    0 0 15px rgba(120,210,255,0.5);
+  pointer-events: none;
+  z-index: 3;
+}
+
+
+    .helmet::before {
+      content: "";
+
+      position: absolute;
+
+      width: 35%;
+      height: 12%;
+
+      left: 13%;
+      top: 12%;
+
+      border-radius: 999px;
+
+      background:
+        rgba(255,255,255,0.75);
+
+      transform: rotate(-20deg);
+
+      filter: blur(2px);
+    }
+
+        .helmet-ring {
+            position: absolute;
+            width: 58%;
+            height: 9%;
+            left: 21%;
+            top: 70%;
+            border-radius: 999px;
+            background: rgba(205,238,255,0.85);
+            box-shadow: 0 0 10px rgba(110,210,255,0.8);
+            z-index: 4;
+        }
+
+    .burst {
+      position: absolute;
+
+      font-size: 27px;
+      font-weight: 900;
+
+      color: #9ee7ff;
+
+      animation:
+        floatUp 0.65s ease-out forwards;
+
+      pointer-events: none;
+
+      z-index: 10;
+
+      text-shadow:
+        0 2px 8px rgba(0,0,0,0.6);
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform:
+          translateY(10px)
+          scale(0.9);
+      }
+
+      100% {
+        opacity: 0;
+        transform:
+          translateY(-60px)
+          scale(1.35);
+      }
+    }
+
+    .tap {
+      font-size: clamp(19px, 3vw, 29px);
+
+      font-weight: 900;
+
+      text-align: center;
+
+      letter-spacing: 0.04em;
+
+      text-shadow:
+        0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .space-label {
+      font-size: 13px;
+
+      font-weight: 800;
+
+      opacity: 0.8;
+
+      text-align: center;
+    }
+
+    .fever-hud {
+      position: fixed;
+
+      left: 14px;
+      bottom: max(14px, env(safe-area-inset-bottom));
+
+      width: min(230px, 42vw);
+
+      z-index: 20;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 4px;
+    }
+
+    .fever-label {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .fever-bar {
+      width: 100%;
+      height: 14px;
+
+      background:
+        rgba(255,255,255,0.15);
+
+      border:
+        1px solid rgba(190,230,255,0.25);
+
+      border-radius: 999px;
+
+      overflow: hidden;
+    }
+
+    .fever-fill {
+      height: 100%;
+      width: 0%;
+
+      background:
+        linear-gradient(
+          90deg,
+          #38bdf8,
+          #818cf8,
+          #c084fc
+        );
+
+      transition:
+        width 0.15s ease;
+    }
+
+    .right {
+      width: min(40vw, 410px);
+
+      background:
+        rgba(2, 12, 35, 0.46);
+
+      border-left:
+        1px solid rgba(170,220,255,0.14);
+
+      padding:
+        16px 14px 20px;
+
+      overflow: auto;
+    }
+
+    .panel {
+      background:
+        rgba(120,190,255,0.08);
+
+      border:
+        1px solid rgba(180,225,255,0.13);
+
+      border-radius: 20px;
+
+      padding:
+        12px 12px 10px;
+
+      margin-bottom: 12px;
+
+      box-shadow:
+        inset 0 0 20px rgba(60,140,255,0.025);
+    }
+
+    .panel h3 {
+      margin:
+        0 0 10px;
+
+      font-size: 16px;
+
+      letter-spacing: 0.04em;
+
+      text-transform: uppercase;
+
+      color: #e5f5ff;
+    }
+
+    .upg {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 8px;
+
+      background:
+        rgba(160,215,255,0.07);
+
+      border:
+        1px solid rgba(180,225,255,0.10);
+
+      border-radius: 14px;
+
+      padding: 10px;
+
+      margin-bottom: 8px;
+
+      min-height: 62px;
+    }
+
+    .upg.locked {
+      opacity: 0.42;
+    }
+
+    .upg-info {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      min-width: 0;
+    }
+
+    .upg-icon {
+      width: 40px;
+      height: 40px;
+
+      flex:
+        0 0 40px;
+
+      display: grid;
+      place-items: center;
+
+      font-size: 24px;
+
+      background:
+        rgba(220,245,255,0.10);
+
+      border:
+        1px solid rgba(190,230,255,0.13);
+
+      border-radius: 10px;
+    }
+
+    .upg-details {
+      min-width: 0;
+    }
+
+    .upg-name {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .upg-cost {
+      font-size: 11px;
+
+      opacity: 0.75;
+
+      margin-top: 2px;
+
+      line-height: 1.35;
+    }
+
+    .upg-btn {
+      border: none;
+
+      background:
+        linear-gradient(
+          180deg,
+          #67e8f9,
+          #3b82f6
+        );
+
+      color: #06152e;
+
+      border-radius: 12px;
+
+      font-weight: 900;
+
+      min-width: 72px;
+
+      padding: 10px;
+
+      font-size: 12px;
+
+      cursor: pointer;
+    }
+
+    .upg-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .stats {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 8px;
+    }
+
+    .stat {
+      background:
+        rgba(150,210,255,0.07);
+
+      border:
+        1px solid rgba(180,225,255,0.10);
+
+      border-radius: 14px;
+
+      padding: 10px;
+
+      text-align: center;
+
+      font-size: 12px;
+    }
+
+    .stat strong {
+      display: block;
+
+      font-size: 17px;
+
+      margin-top: 2px;
+    }
+
+    .achievement {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 8px;
+
+      background:
+        rgba(150,210,255,0.07);
+
+      border-radius: 12px;
+
+      border:
+        1px solid rgba(180,225,255,0.09);
+
+      padding: 8px 10px;
+
+      margin-bottom: 8px;
+    }
+
+    .achievement.locked {
+      opacity: 0.42;
+    }
+
+    .achievement .title {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .achievement .reward {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .achievement .badge {
+      font-size: 18px;
+    }
+
+    .home-space-btn {
+      width: 100%;
+
+      border: none;
+
+      border-radius: 14px;
+
+      padding: 13px;
+
+      margin-top: 5px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #4ade80,
+          #16a34a
+        );
+
+      color: white;
+
+      font-weight: 900;
+
+      font-size: 15px;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    @media (max-width: 700px) {
+      .content {
+        flex-direction: column;
+      }
+
+      .right {
+        width: 100%;
+
+        border-left: none;
+
+        border-top:
+          1px solid rgba(170,220,255,0.14);
+      }
+
+      .left {
+        padding-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="screen">
+
+    <div class="topbar">
+
+      <div class="fragments" id="fragments">
+        0 Asteroid Fragments
+      </div>
+
+      <button class="btn" id="homeBtn">
+        Home
+      </button>
+
+    </div>
+
+    <div class="fever-hud">
+
+      <div class="fever-label" id="feverLabel">
+        Build space fever
+      </div>
+
+      <div class="fever-bar">
+        <div
+          class="fever-fill"
+          id="feverFill">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <div class="left">
+
+        <div class="pig-wrap">
+
+          <div
+            class="pig"
+            id="pig">
+
+            🐷
+
+            <div class="helmet"></div>
+            <div class="helmet-ring"></div>
+
+          </div>
+
+        </div>
+
+        <div
+          class="tap"
+          id="tapText">
+          +1 per tap
+        </div>
+
+        <div class="space-label">
+          🐷 Astronaut Pig • Space Sector 01
+        </div>
+
+      </div>
+
+      <div class="right">
+
+        <div class="panel">
+
+          <h3>Space Stats</h3>
+
+          <div class="stats">
+
+            <div class="stat">
+              Per tap
+              <strong id="perTapStat">1</strong>
+            </div>
+
+            <div class="stat">
+              Auto
+              <strong id="autoStat">0/s</strong>
+            </div>
+
+            <div class="stat">
+              Fever
+              <strong id="feverStat">0%</strong>
+            </div>
+
+            <div class="stat">
+              Missions
+              <strong id="missionStat">0</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="panel">
+
+          <h3>Space Upgrades</h3>
+
+          <div id="store"></div>
+
+        </div>
+
+        <div class="panel">
+
+          <h3>Space Achievements</h3>
+
+          <div id="achievements"></div>
+
+        </div>
+
+        <button
+          class="home-space-btn"
+          id="farmBtn">
+          🌎 Return to Pig Farm
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const fragmentEl =
+      document.getElementById('fragments');
+
+    const perTapStat =
+      document.getElementById('perTapStat');
+
+    const autoStat =
+      document.getElementById('autoStat');
+
+    const feverStat =
+      document.getElementById('feverStat');
+
+    const missionStat =
+      document.getElementById('missionStat');
+
+    const tapText =
+      document.getElementById('tapText');
+
+    const pigEl =
+      document.getElementById('pig');
+
+    const storeEl =
+      document.getElementById('store');
+
+    const achievementsEl =
+      document.getElementById('achievements');
+
+    const feverFill =
+      document.getElementById('feverFill');
+
+    const feverLabel =
+      document.getElementById('feverLabel');
+
+    const homeBtn =
+      document.getElementById('homeBtn');
+
+    const farmBtn =
+      document.getElementById('farmBtn');
+
+    const formatter =
+      new Intl.NumberFormat(
+        'en-US',
+        { maximumFractionDigits: 0 }
+      );
+
+    const saveKey =
+      'pig-clicker-space-save-v1';
+
+    let audioCtx = null;
+    let lastSave = 0;
+
+    function ensureAudio() {
+      if (!audioCtx) {
+        const Ctx =
+          window.AudioContext ||
+          window.webkitAudioContext;
+
+        if (Ctx) {
+          audioCtx = new Ctx();
+        }
+      }
+
+      if (
+        audioCtx &&
+        audioCtx.state === 'suspended'
+      ) {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(
+      freq,
+      duration,
+      type,
+      gainValue = 0.04,
+      delay = 0
+    ) {
+      if (!audioCtx) return;
+
+      const osc =
+        audioCtx.createOscillator();
+
+      const gain =
+        audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.value = freq;
+
+      gain.gain.value = 0.0001;
+
+      osc.connect(gain);
+      gain.connect(
+        audioCtx.destination
+      );
+
+      const now =
+        audioCtx.currentTime + delay;
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        now
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        gainValue,
+        now + 0.02
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + duration
+      );
+
+      osc.start(now);
+
+      osc.stop(
+        now + duration + 0.03
+      );
+    }
+
+    function playSpaceClick() {
+      ensureAudio();
+
+      playTone(
+        280,
+        0.08,
+        'triangle',
+        0.035
+      );
+
+      playTone(
+        560,
+        0.1,
+        'square',
+        0.025,
+        0.04
+      );
+    }
+
+    function playBuy() {
+      ensureAudio();
+
+      playTone(
+        660,
+        0.08,
+        'triangle',
+        0.04
+      );
+
+      playTone(
+        990,
+        0.1,
+        'triangle',
+        0.035,
+        0.06
+      );
+
+      playTone(
+        1480,
+        0.12,
+        'square',
+        0.03,
+        0.12
+      );
+    }
+
+    function playReward() {
+      ensureAudio();
+
+      playTone(
+        520,
+        0.1,
+        'triangle',
+        0.06
+      );
+
+      playTone(
+        780,
+        0.14,
+        'triangle',
+        0.06,
+        0.07
+      );
+
+      playTone(
+        1040,
+        0.18,
+        'triangle',
+        0.05,
+        0.14
+      );
+
+      playTone(
+        1560,
+        0.2,
+        'square',
+        0.04,
+        0.2
+      );
+    }
+
+    const defaultState = {
+
+      fragments: 0,
+
+      totalFragments: 0,
+
+      perTap: 1,
+
+      autoPerSecond: 0,
+
+      feverMeter: 0,
+
+      feverActive: false,
+
+      feverTimer: 0,
+
+      playTimeSeconds: 0,
+
+      missions: 0,
+
+      achievements: {},
+
+      readyAchievements: {},
+
+      upgrades: [
+
+        {
+          id: 'spaceBoots',
+          name: 'Moon Boots',
+          icon: '🥾',
+          cost: 10,
+          unlockAt: 1,
+          value: 1,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'oxygen',
+          name: 'Oxygen Tank',
+          icon: '🫧',
+          cost: 40,
+          unlockAt: 10,
+          value: 3,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'drone',
+          name: 'Orbit Drone',
+          icon: '🛰️',
+          cost: 100,
+          unlockAt: 25,
+          value: 4,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'scanner',
+          name: 'Star Scanner',
+          icon: '📡',
+          cost: 300,
+          unlockAt: 80,
+          value: 15,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'solar',
+          name: 'Solar Collector',
+          icon: '☀️',
+          cost: 900,
+          unlockAt: 200,
+          value: 30,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'moonbase',
+          name: 'Moon Base',
+          icon: '🌕',
+          cost: 2500,
+          unlockAt: 700,
+          value: 90,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'moonbot',
+          name: 'Moon Mining Bot',
+          icon: '🤖',
+          cost: 7000,
+          unlockAt: 1500,
+          value: 180,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'asteroidDrill',
+          name: 'Asteroid Drill',
+          icon: '⛏️',
+          cost: 20000,
+          unlockAt: 5000,
+          value: 600,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'asteroidBot',
+          name: 'Asteroid Miner',
+          icon: '🪨',
+          cost: 60000,
+          unlockAt: 12000,
+          value: 1500,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'comet',
+          name: 'Comet Engine',
+          icon: '☄️',
+          cost: 150000,
+          unlockAt: 30000,
+          value: 4500,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'satellite',
+          name: 'Mega Satellite',
+          icon: '🛰️',
+          cost: 400000,
+          unlockAt: 80000,
+          value: 9000,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'marsSuit',
+          name: 'Mars Suit',
+          icon: '🔴',
+          cost: 1000000,
+          unlockAt: 200000,
+          value: 30000,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'marsFactory',
+          name: 'Mars Factory',
+          icon: '🏭',
+          cost: 3000000,
+          unlockAt: 500000,
+          value: 75000,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'jupiter',
+          name: 'Jupiter Collector',
+          icon: '🪐',
+          cost: 10000000,
+          unlockAt: 2000000,
+          value: 250000,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'jupiterBot',
+          name: 'Jupiter Mining Fleet',
+          icon: '🚀',
+          cost: 30000000,
+          unlockAt: 5000000,
+          value: 700000,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'saturn',
+          name: 'Saturn Ring Harvester',
+          icon: '💫',
+          cost: 100000000,
+          unlockAt: 20000000,
+          value: 2000000,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'ringBot',
+          name: 'Ring Mining Fleet',
+          icon: '🛸',
+          cost: 300000000,
+          unlockAt: 50000000,
+          value: 6000000,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'uranus',
+          name: 'Uranus Reactor',
+          icon: '🔵',
+          cost: 1e9,
+          unlockAt: 2e8,
+          value: 20e6,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'neptune',
+          name: 'Neptune Turbine',
+          icon: '🌊',
+          cost: 3e9,
+          unlockAt: 5e8,
+          value: 60e6,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'pluto',
+          name: 'Pluto Outpost',
+          icon: '❄️',
+          cost: 1e10,
+          unlockAt: 2e9,
+          value: 250e6,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'plutoBot',
+          name: 'Pluto Explorer',
+          icon: '🔭',
+          cost: 3e10,
+          unlockAt: 5e9,
+          value: 700e6,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'wormhole',
+          name: 'Wormhole Tap',
+          icon: '🌀',
+          cost: 1e11,
+          unlockAt: 2e10,
+          value: 2.5e9,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'wormholeBot',
+          name: 'Wormhole Engine',
+          icon: '⚙️',
+          cost: 3e11,
+          unlockAt: 5e10,
+          value: 7e9,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'nebula',
+          name: 'Nebula Harvester',
+          icon: '🌌',
+          cost: 1e12,
+          unlockAt: 2e11,
+          value: 25e9,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'nebulaBot',
+          name: 'Nebula Factory',
+          icon: '🏗️',
+          cost: 3e12,
+          unlockAt: 5e11,
+          value: 70e9,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'starForge',
+          name: 'Star Forge',
+          icon: '⭐',
+          cost: 1e13,
+          unlockAt: 2e12,
+          value: 250e9,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'starBot',
+          name: 'Star Factory',
+          icon: '🏭',
+          cost: 3e13,
+          unlockAt: 5e12,
+          value: 700e9,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'blackHole',
+          name: 'Black Hole Collector',
+          icon: '🕳️',
+          cost: 1e14,
+          unlockAt: 2e13,
+          value: 2.5e12,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'blackHoleBot',
+          name: 'Black Hole Engine',
+          icon: '⚫',
+          cost: 3e14,
+          unlockAt: 5e13,
+          value: 7e12,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'galaxy',
+          name: 'Galaxy Pig',
+          icon: '🌌',
+          cost: 1e15,
+          unlockAt: 2e14,
+          value: 25e12,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'galaxyBot',
+          name: 'Galaxy Factory',
+          icon: '🏭',
+          cost: 3e15,
+          unlockAt: 5e14,
+          value: 70e12,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'cluster',
+          name: 'Galaxy Cluster',
+          icon: '✨',
+          cost: 1e16,
+          unlockAt: 2e15,
+          value: 250e12,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'clusterBot',
+          name: 'Cluster Engine',
+          icon: '🔧',
+          cost: 3e16,
+          unlockAt: 5e15,
+          value: 700e12,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'dimension',
+          name: 'Dimension Pig',
+          icon: '🔮',
+          cost: 1e17,
+          unlockAt: 2e16,
+          value: 2.5e15,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'dimensionBot',
+          name: 'Dimension Miner',
+          icon: '⛏️',
+          cost: 3e17,
+          unlockAt: 5e16,
+          value: 7e15,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'timeMachine',
+          name: 'Time Machine',
+          icon: '⏳',
+          cost: 1e18,
+          unlockAt: 2e17,
+          value: 25e15,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'timeBot',
+          name: 'Time Factory',
+          icon: '⌛',
+          cost: 3e18,
+          unlockAt: 5e17,
+          value: 70e15,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'multiverse',
+          name: 'Multiverse Pig',
+          icon: '🌐',
+          cost: 1e19,
+          unlockAt: 2e18,
+          value: 250e15,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'multiverseBot',
+          name: 'Multiverse Engine',
+          icon: '🌀',
+          cost: 3e19,
+          unlockAt: 5e18,
+          value: 700e15,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'reality',
+          name: 'Reality Breaker',
+          icon: '💠',
+          cost: 1e20,
+          unlockAt: 2e19,
+          value: 2.5e18,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'realityBot',
+          name: 'Reality Engine',
+          icon: '⚡',
+          cost: 3e20,
+          unlockAt: 5e19,
+          value: 7e18,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'AsteroidCore',
+          name: 'Asteroid Core',
+          icon: '💎',
+          cost: 1e21,
+          unlockAt: 2e20,
+          value: 3e19,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'AsteroidFactory',
+          name: 'Asteroid Factory',
+          icon: '🏗️',
+          cost: 3e21,
+          unlockAt: 5e20,
+          value: 8e19,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'cosmicPig',
+          name: 'Cosmic Pig',
+          icon: '🐷',
+          cost: 1e22,
+          unlockAt: 2e21,
+          value: 4e20,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'cosmicEngine',
+          name: 'Cosmic Engine',
+          icon: '🚀',
+          cost: 3e22,
+          unlockAt: 5e21,
+          value: 1e21,
+          type: 'auto',
+          owned: 0
+        },
+
+        {
+          id: 'AsteroidStar',
+          name: 'Asteroid Star',
+          icon: '🌟',
+          cost: 1e23,
+          unlockAt: 2e22,
+          value: 5e21,
+          type: 'tap',
+          owned: 0
+        },
+
+        {
+          id: 'AsteroidUniverse',
+          name: 'Asteroid Universe',
+          icon: '🌌',
+          cost: 3e23,
+          unlockAt: 5e22,
+          value: 1.2e22,
+          type: 'auto',
+          owned: 0
+        }
+
+      ],
+
+      achievementDefs: [
+
+        {
+          id: 'spaceFirst',
+          name: 'One Small Tap',
+          goal: 1,
+          reward: 25,
+          description: 'Collect 1 Asteroid Fragment',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'space100',
+          name: 'Space Piglet',
+          goal: 100,
+          reward: 250,
+          description: 'Collect 100 Asteroid Fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'space10k',
+          name: 'Orbit Oinker',
+          goal: 10000,
+          reward: 5000,
+          description: 'Collect 10,000 Asteroid Fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceMillion',
+          name: 'Millionaire Astronaut',
+          goal: 1e6,
+          reward: 1e7,
+          description: 'Collect 1 million Asteroid Fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceBillion',
+          name: 'Billionaire Pig',
+          goal: 1e9,
+          reward: 1e10,
+          description: 'Collect 1 billion Asteroid Fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceTrillion',
+          name: 'Cosmic Trillionaire',
+          goal: 1e12,
+          reward: 1e13,
+          description: 'Collect 1 trillion Asteroid Fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceTap100',
+          name: 'Astronaut Hands',
+          goal: 100,
+          reward: 5000,
+          description: 'Reach 100 fragments per tap',
+          metric: 'perTap'
+        },
+
+        {
+          id: 'spaceAuto100',
+          name: 'Space Factory',
+          goal: 100,
+          reward: 10000,
+          description: 'Reach 100 fragments per second',
+          metric: 'auto'
+        },
+
+        {
+          id: 'spaceFever',
+          name: 'Cosmic Fever',
+          goal: 1,
+          reward: 25000,
+          description: 'Activate space fever',
+          metric: 'fever'
+        },
+
+        {
+          id: 'spaceUpgrades10',
+          name: 'Upgrade Astronaut',
+          goal: 10,
+          reward: 50000,
+          description: 'Buy 10 space upgrades',
+          metric: 'upgrades'
+        },
+
+        {
+          id: 'spaceUpgrades25',
+          name: 'Space Engineer',
+          goal: 25,
+          reward: 500000,
+          description: 'Buy 25 space upgrades',
+          metric: 'upgrades'
+        },
+
+        {
+          id: 'spaceUpgrades40',
+          name: 'Cosmic Engineer',
+          goal: 40,
+          reward: 5e6,
+          description: 'Buy 40 space upgrades',
+          metric: 'upgrades'
+        },
+
+        {
+          id: 'spaceBlackHole',
+          name: 'Meet the Void',
+          goal: 1e14,
+          reward: 1e15,
+          description: 'Reach 100 trillion fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceGalaxy',
+          name: 'Galaxy Pig',
+          goal: 1e16,
+          reward: 1e17,
+          description: 'Reach 10 quadrillion fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceDimension',
+          name: 'Dimensional Oinker',
+          goal: 1e18,
+          reward: 1e19,
+          description: 'Reach 1 quintillion fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceMultiverse',
+          name: 'Multiverse Pig',
+          goal: 1e20,
+          reward: 1e21,
+          description: 'Reach 100 quintillion fragments',
+          metric: 'totalFragments'
+        },
+
+        {
+          id: 'spaceAsteroid',
+          name: 'Asteroid Legend',
+          goal: 1e23,
+          reward: 1e24,
+          description: 'Reach 100 sextillion fragments',
+          metric: 'totalFragments'
+        }
+
+      ]
+    };
+
+    let state =
+      JSON.parse(
+        JSON.stringify(defaultState)
+      );
+
+    function loadState() {
+      const raw =
+        localStorage.getItem(saveKey);
+
+      if (!raw) return;
+
+      try {
+        const parsed =
+          JSON.parse(raw);
+
+        state = {
+          ...JSON.parse(
+            JSON.stringify(defaultState)
+          ),
+          ...parsed
+        };
+
+        state.upgrades =
+          defaultState.upgrades.map(
+            (base) => {
+
+              const saved =
+                (parsed.upgrades || [])
+                  .find(
+                    (u) =>
+                      u.id === base.id
+                  );
+
+              return {
+                ...base,
+                owned:
+                  saved?.owned ??
+                  base.owned
+              };
+            }
+          );
+
+        state.achievementDefs =
+          defaultState.achievementDefs;
+
+        state.achievements =
+          parsed.achievements || {};
+
+        state.readyAchievements =
+          parsed.readyAchievements || {};
+
+      } catch (e) {
+        console.log(
+          'Space save failed to load'
+        );
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(
+        saveKey,
+        JSON.stringify(state)
+      );
+    }
+
+    function formatNumber(num) {
+      if (!Number.isFinite(num)) {
+        return '∞';
+      }
+
+      const scales = [
+        [1e23, 'sextillion'],
+        [1e21, 'sextillion'],
+        [1e20, 'quintillion'],
+        [1e18, 'quintillion'],
+        [1e15, 'quadrillion'],
+        [1e12, 'trillion'],
+        [1e9, 'billion'],
+        [1e6, 'million'],
+        [1e3, 'thousand']
+      ];
+
+      const scale =
+        scales.find(
+          ([value]) =>
+            num >= value
+        );
+
+      if (scale) {
+        return (
+          Math.floor(
+            (num / scale[0]) * 10
+          ) / 10
+        ).toFixed(1)
+          + ' '
+          + scale[1];
+      }
+
+      return formatter.format(
+        Math.floor(num)
+      );
+    }
+
+    function isUnlocked(upg) {
+      return (
+        state.totalFragments >=
+        upg.unlockAt
+      );
+    }
+
+    function getMultiplier() {
+      return state.feverActive
+        ? 2
+        : 1;
+    }
+
+    function refreshHud() {
+      fragmentEl.textContent =
+        formatNumber(
+          state.fragments
+        ) +
+        ' Asteroid Fragments';
+
+      tapText.textContent =
+        '+' +
+        formatNumber(
+          state.perTap *
+          getMultiplier()
+        ) +
+        ' per tap';
+
+      perTapStat.textContent =
+        formatNumber(
+          state.perTap
+        );
+
+      autoStat.textContent =
+        formatNumber(
+          state.autoPerSecond
+        ) +
+        '/s';
+
+      feverStat.textContent =
+        Math.min(
+          100,
+          Math.round(
+            state.feverMeter
+          )
+        ) +
+        '%';
+
+      feverFill.style.width =
+        Math.min(
+          100,
+          Math.max(
+            0,
+            state.feverMeter
+          )
+        ) +
+        '%';
+
+      feverLabel.textContent =
+        state.feverActive
+          ? '🌌 Cosmic fever!'
+          : state.feverMeter >= 100
+            ? '✨ Cosmic fever ready'
+            : 'Build space fever';
+
+      missionStat.textContent =
+        formatNumber(
+          state.missions
+        );
+    }
+
+    function getUpgradeCount() {
+      return state.upgrades.reduce(
+        (sum, upg) =>
+          sum + upg.owned,
+        0
+      );
+    }
+
+    function isAchievementReady(ach) {
+
+      if (ach.metric === 'totalFragments') {
+        return (
+          state.totalFragments >=
+          ach.goal
+        );
+      }
+
+      if (ach.metric === 'perTap') {
+        return (
+          state.perTap >=
+          ach.goal
+        );
+      }
+
+      if (ach.metric === 'auto') {
+        return (
+          state.autoPerSecond >=
+          ach.goal
+        );
+      }
+
+      if (ach.metric === 'fever') {
+        return state.feverActive;
+      }
+
+      if (ach.metric === 'upgrades') {
+        return (
+          getUpgradeCount() >=
+          ach.goal
+        );
+      }
+
+      return false;
+    }
+
+    function checkAchievements() {
+
+      let changed = false;
+
+      state.achievementDefs.forEach(
+        (ach) => {
+
+          if (
+            !state.achievements[
+              ach.id
+            ] &&
+            !state.readyAchievements[
+              ach.id
+            ] &&
+            isAchievementReady(ach)
+          ) {
+
+            state.readyAchievements[
+              ach.id
+            ] = true;
+
+            changed = true;
+          }
+        }
+      );
+
+      if (changed) {
+        renderAchievements();
+      }
+    }
+
+    function claimAchievement(id) {
+
+      if (
+        !state.readyAchievements[id] ||
+        state.achievements[id]
+      ) {
+        return;
+      }
+
+      const ach =
+        state.achievementDefs.find(
+          (a) =>
+            a.id === id
+        );
+
+      if (!ach) return;
+
+      state.achievements[id] =
+        true;
+
+      delete state.readyAchievements[
+        id
+      ];
+
+      state.fragments +=
+        ach.reward;
+
+      state.totalFragments +=
+        ach.reward;
+
+      state.missions += 1;
+
+      playReward();
+
+      refreshHud();
+      renderAchievements();
+      saveState();
+    }
+
+    function addFragments(amount) {
+
+      state.fragments += amount;
+      state.totalFragments += amount;
+
+      refreshHud();
+
+      checkAchievements();
+
+      renderStore();
+
+      saveState();
+    }
+
+    const FEVER_BASE_TIME = 8;
+    const FEVER_MAX_TIME = 14;
+    const FEVER_TIME_PER_CLICK = 0.7;
+
+    function addFever(amount) {
+
+      if (state.feverActive) {
+
+        state.feverTimer =
+          Math.min(
+            FEVER_MAX_TIME,
+            state.feverTimer +
+            FEVER_TIME_PER_CLICK
+          );
+
+        refreshHud();
+
+        return;
+      }
+
+      state.feverMeter += amount;
+
+      if (
+        state.feverMeter >= 100
+      ) {
+
+        state.feverMeter = 100;
+
+        state.feverActive =
+          true;
+
+        state.feverTimer =
+          FEVER_BASE_TIME;
+
+        playReward();
+      }
+
+      refreshHud();
+    }
+
+    function updateFever(dt) {
+
+      if (state.feverActive) {
+
+        state.feverTimer -= dt;
+
+        state.feverMeter =
+          Math.max(
+            0,
+            Math.min(
+              100,
+              (
+                state.feverTimer /
+                FEVER_MAX_TIME
+              ) * 100
+            )
+          );
+
+        if (
+          state.feverTimer <= 0
+        ) {
+
+          state.feverActive =
+            false;
+
+          state.feverTimer = 0;
+          state.feverMeter = 0;
+        }
+
+      } else {
+
+        state.feverMeter =
+          Math.max(
+            0,
+            state.feverMeter -
+            dt * 7
+          );
+      }
+
+      refreshHud();
+    }
+
+    function buyUpgrade(upg) {
+
+      if (
+        !isUnlocked(upg) ||
+        state.fragments <
+        upg.cost
+      ) {
+        return;
+      }
+
+      state.fragments -=
+        upg.cost;
+
+      upg.owned += 1;
+
+      if (
+        upg.type === 'tap'
+      ) {
+
+        state.perTap +=
+          upg.value;
+
+      } else {
+
+        state.autoPerSecond +=
+          upg.value;
+      }
+
+      playBuy();
+
+      refreshHud();
+
+      renderStore();
+
+      checkAchievements();
+
+      saveState();
+    }
+
+    function renderStore() {
+
+      storeEl.innerHTML = '';
+
+      state.upgrades.forEach(
+        (upg) => {
+
+          const unlocked =
+            isUnlocked(upg);
+
+          const row =
+            document.createElement(
+              'div'
+            );
+
+          row.className =
+            'upg' +
+            (
+              unlocked
+                ? ''
+                : ' locked'
+            );
+
+          const left =
+            document.createElement(
+              'div'
+            );
+
+          left.className =
+            'upg-info';
+
+          const bonus =
+            upg.type === 'auto'
+              ? '+' +
+                formatNumber(
+                  upg.value
+                ) +
+                ' fragments/s'
+              : '+' +
+                formatNumber(
+                  upg.value
+                ) +
+                ' click';
+
+          const availability =
+            unlocked
+              ? 'Cost: ' +
+                formatNumber(
+                  upg.cost
+                )
+              : 'Unlock: ' +
+                formatNumber(
+                  upg.unlockAt
+                );
+
+          left.innerHTML =
+            '<div class="upg-icon">' +
+            upg.icon +
+            '</div>' +
+
+            '<div class="upg-details">' +
+
+            '<div class="upg-name">' +
+            upg.name +
+            '</div>' +
+
+            '<div class="upg-cost">' +
+            bonus +
+            ' • ' +
+            availability +
+            ' • Owned: ' +
+            upg.owned +
+            '</div>' +
+
+            '</div>';
+
+          const btn =
+            document.createElement(
+              'button'
+            );
+
+          btn.className =
+            'upg-btn';
+
+          btn.textContent =
+            unlocked
+              ? 'Buy'
+              : 'Locked';
+
+          btn.disabled =
+            !unlocked ||
+            state.fragments <
+            upg.cost;
+
+          btn.addEventListener(
+            'click',
+            () =>
+              buyUpgrade(upg)
+          );
+
+          row.appendChild(left);
+          row.appendChild(btn);
+
+          storeEl.appendChild(row);
+        }
+      );
+    }
+
+    function renderAchievements() {
+
+      achievementsEl.innerHTML =
+        '';
+
+      state.achievementDefs.forEach(
+        (ach) => {
+
+          const claimed =
+            !!state.achievements[
+              ach.id
+            ];
+
+          const ready =
+            !!state.readyAchievements[
+              ach.id
+            ];
+
+          const row =
+            document.createElement(
+              'div'
+            );
+
+          row.className =
+            'achievement' +
+            (
+              claimed || ready
+                ? ''
+                : ' locked'
+            );
+
+          const text =
+            document.createElement(
+              'div'
+            );
+
+          text.innerHTML =
+            '<div class="title">' +
+            ach.name +
+            '</div>' +
+
+            '<div class="reward">' +
+            ach.description +
+            ' • +' +
+            formatNumber(
+              ach.reward
+            ) +
+            '</div>';
+
+          let badge;
+
+          if (claimed) {
+
+            badge =
+              document.createElement(
+                'div'
+              );
+
+            badge.className =
+              'badge';
+
+            badge.textContent =
+              '✅';
+
+          } else if (ready) {
+
+            badge =
+              document.createElement(
+                'button'
+              );
+
+            badge.className =
+              'upg-btn';
+
+            badge.textContent =
+              'Claim';
+
+            badge.addEventListener(
+              'click',
+              () =>
+                claimAchievement(
+                  ach.id
+                )
+            );
+
+          } else {
+
+            badge =
+              document.createElement(
+                'div'
+              );
+
+            badge.className =
+              'badge';
+
+            badge.textContent =
+              '🔒';
+          }
+
+          row.appendChild(text);
+          row.appendChild(badge);
+
+          achievementsEl.appendChild(
+            row
+          );
+        }
+      );
+    }
+
+    function makeBurst() {
+
+      const burst =
+        document.createElement(
+          'div'
+        );
+
+      const amount =
+        state.feverActive
+          ? state.perTap * 3
+          : state.perTap;
+
+      burst.className =
+        'burst';
+
+      burst.textContent =
+        '+' +
+        formatNumber(
+          amount
+        );
+
+      burst.style.left =
+        '50%';
+
+      burst.style.top =
+        '50%';
+
+      pigEl.appendChild(
+        burst
+      );
+
+      setTimeout(
+        () =>
+          burst.remove(),
+        600
+      );
+    }
+
+    pigEl.addEventListener(
+      'pointerdown',
+      (event) => {
+
+        event.preventDefault();
+
+        ensureAudio();
+
+        const gain =
+          state.perTap *
+          getMultiplier();
+
+        addFragments(gain);
+
+        addFever(10);
+
+        playSpaceClick();
+
+        makeBurst();
+      }
+    );
+
+    homeBtn.addEventListener(
+      'click',
+      () => {
+
+        if (
+          window.parent !==
+          window
+        ) {
+
+          window.parent.postMessage(
+            {
+              type:
+                'DougHub-home'
+            },
+            '*'
+          );
+
+          window.parent.postMessage(
+            {
+              type:
+                'pig-clicker-home'
+            },
+            '*'
+          );
+
+        } else {
+
+          window.location.href =
+            'DougHub.html';
+        }
+      }
+    );
+
+    farmBtn.addEventListener(
+      'click',
+      () => {
+
+        window.location.href =
+          'pig-clicker.html';
+      }
+    );
+
+    window.addEventListener(
+      'message',
+      (event) => {
+
+        if (
+          event.data?.type ===
+          'pig-clicker-space-reset'
+        ) {
+
+          state =
+            JSON.parse(
+              JSON.stringify(
+                defaultState
+              )
+            );
+
+          saveState();
+
+          renderStore();
+          renderAchievements();
+          refreshHud();
+        }
+      }
+    );
+
+    function gameLoop(ts) {
+
+      if (!gameLoop.last) {
+        gameLoop.last = ts;
+      }
+
+      const dt =
+        Math.min(
+          0.1,
+          (ts - gameLoop.last) /
+          1000
+        );
+
+      gameLoop.last = ts;
+
+      state.playTimeSeconds +=
+        dt;
+
+      if (
+        ts - lastSave >= 5000
+      ) {
+
+        lastSave = ts;
+
+        saveState();
+      }
+
+      if (
+        state.autoPerSecond > 0
+      ) {
+
+        const autoGain =
+          state.autoPerSecond *
+          (
+            state.feverActive
+              ? 3
+              : 1
+          ) *
+          dt;
+
+        addFragments(
+          autoGain
+        );
+      }
+
+      updateFever(dt);
+
+      requestAnimationFrame(
+        gameLoop
+      );
+    }
+
+    window.addEventListener(
+      'pointerdown',
+      ensureAudio,
+      { once: true }
+    );
+
+    loadState();
+
+    renderStore();
+    renderAchievements();
+    refreshHud();
+
+    requestAnimationFrame(
+      gameLoop
+    );
+  </script>
+
+</body>
+</html>
