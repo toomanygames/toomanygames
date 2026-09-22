@@ -16,6 +16,14 @@ const placeholder =
 const previewStatus =
     document.getElementById("previewStatus");
 
+const fullscreenPreviewButton =
+    document.getElementById(
+        "fullscreenPreviewButton"
+    );
+
+const previewContainer =
+    document.querySelector(".preview");
+
 const characterCount =
     document.getElementById("characterCount");
 
@@ -54,6 +62,43 @@ const resultCategory =
 
 
 let previewVersion = 0;
+
+const COMMUNITY_GAME_WIDTH = 1100;
+const COMMUNITY_GAME_HEIGHT = 742;
+
+
+/* =========================
+   PREVIEW SCALE
+========================= */
+
+function fitPreview() {
+
+    const frame =
+        document.getElementById("gamePreview");
+
+    if (!frame || !previewContainer) {
+        return;
+    }
+
+    const scale =
+        Math.min(
+            previewContainer.clientWidth /
+                COMMUNITY_GAME_WIDTH,
+            previewContainer.clientHeight /
+                COMMUNITY_GAME_HEIGHT
+        );
+
+    const horizontalSpace =
+        previewContainer.clientWidth -
+        COMMUNITY_GAME_WIDTH * scale;
+
+    const verticalSpace =
+        previewContainer.clientHeight -
+        COMMUNITY_GAME_HEIGHT * scale;
+
+    frame.style.transform =
+        `translate(${horizontalSpace / 2}px, ${verticalSpace / 2}px) scale(${scale})`;
+}
 
 
 /* =========================
@@ -160,113 +205,15 @@ function runGame() {
         "Game Preview";
 
     newFrame.setAttribute(
-        "sandbox",
-        "allow-scripts"
-    );
-
-    newFrame.setAttribute(
         "scrolling",
         "no"
     );
-
-    newFrame.style.position =
-        "absolute";
-
-    newFrame.style.width =
-        "1280px";
-
-    newFrame.style.height =
-        "720px";
-
-    newFrame.style.border =
-        "none";
-
-    newFrame.style.background =
-        "white";
-
-    newFrame.style.left =
-        "0";
-
-    newFrame.style.top =
-        "0";
-
-    newFrame.style.transformOrigin =
-        "top left";
 
     if (oldFrame) {
         oldFrame.replaceWith(newFrame);
     }
 
-
-    /* =========================
-       FORCE GAME TO 1280x720
-    ========================= */
-
-    const viewportCSS = `
-<style id="dougHubPreviewViewport">
-
-html {
-    width: 1280px !important;
-    height: 720px !important;
-
-    min-width: 1280px !important;
-    min-height: 720px !important;
-
-    max-width: 1280px !important;
-    max-height: 720px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    overflow: hidden !important;
-}
-
-body {
-    width: 1280px !important;
-    height: 720px !important;
-
-    min-width: 1280px !important;
-    min-height: 720px !important;
-
-    max-width: 1280px !important;
-    max-height: 720px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    overflow: hidden !important;
-}
-
-</style>
-`;
-
-
-    let finalCode =
-        code;
-
-
-    if (/<head[\s>]/i.test(code)) {
-
-        finalCode =
-            code.replace(
-                /<head([^>]*)>/i,
-                function(match) {
-
-                    return (
-                        match +
-                        viewportCSS
-                    );
-
-                }
-            );
-
-    } else {
-
-        finalCode =
-            viewportCSS +
-            code;
-    }
-
+    fitPreview();
 
     requestAnimationFrame(
         function() {
@@ -279,7 +226,7 @@ body {
             }
 
             newFrame.srcdoc =
-                finalCode;
+                code;
 
         }
     );
@@ -714,6 +661,86 @@ if (clearButton) {
     );
 
 }
+
+
+/* =========================
+   FULLSCREEN PREVIEW
+========================= */
+
+function updateFullscreenButton() {
+
+    if (!fullscreenPreviewButton) {
+        return;
+    }
+
+    const isFullscreen =
+        document.fullscreenElement ===
+        previewContainer;
+
+    fullscreenPreviewButton.textContent =
+        isFullscreen
+            ? "Exit Fullscreen"
+            : "⛶ Fullscreen";
+}
+
+
+if (fullscreenPreviewButton && previewContainer) {
+
+    fullscreenPreviewButton.addEventListener(
+        "click",
+        async function() {
+
+            try {
+
+                if (
+                    document.fullscreenElement ===
+                    previewContainer
+                ) {
+
+                    await document.exitFullscreen();
+
+                } else {
+
+                    await previewContainer.requestFullscreen();
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Could not change preview fullscreen mode:",
+                    error
+                );
+
+                if (previewStatus) {
+
+                    previewStatus.textContent =
+                        "Fullscreen is unavailable";
+
+                }
+
+            }
+
+        }
+    );
+
+    document.addEventListener(
+        "fullscreenchange",
+        function() {
+
+            updateFullscreenButton();
+            fitPreview();
+
+        }
+    );
+
+}
+
+
+window.addEventListener(
+    "resize",
+    fitPreview
+);
 
 
 /* =========================
