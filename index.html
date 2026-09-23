@@ -2417,101 +2417,19 @@ document.addEventListener(
 
 async function loadDMailCount() {
 
-    const badge =
-        document.getElementById(
-            "dmailBadge"
-        );
+    const badge = document.getElementById("dmailBadge");
 
-    if (!badge) {
-        return;
-    }
+    if (!badge) return;
 
-    if (!currentUser) {
+    badge.textContent = "0";
+    badge.classList.remove("show");
+    badge.style.display = "none";
 
-        badge.textContent =
-            "0";
+    if (!currentUser) return;
 
-        badge.classList.remove(
-            "show"
-        );
-
-        return;
-    }
-
-    /*
-     * The badge is for NEW received DMail, not the total number
-     * of messages that happen to exist in the database.
-     */
-    const seenAt =
-        localStorage.getItem(
-            DMAIl_SEEN_KEY
-        );
-
-    if (!seenAt) {
-
-        badge.textContent = "0";
-        badge.classList.remove("show");
-        return;
-
-    }
-
-    const {
-        count,
-        error
-    } =
-        await supabaseClient
-            .from("direct_messages")
-            .select(
-                "id",
-                {
-                    count: "exact",
-                    head: true
-                }
-            )
-            .eq(
-                "receiver_id",
-                currentUser.id
-            )
-            .gt(
-                "created_at",
-                seenAt
-            );
-
-    if (error) {
-
-        console.error(
-            "Could not load new DMail count:",
-            error
-        );
-
-        badge.textContent = "0";
-        badge.classList.remove("show");
-        return;
-    }
-
-    const messageCount =
-        Number(
-            count || 0
-        );
-
-    if (messageCount > 0) {
-
-        badge.textContent =
-            messageCount > 99
-                ? "99+"
-                : messageCount;
-
-        badge.classList.add("show");
-        badge.style.display = "inline-flex";
-
-    } else {
-
-        badge.textContent = "0";
-        badge.classList.remove("show");
-        badge.style.display = "none";
-
-    }
-
+    /* DMail has no persistent read/unread column yet.
+       Keep the homepage badge hidden until a new-message
+       tracking system is added, instead of showing old messages. */
 }
 
 
