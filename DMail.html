@@ -50,25 +50,64 @@ button {
 /* UNIFIED DMAIL HEADER */
 .content-header {
     flex: 0 0 auto;
-    min-height: 70px;
-    padding: 12px 24px;
+    min-height: 68px;
+    padding: 10px 22px;
     border-bottom: 1px solid rgba(255,255,255,.07);
+    background: rgba(7, 5, 17, .72);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.12);
+    backdrop-filter: blur(18px);
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
     min-width: 0;
 }
 
+.header-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,.12);
+}
+
 .header-title {
-    font-size: 22px;
+    font-size: 19px;
+    font-weight: 850;
+    color: #f5f3ff;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    box-shadow: 0 0 24px rgba(99,102,241,.28);
+    font-size: 18px;
     font-weight: 900;
+}
+
+.logo-doug {
+    color: white;
+}
+
+.logo-hub {
+    color: #a855f7;
 }
 
 .mail-body {
@@ -93,12 +132,11 @@ button {
 /* SIDEBAR */
 
 .sidebar {
-    width: 270px;
-    padding: 20px;
-    flex: 0 0 270px;
+    width: 250px;
+    padding: 18px;
+    flex: 0 0 250px;
     overflow-y: auto;
-
-    background: rgba(10, 7, 22, .82);
+    background: rgba(10, 7, 22, .66);
     border-right: 1px solid rgba(255,255,255,.07);
 }
 
@@ -220,8 +258,8 @@ button {
 }
 
 .user-list {
-    width: 290px;
-    flex: 0 0 290px;
+    width: 270px;
+    flex: 0 0 270px;
     min-height: 0;
     overflow-y: auto;
     border-right: 1px solid rgba(255,255,255,.07);
@@ -312,8 +350,10 @@ button {
 
 .chat-header {
     flex: 0 0 auto;
-    padding: 15px 20px;
+    min-height: 62px;
+    padding: 12px 18px;
     border-bottom: 1px solid rgba(255,255,255,.06);
+    background: rgba(255,255,255,.018);
     display: flex;
     align-items: center;
     gap: 11px;
@@ -327,10 +367,12 @@ button {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 22px;
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
 }
 
 .empty {
@@ -342,11 +384,11 @@ button {
 
 .message {
     width: fit-content;
-    max-width: min(650px, 75%);
+    max-width: min(620px, 72%);
     align-self: flex-start;
-    padding: 9px 12px;
-    border-radius: 15px;
-    line-height: 1.4;
+    padding: 8px 11px;
+    border-radius: 14px;
+    line-height: 1.35;
 
     background: rgba(255,255,255,.05);
     border: 1px solid rgba(255,255,255,.06);
@@ -371,9 +413,9 @@ button {
 }
 
 .message-time {
-    margin-top: 7px;
+    margin-top: 5px;
     color: #817a96;
-    font-size: 10px;
+    font-size: 9px;
 }
 
 .message-image {
@@ -388,8 +430,9 @@ button {
 
 .composer {
     flex: 0 0 auto;
-    padding: 13px;
+    padding: 10px 13px 12px;
     border-top: 1px solid rgba(255,255,255,.07);
+    background: rgba(8,6,18,.58);
 }
 
 .composer-inner {
@@ -400,8 +443,8 @@ button {
 .composer textarea {
     flex: 1;
     resize: none;
-    min-height: 45px;
-    max-height: 130px;
+    min-height: 43px;
+    max-height: 120px;
 
     padding: 12px;
     border-radius: 11px;
@@ -764,16 +807,19 @@ html, body {
 
         <div class="content-header">
             <div class="header-left">
-                <div class="logo">
-                    <div class="logo-icon">✉</div>
-                    <div>DMail</div>
-                </div>
+                <a href="index.html" class="logo" aria-label="DougHub Home">
+                    <div class="logo-icon">D</div>
+                    <div><span class="logo-doug">Doug</span><span class="logo-hub">Hub</span></div>
+                </a>
+
+                <div class="header-divider"></div>
+
                 <div class="header-title" id="pageTitle">Inbox</div>
             </div>
 
             <div class="top-actions">
                 <button class="refresh-button" id="refreshButton">↻ Refresh</button>
-                <a href="index.html" class="home-button">← DougHub</a>
+                <a href="index.html" class="home-button">← Back</a>
             </div>
         </div>
 
