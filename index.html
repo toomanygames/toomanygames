@@ -2059,6 +2059,8 @@ footer {
 <script>
 
 /* Clear the DMail notification immediately when any DMail link is clicked. */
+const DMAIl_SEEN_KEY = "doughub_dmail_last_seen";
+
 document.addEventListener("click", function(event) {
 
     const dmailLink =
@@ -2076,6 +2078,12 @@ document.addEventListener("click", function(event) {
         badge.classList.remove("show");
         badge.style.display = "none";
     }
+
+    /* Mark everything currently in the inbox as seen. */
+    localStorage.setItem(
+        DMAIl_SEEN_KEY,
+        new Date().toISOString()
+    );
 
 });
 
@@ -2430,6 +2438,23 @@ async function loadDMailCount() {
         return;
     }
 
+    /*
+     * The badge is for NEW received DMail, not the total number
+     * of messages that happen to exist in the database.
+     */
+    const seenAt =
+        localStorage.getItem(
+            DMAIl_SEEN_KEY
+        );
+
+    if (!seenAt) {
+
+        badge.textContent = "0";
+        badge.classList.remove("show");
+        return;
+
+    }
+
     const {
         count,
         error
@@ -2446,22 +2471,21 @@ async function loadDMailCount() {
             .eq(
                 "receiver_id",
                 currentUser.id
+            )
+            .gt(
+                "created_at",
+                seenAt
             );
 
     if (error) {
 
         console.error(
-            "Could not load DMail count:",
+            "Could not load new DMail count:",
             error
         );
 
-        badge.textContent =
-            "0";
-
-        badge.classList.remove(
-            "show"
-        );
-
+        badge.textContent = "0";
+        badge.classList.remove("show");
         return;
     }
 
@@ -2477,18 +2501,14 @@ async function loadDMailCount() {
                 ? "99+"
                 : messageCount;
 
-        badge.classList.add(
-            "show"
-        );
+        badge.classList.add("show");
+        badge.style.display = "inline-flex";
 
     } else {
 
-        badge.textContent =
-            "0";
-
-        badge.classList.remove(
-            "show"
-        );
+        badge.textContent = "0";
+        badge.classList.remove("show");
+        badge.style.display = "none";
 
     }
 
