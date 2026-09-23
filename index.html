@@ -151,6 +151,22 @@ header {
     display: inline-flex;
 }
 
+/* COMMUNITY CHAT NOTIFICATION */
+.chat-notification {
+    display: none;
+    width: 9px;
+    height: 9px;
+    margin-left: 6px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 12px rgba(239,68,68,0.8);
+    vertical-align: middle;
+}
+
+.chat-notification.show {
+    display: inline-block;
+}
+
 /* ACCOUNT */
 
 .account-area {
@@ -276,7 +292,7 @@ main {
     margin: auto;
 }
 
-/* HERO */
+/* BIG TOP SECTION */
 
 .hero {
     padding: 55px 0 30px;
@@ -500,14 +516,9 @@ main {
     border-radius: 20px;
 
     background:
-        linear-gradient(
-            145deg,
-            rgba(99,102,241,0.16),
-            rgba(13,17,39,0.76)
-        );
+        linear-gradient(145deg, rgba(99,102,241,0.16), rgba(13,17,39,0.76));
 
-    box-shadow:
-        0 16px 40px rgba(0,0,0,0.16);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.16);
 }
 
 .feature-overview h2 {
@@ -521,8 +532,7 @@ main {
 .overview-section {
     display: grid;
 
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
     gap: 18px;
 }
@@ -596,15 +606,10 @@ main {
     border-radius: 20px;
 
     background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(168,85,247,0.24),
-            transparent 43%
-        ),
+        radial-gradient(circle at 100% 0%, rgba(168,85,247,0.24), transparent 43%),
         rgba(13,17,39,0.78);
 
-    box-shadow:
-        0 16px 40px rgba(0,0,0,0.16);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.16);
 }
 
 .douggames-overview h2 {
@@ -647,10 +652,9 @@ main {
     background: rgba(168,85,247,0.29);
 }
 
-/* SERVICES */
-
 .service-list {
     display: grid;
+
     gap: 10px;
 }
 
@@ -719,11 +723,380 @@ main {
     background: rgba(99,102,241,0.32);
 }
 
+/* CREATE GAME */
+
+.hero-create-button {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-top: 28px;
+
+    padding: 13px 22px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366f1,
+            #8b5cf6
+        );
+
+    border: none;
+
+    font-size:
+        14px;
+
+    font-weight:
+        800;
+
+    box-shadow:
+        0 10px 30px rgba(99,102,241,0.25);
+
+    transition:
+        0.2s;
+}
+
+.hero-create-button:hover {
+    transform:
+        translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #7477ff,
+            #9b6bff
+        );
+
+    box-shadow:
+        0 14px 35px rgba(99,102,241,0.35);
+}
+
 /* SECTIONS */
 
 .section {
     padding:
         25px 0 55px;
+}
+
+.section-header {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    margin-bottom:
+        20px;
+}
+
+.section-title {
+    margin:
+        0;
+
+    font-size:
+        25px;
+}
+
+.section-subtitle {
+    margin:
+        5px 0 0;
+
+    color:
+        #858494;
+
+    font-size:
+        14px;
+}
+
+/* SEARCH */
+
+.search-box {
+    width:
+        260px;
+
+    max-width:
+        100%;
+
+    padding:
+        11px 14px;
+
+    border-radius:
+        11px;
+
+    outline:
+        none;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+}
+
+.search-box:focus {
+    border-color:
+        rgba(129,140,248,0.6);
+}
+
+/* GAMES */
+
+.games-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        18px;
+}
+
+.game-card {
+    position:
+        relative;
+
+    min-height:
+        210px;
+
+    padding:
+        23px;
+
+    border-radius:
+        20px;
+
+    overflow:
+        hidden;
+
+    background:
+        rgba(13,17,39,0.72);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    transition:
+        0.25s;
+
+    cursor:
+        pointer;
+}
+
+.game-card:hover {
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(129,140,248,0.35);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.25);
+}
+
+.game-icon {
+    width:
+        52px;
+
+    height:
+        52px;
+
+    border-radius:
+        15px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    font-size:
+        27px;
+
+    background:
+        rgba(99,102,241,0.12);
+
+    border:
+        1px solid rgba(99,102,241,0.18);
+}
+
+.game-card h3 {
+    margin:
+        18px 0 7px;
+
+    font-size:
+        19px;
+}
+
+.game-card p {
+    margin:
+        0;
+
+    color:
+        #888798;
+
+    font-size:
+        14px;
+
+    line-height:
+        1.5;
+}
+
+.play-label {
+    position:
+        absolute;
+
+    left:
+        23px;
+
+    bottom:
+        19px;
+
+    color:
+        #9fa3ff;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+}
+
+/* COMMUNITY */
+
+.community-games {
+    display:
+        flex;
+
+    gap:
+        16px;
+
+    overflow-x:
+        auto;
+
+    padding:
+        4px 2px 16px;
+
+    scrollbar-width:
+        thin;
+}
+
+.community-card {
+    flex:
+        0 0 270px;
+
+    min-height:
+        190px;
+
+    padding:
+        21px;
+
+    border-radius:
+        18px;
+
+    background:
+        rgba(13,17,39,0.72);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    cursor:
+        pointer;
+
+    transition:
+        0.2s;
+}
+
+.community-card:hover {
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(168,85,247,0.35);
+}
+
+.community-category {
+    display:
+        inline-block;
+
+    padding:
+        5px 9px;
+
+    border-radius:
+        999px;
+
+    font-size:
+        11px;
+
+    color:
+        #c4b5fd;
+
+    background:
+        rgba(139,92,246,0.12);
+}
+
+.community-card h3 {
+    margin:
+        15px 0 7px;
+}
+
+.community-card p {
+    color:
+        #8c8b9c;
+
+    font-size:
+        13px;
+
+    line-height:
+        1.5;
+
+    margin:
+        0;
+}
+
+.community-author {
+    margin-top:
+        15px;
+
+    color:
+        #777687;
+
+    font-size:
+        12px;
+}
+
+.empty {
+    padding:
+        35px;
+
+    text-align:
+        center;
+
+    color:
+        #777687;
+
+    border:
+        1px dashed rgba(255,255,255,0.1);
+
+    border-radius:
+        18px;
 }
 
 /* FEEDBACK */
@@ -1253,11 +1626,20 @@ footer {
     }
 
     .overview-section {
-        grid-template-columns:
-            1fr;
+        grid-template-columns: 1fr;
     }
 
     .service-row {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .service-button {
+        width: 100%;
+    }
+
+    .section-header {
         align-items:
             flex-start;
 
@@ -1265,7 +1647,7 @@ footer {
             column;
     }
 
-    .service-button {
+    .search-box {
         width:
             100%;
     }
@@ -1334,10 +1716,8 @@ footer {
         <a
             href="DMail.html"
             class="nav-link dmail-nav"
-            id="dmailLink"
         >
             <span>DMail</span>
-
             <span
                 id="dmailBadge"
                 class="dmail-badge"
@@ -1346,7 +1726,6 @@ footer {
             </span>
         </a>
 
-<<<<<<< ours
         <a
             href="chat.html"
             class="nav-link"
@@ -1360,8 +1739,6 @@ footer {
             ></span>
         </a>
 
-=======
->>>>>>> theirs
         <div class="account-area">
 
             <button
@@ -1485,184 +1862,67 @@ footer {
 
     </section>
 
-    <!-- EVERYTHING DOUGHUB HAS -->
-
-    <section
-        class="section"
-        aria-labelledby="featureOverviewTitle"
-    >
+    <section class="section" aria-labelledby="featureOverviewTitle">
 
         <div class="overview-section">
 
             <div class="feature-overview">
-
-                <p class="overview-eyebrow">
-                    One place, many things
-                </p>
-
-                <h2 id="featureOverviewTitle">
-                    Everything DougHub Has
-                </h2>
+                <p class="overview-eyebrow">One place, many things</p>
+                <h2 id="featureOverviewTitle">Everything DougHub Has</h2>
 
                 <ul class="feature-list">
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        Games
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        Community Games
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        DougTube
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        DMail
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        Community Chat
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        DougMedia
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        DougBank
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        DougAI
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        Game Publishing
-                    </li>
-
-                    <li>
-                        <span class="feature-check">✓</span>
-                        User Accounts
-                    </li>
-
+                    <li><span class="feature-check">✓</span>Games</li>
+                    <li><span class="feature-check">✓</span>Community Games</li>
+                    <li><span class="feature-check">✓</span>DougTube</li>
+                    <li><span class="feature-check">✓</span>DMail</li>
+                    <li><span class="feature-check">✓</span>Community Chat</li>
+                    <li><span class="feature-check">✓</span>DougMedia</li>
+                    <li><span class="feature-check">✓</span>DougBank</li>
+                    <li><span class="feature-check">✓</span>DougAI</li>
+                    <li><span class="feature-check">✓</span>Game Publishing</li>
+                    <li><span class="feature-check">✓</span>User Accounts</li>
                 </ul>
-
             </div>
 
             <div class="douggames-overview">
-
-                <p class="overview-eyebrow">
-                    Play or create
-                </p>
-
-                <h2>
-                    DougGames
-                </h2>
-
+                <p class="overview-eyebrow">Play or create</p>
+                <h2>DougGames</h2>
                 <p>
                     Find Doug's games and games made by the community in one place. Want to make your own? Open the creator and publish it to DougHub.
                 </p>
-
-                <a
-                    href="douggames.html"
-                    class="douggames-link"
-                >
-                    Explore DougGames →
-                </a>
-
+                <a href="douggames.html" class="douggames-link">Explore DougGames →</a>
             </div>
 
         </div>
 
     </section>
 
-    <!-- SERVICES -->
-
-    <section
-        class="section"
-        aria-label="DougHub services"
-    >
+    <section class="section" aria-label="DougHub services">
 
         <div class="service-list">
 
             <div class="service-row">
-
                 <div>
-
-                    <h2>
-                        DMail
-                    </h2>
-
-                    <p>
-                        Send direct messages to friends on DougHub.
-                    </p>
-
+                    <h2>DMail</h2>
+                    <p>Send direct messages to friends on DougHub.</p>
                 </div>
-
-                <a
-                    href="DMail.html"
-                    class="service-button"
-                >
-                    Open DMail
-                </a>
-
+                <a href="DMail.html" class="service-button">Open DMail</a>
             </div>
 
             <div class="service-row">
-
                 <div>
-
-                    <h2>
-                        DougTube
-                    </h2>
-
-                    <p>
-                        Watch and share videos with the DougHub community.
-                    </p>
-
+                    <h2>DougTube</h2>
+                    <p>Watch and share videos with the DougHub community.</p>
                 </div>
-
-                <a
-                    href="DougTube.html"
-                    class="service-button"
-                >
-                    Open DougTube
-                </a>
-
+                <a href="DougTube.html" class="service-button">Open DougTube</a>
             </div>
 
             <div class="service-row">
-
                 <div>
-
-                    <h2>
-                        Community Chat
-                    </h2>
-
-                    <p>
-                        Talk with other people in the DougHub community.
-                    </p>
-
+                    <h2>Community Chat</h2>
+                    <p>Talk with other people in the DougHub community.</p>
                 </div>
-
-                <a
-                    href="chat.html"
-                    class="service-button"
-                >
-                    Open Chat
-                </a>
-
+                <a href="chat.html" class="service-button">Open Chat</a>
             </div>
 
         </div>
@@ -1798,6 +2058,27 @@ footer {
 
 <script>
 
+/* Clear the DMail notification immediately when any DMail link is clicked. */
+document.addEventListener("click", function(event) {
+
+    const dmailLink =
+        event.target.closest('a[href="DMail.html"]');
+
+    if (!dmailLink) {
+        return;
+    }
+
+    const badge =
+        document.getElementById("dmailBadge");
+
+    if (badge) {
+        badge.textContent = "0";
+        badge.classList.remove("show");
+        badge.style.display = "none";
+    }
+
+});
+
 const SUPABASE_URL =
     "https://agsqdqcsmsppcdqxlppj.supabase.co";
 
@@ -1819,7 +2100,7 @@ let playStartedAt = null;
 
 
 /* =========================================
-   ACCOUNT MENU
+   ACCOUNT
 ========================================= */
 
 const accountButton =
@@ -1846,11 +2127,11 @@ if (accountButton) {
             }
 
             accountMenu.classList.toggle("show");
-
         }
     );
 
 }
+
 
 document.addEventListener(
     "click",
@@ -1908,7 +2189,7 @@ async function loadAccount() {
             .style.display =
                 "none";
 
-        hideDMailBadge();
+        await loadDMailCount();
 
         return;
     }
@@ -2002,41 +2283,131 @@ async function loadAccount() {
 
     }
 
-    await loadDMailNotification();
+    await loadDMailCount();
 
 }
 
 
 /* =========================================
-   DMAIL NOTIFICATION
+   COMMUNITY CHAT NOTIFICATION
 ========================================= */
 
-/*
-   This stores the newest received DMail message
-   that the user has already seen.
+const CHAT_SEEN_KEY = "doughub_chat_last_seen";
 
-   It is stored separately for every account.
-*/
+async function checkChatNotification() {
 
-function getDMailSeenKey() {
+    const dot =
+        document.getElementById("chatNotification");
 
-    if (!currentUser) {
-        return null;
+    if (!dot) {
+        return;
     }
 
-    return (
-        "doughub_dmail_seen_" +
-        currentUser.id
-    );
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("chat_messages")
+            .select("created_at")
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+    if (error) {
+
+        console.error(
+            "Could not check chat notification:",
+            error
+        );
+
+        return;
+    }
+
+    const latest =
+        data?.[0]?.created_at;
+
+    if (!latest) {
+
+        dot.classList.remove("show");
+
+        return;
+    }
+
+    const seen =
+        localStorage.getItem(
+            CHAT_SEEN_KEY
+        );
+
+    /* First time: don't show old messages. */
+    if (!seen) {
+
+        localStorage.setItem(
+            CHAT_SEEN_KEY,
+            latest
+        );
+
+        dot.classList.remove("show");
+
+        return;
+    }
+
+    if (
+        new Date(latest).getTime() >
+        new Date(seen).getTime()
+    ) {
+
+        dot.classList.add("show");
+
+    } else {
+
+        dot.classList.remove("show");
+
+    }
 
 }
 
 
-/*
-   Hide the badge immediately.
-*/
+/* Clicking Community Chat hides the red dot and opens chat.html. */
+document.addEventListener(
+    "click",
+    function(event) {
 
-function hideDMailBadge() {
+        const chatLink =
+            event.target.closest(
+                'a[href="chat.html"]'
+            );
+
+        if (!chatLink) {
+            return;
+        }
+
+        const dot =
+            document.getElementById(
+                "chatNotification"
+            );
+
+        if (dot) {
+            dot.classList.remove("show");
+        }
+
+        /*
+         * The chat page will immediately save the actual
+         * newest message as seen when it opens.
+         */
+        localStorage.setItem(
+            CHAT_SEEN_KEY,
+            new Date().toISOString()
+        );
+
+    }
+);
+
+
+/* =========================================
+   DMAIL COUNT
+========================================= */
+
+async function loadDMailCount() {
 
     const badge =
         document.getElementById(
@@ -2047,133 +2418,64 @@ function hideDMailBadge() {
         return;
     }
 
-    badge.textContent =
-        "0";
+    if (!currentUser) {
 
-    badge.classList.remove(
-        "show"
-    );
+        badge.textContent =
+            "0";
 
-}
-
-
-/*
-   Load how many DMail messages have
-   arrived since the user last opened DMail.
-*/
-
-async function loadDMailNotification() {
-
-    const badge =
-        document.getElementById(
-            "dmailBadge"
+        badge.classList.remove(
+            "show"
         );
-
-    if (!badge || !currentUser) {
-
-        hideDMailBadge();
 
         return;
     }
 
-    const seenKey =
-        getDMailSeenKey();
-
-    const seen =
-        localStorage.getItem(
-            seenKey
-        );
-
-    /*
-       Get all received DMail messages.
-       We only need their creation times.
-    */
-
     const {
-        data,
+        count,
         error
     } =
         await supabaseClient
             .from("direct_messages")
             .select(
-                "id, created_at"
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
             )
             .eq(
                 "receiver_id",
                 currentUser.id
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: true
-                }
             );
 
     if (error) {
 
         console.error(
-            "Could not load DMail notifications:",
+            "Could not load DMail count:",
             error
         );
 
-        hideDMailBadge();
+        badge.textContent =
+            "0";
 
-        return;
-    }
-
-    if (!data || data.length === 0) {
-
-        hideDMailBadge();
-
-        return;
-    }
-
-    /*
-       First visit:
-       remember the newest existing message so
-       old messages don't suddenly count as new.
-    */
-
-    if (!seen) {
-
-        const newest =
-            data[data.length - 1].created_at;
-
-        localStorage.setItem(
-            seenKey,
-            newest
+        badge.classList.remove(
+            "show"
         );
 
-        hideDMailBadge();
-
         return;
     }
 
-    const seenTime =
-        new Date(seen).getTime();
-
-    const unreadMessages =
-        data.filter(
-            function(message) {
-
-                return (
-                    new Date(
-                        message.created_at
-                    ).getTime() > seenTime
-                );
-
-            }
+    const messageCount =
+        Number(
+            count || 0
         );
 
-    const unreadCount =
-        unreadMessages.length;
-
-    if (unreadCount > 0) {
+    if (messageCount > 0) {
 
         badge.textContent =
-            unreadCount > 99
+            messageCount > 99
                 ? "99+"
-                : unreadCount.toString();
+                : messageCount;
 
         badge.classList.add(
             "show"
@@ -2181,87 +2483,16 @@ async function loadDMailNotification() {
 
     } else {
 
-        hideDMailBadge();
+        badge.textContent =
+            "0";
+
+        badge.classList.remove(
+            "show"
+        );
 
     }
 
 }
-
-
-/*
-   Clicking DMail means the user has seen
-   the newest received messages.
-
-   IMPORTANT:
-   We do this before navigation so the
-   notification disappears immediately.
-*/
-
-function markDMailAsSeen() {
-
-    if (!currentUser) {
-        return;
-    }
-
-    const seenKey =
-        getDMailSeenKey();
-
-    /*
-       Use the current time as the seen point.
-       Any message received after this time
-       will become a new notification.
-    */
-
-    localStorage.setItem(
-        seenKey,
-        new Date().toISOString()
-    );
-
-    hideDMailBadge();
-
-}
-
-
-/*
-   Handle BOTH DMail links:
-   - Header DMail
-   - Open DMail service button
-*/
-
-document.addEventListener(
-    "click",
-    function(event) {
-
-        const dmailLink =
-            event.target.closest(
-                'a[href="DMail.html"]'
-            );
-
-        if (!dmailLink) {
-            return;
-        }
-
-        markDMailAsSeen();
-
-    }
-);
-
-
-/*
-   Keep checking for new DMail while
-   the user is sitting on the homepage.
-*/
-
-setInterval(
-    function() {
-
-        if (currentUser) {
-            loadDMailNotification();
-        }
-
-    },
-    3000
-);
 
 
 /* =========================================
@@ -2304,10 +2535,6 @@ async function loadUserCount() {
         document.getElementById(
             "userCount"
         );
-
-    if (!userCount) {
-        return;
-    }
 
     const {
         count,
@@ -2359,7 +2586,6 @@ async function updateGameCount() {
         return;
     }
 
-<<<<<<< ours
     /* Community Games live on douggames.html. */
     if (!document.getElementById("communityGames")) {
 
@@ -2418,71 +2644,238 @@ async function loadCommunityGames() {
         document.getElementById(
             "communityGames"
         );
-=======
-    /*
-       DougHub has 4 built-in games.
->>>>>>> theirs
 
-       Community games are stored in
-       community_games and are added to
-       the total.
-    */
+    /* Community Games live on douggames.html. */
+    if (!container) {
+        await updateGameCount();
+        return;
+    }
 
     const {
-        count,
+        data,
         error
     } =
         await supabaseClient
             .from("community_games")
             .select(
-                "id",
+                "id, title, description, author, category, code, created_at, creator_id"
+            )
+            .order(
+                "created_at",
                 {
-                    count: "exact",
-                    head: true
+                    ascending: false
                 }
             );
 
     if (error) {
 
         console.error(
-            "Could not load community game count:",
+            "Could not load community games:",
             error
         );
 
-        /*
-           Still show the 4 built-in games
-           if Supabase has an error.
-        */
+        container.innerHTML =
+            `<div class="empty">
+                Could not load community games.
+            </div>`;
 
-        gameCount.textContent =
-            "4";
+        updateGameCount();
 
         return;
     }
 
-    gameCount.textContent =
-        (
-            4 +
-            Number(count || 0)
-        ).toLocaleString();
+    communityGames =
+        data || [];
+
+    renderCommunityGames();
+
+    updateGameCount();
 
 }
 
 
 /* =========================================
-   COMMUNITY GAMES
+   RENDER COMMUNITY GAMES
 ========================================= */
 
-async function loadCommunityGames() {
+function renderCommunityGames() {
 
-    /*
-       The homepage does not display the
-       community game cards anymore.
+    const container =
+        document.getElementById(
+            "communityGames"
+        );
 
-       It only needs the total game count.
-    */
+    const searchInput =
+        document.getElementById(
+            "gameSearch"
+        );
 
-    await updateGameCount();
+    const search =
+        searchInput
+            ? searchInput.value
+                .toLowerCase()
+                .trim()
+            : "";
+
+    const filtered =
+        communityGames.filter(
+            function(game) {
+
+                return (
+
+                    (game.title || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (game.description || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (game.author || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (game.category || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                );
+
+            }
+        );
+
+    if (!filtered.length) {
+
+        container.innerHTML =
+            `<div class="empty">
+                No community games found.
+            </div>`;
+
+        return;
+    }
+
+    container.innerHTML =
+        filtered
+            .map(
+                function(game) {
+
+                    return `
+
+                        <div
+                            class="community-card"
+                            data-game-id="${escapeHtml(game.id)}"
+                        >
+
+                            <span
+                                class="community-category"
+                            >
+                                ${escapeHtml(
+                                    game.category ||
+                                    "Game"
+                                )}
+                            </span>
+
+                            <h3>
+                                ${escapeHtml(
+                                    game.title ||
+                                    "Untitled Game"
+                                )}
+                            </h3>
+
+                            <p>
+                                ${escapeHtml(
+                                    game.description ||
+                                    "A community-created game."
+                                )}
+                            </p>
+
+                            <div
+                                class="community-author"
+                            >
+                                Made by
+                                ${escapeHtml(
+                                    game.author ||
+                                    "Unknown"
+                                )}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+    container
+        .querySelectorAll(
+            ".community-card"
+        )
+        .forEach(
+            function(card) {
+
+                card.addEventListener(
+                    "click",
+                    function() {
+
+                        openCommunityGame(
+                            card.dataset.gameId
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   SEARCH AUTOFILL PROTECTION + SEARCH
+========================================= */
+
+const gameSearch =
+    document.getElementById(
+        "gameSearch"
+    );
+
+if (gameSearch) {
+
+    gameSearch.addEventListener(
+        "focus",
+        function() {
+
+            gameSearch.readOnly =
+                false;
+
+        }
+    );
+
+    gameSearch.addEventListener(
+        "click",
+        function() {
+
+            gameSearch.readOnly =
+                false;
+
+        }
+    );
+
+    gameSearch.addEventListener(
+        "input",
+        function() {
+
+            renderCommunityGames();
+
+        }
+    );
 
 }
 
@@ -2559,6 +2952,7 @@ if (closePlayer) {
     );
 
 }
+
 
 const playerOverlay =
     document.getElementById(
@@ -2639,13 +3033,11 @@ async function startPlaySession(
                 "game_play_sessions"
             )
             .insert({
-
                 game_id:
                     gameId,
 
                 user_id:
                     currentUser.id
-
             })
             .select(
                 "id"
@@ -2761,10 +3153,6 @@ const feedbackCount =
 
 
 function updateFeedbackCount() {
-
-    if (!feedbackMessage || !feedbackCount) {
-        return;
-    }
 
     feedbackCount.textContent =
         `${feedbackMessage.value.length.toLocaleString()} / 2000`;
@@ -2952,12 +3340,16 @@ function escapeHtml(value) {
 ========================================= */
 
 loadAccount();
-
 loadCommunityGames();
-
 loadUserCount();
-
 updateFeedbackCount();
+
+/* Check for new Community Chat messages immediately and keep checking. */
+checkChatNotification();
+setInterval(
+    checkChatNotification,
+    2000
+);
 
 </script>
 
