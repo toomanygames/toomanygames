@@ -2036,6 +2036,27 @@ footer {
 
 <script>
 
+/* Clear the DMail notification immediately when any DMail link is clicked. */
+document.addEventListener("click", function(event) {
+
+    const dmailLink =
+        event.target.closest('a[href="DMail.html"]');
+
+    if (!dmailLink) {
+        return;
+    }
+
+    const badge =
+        document.getElementById("dmailBadge");
+
+    if (badge) {
+        badge.textContent = "0";
+        badge.classList.remove("show");
+        badge.style.display = "none";
+    }
+
+});
+
 const SUPABASE_URL =
     "https://agsqdqcsmsppcdqxlppj.supabase.co";
 
