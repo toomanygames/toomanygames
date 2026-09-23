@@ -1714,6 +1714,13 @@ footer {
         </a>
 
         <a
+            href="chat.html"
+            class="nav-link"
+        >
+            Community Chat
+        </a>
+
+        <a
             href="DMail.html"
             class="nav-link dmail-nav"
         >
@@ -2586,8 +2593,7 @@ async function updateGameCount() {
         return;
     }
 
-    /* The homepage does not render the game cards, so count published
-       Community Games directly for its hero total. */
+    /* Community Games live on douggames.html. */
     if (!document.getElementById("communityGames")) {
 
         const {
