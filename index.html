@@ -2524,41 +2524,23 @@ async function updateGameCount() {
         return;
     }
 
-    /* Community Games live on douggames.html. */
-    if (!document.getElementById("communityGames")) {
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("community_games")
+            .select("id");
 
-        const {
-            count,
+    if (error) {
+
+        console.error(
+            "Could not load community game count:",
             error
-        } =
-            await supabaseClient
-                .from("community_games")
-                .select(
-                    "id",
-                    {
-                        count: "exact",
-                        head: true
-                    }
-                );
-
-        if (error) {
-
-            console.error(
-                "Could not load community game count:",
-                error
-            );
-
-            gameCount.textContent =
-                "4";
-
-            return;
-        }
+        );
 
         gameCount.textContent =
-            (
-                4 +
-                Number(count || 0)
-            ).toLocaleString();
+            "4";
 
         return;
     }
@@ -2566,7 +2548,7 @@ async function updateGameCount() {
     gameCount.textContent =
         (
             4 +
-            communityGames.length
+            (data?.length || 0)
         ).toLocaleString();
 
 }
