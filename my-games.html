@@ -207,6 +207,14 @@ button {
     transition: 0.2s;
 }
 
+.edit-button {
+    background: #8b5cf6;
+}
+
+.edit-button:hover {
+    background: #7c3aed;
+}
+
 .rename-button {
     background: #6366f1;
 }
@@ -630,6 +638,12 @@ async function createGameCard(game, userId) {
         <div class="actions">
 
             <button
+                class="edit-button"
+                data-id="${game.id}">
+                🛠️ Edit Game
+            </button>
+
+            <button
                 class="rename-button"
                 data-id="${game.id}">
                 ✏️ Rename
@@ -643,6 +657,14 @@ async function createGameCard(game, userId) {
 
         </div>
     `;
+
+    const editButton =
+        card.querySelector(".edit-button");
+
+    editButton.addEventListener(
+        "click",
+        () => editGame(game)
+    );
 
     const renameButton =
         card.querySelector(".rename-button");
@@ -661,6 +683,12 @@ async function createGameCard(game, userId) {
     );
 
     gamesElement.appendChild(card);
+}
+
+
+function editGame(game) {
+    window.location.href =
+        `Scripting/scripting.html?edit=${encodeURIComponent(game.id)}`;
 }
 
 

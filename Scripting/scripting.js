@@ -61,6 +61,120 @@ const resultCategory =
     document.getElementById("resultCategory");
 
 
+/* =========================
+   EDIT MODE
+========================= */
+
+const urlParams = new URLSearchParams(window.location.search);
+const editGameId = urlParams.get("edit");
+let editingGame = false;
+
+
+async function loadGameForEditing() {
+    if (!editGameId) return;
+
+    try {
+        const { data: { session }, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+        if (sessionError) {
+            throw new Error(sessionError.message);
+        }
+
+        if (!session || !session.user) {
+            return;
+        }
+
+        const { data: game, error } = await supabaseClient
+            .from("community_games")
+            .select(
+                "id,title,description,author,category,code,creator_id"
+            )
+            .eq("id", editGameId)
+            .eq("creator_id", session.user.id)
+            .single();
+
+        if (error || !game) {
+            throw new Error(
+                error?.message ||
+                "That game could not be found or you do not own it."
+            );
+        }
+
+        editingGame = true;
+
+        gameTitle.value =
+            game.title || "";
+
+        gameDescription.value =
+            game.description || "";
+
+        gameCategory.value =
+            game.category || "Other";
+
+        gameAuthor.value =
+            game.author ||
+            gameAuthor.value;
+
+        codeEditor.value =
+            game.code || "";
+
+
+        const heading =
+            document.querySelector(".hero h1");
+
+        const description =
+            document.querySelector(".hero p");
+
+
+        if (heading) {
+            heading.textContent =
+                "Edit Your Game";
+        }
+
+        if (description) {
+            description.textContent =
+                "Update your game, test your changes, and save them to DougHub.";
+        }
+
+        if (publishButton) {
+            publishButton.textContent =
+                "Save Changes";
+        }
+
+
+        updateEditor();
+        runGame();
+
+
+        if (publishMessage) {
+            publishMessage.textContent =
+                "Editing your published game.";
+
+            publishMessage.style.color =
+                "#a78bfa";
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Could not load game for editing:",
+            error
+        );
+
+        if (publishMessage) {
+
+            publishMessage.textContent =
+                error.message ||
+                "Could not load that game.";
+
+            publishMessage.style.color =
+                "#ef4444";
+        }
+    }
+}
+
+
 let previewVersion = 0;
 
 const COMMUNITY_GAME_WIDTH = 1100;
@@ -74,27 +188,37 @@ const COMMUNITY_GAME_HEIGHT = 742;
 function fitPreview() {
 
     const frame =
-        document.getElementById("gamePreview");
+        document.getElementById(
+            "gamePreview"
+        );
 
-    if (!frame || !previewContainer) {
+    if (
+        !frame ||
+        !previewContainer
+    ) {
         return;
     }
+
 
     const scale =
         Math.min(
             previewContainer.clientWidth /
                 COMMUNITY_GAME_WIDTH,
+
             previewContainer.clientHeight /
                 COMMUNITY_GAME_HEIGHT
         );
+
 
     const horizontalSpace =
         previewContainer.clientWidth -
         COMMUNITY_GAME_WIDTH * scale;
 
+
     const verticalSpace =
         previewContainer.clientHeight -
         COMMUNITY_GAME_HEIGHT * scale;
+
 
     frame.style.transform =
         `translate(${horizontalSpace / 2}px, ${verticalSpace / 2}px) scale(${scale})`;
@@ -111,12 +235,19 @@ function updateEditor() {
         return;
     }
 
-    const code = codeEditor.value;
-    const lines = code.split("\n");
+
+    const code =
+        codeEditor.value;
+
+    const lines =
+        code.split("\n");
+
 
     if (lineNumbers) {
 
-        lineNumbers.innerHTML = "";
+        lineNumbers.innerHTML =
+            "";
+
 
         for (
             let i = 1;
@@ -125,13 +256,19 @@ function updateEditor() {
         ) {
 
             const line =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
-            line.textContent = i;
+            line.textContent =
+                i;
 
-            lineNumbers.appendChild(line);
+            lineNumbers.appendChild(
+                line
+            );
         }
     }
+
 
     if (characterCount) {
 
@@ -151,69 +288,103 @@ function runGame() {
         return;
     }
 
+
     const code =
         codeEditor.value;
+
 
     if (!code.trim()) {
 
         if (previewStatus) {
+
             previewStatus.textContent =
                 "No code";
         }
 
+
         if (placeholder) {
+
             placeholder.style.display =
                 "flex";
         }
 
+
         const frame =
-            document.getElementById("gamePreview");
+            document.getElementById(
+                "gamePreview"
+            );
+
 
         if (frame) {
-            frame.srcdoc = "";
-            frame.style.display = "none";
+
+            frame.srcdoc =
+                "";
+
+            frame.style.display =
+                "none";
         }
 
         return;
     }
 
+
     previewVersion++;
+
 
     const currentVersion =
         previewVersion;
 
+
     if (previewStatus) {
+
         previewStatus.textContent =
             "Loading...";
     }
 
+
     if (placeholder) {
+
         placeholder.style.display =
             "none";
     }
 
+
     const oldFrame =
-        document.getElementById("gamePreview");
+        document.getElementById(
+            "gamePreview"
+        );
+
 
     const newFrame =
-        document.createElement("iframe");
+        document.createElement(
+            "iframe"
+        );
+
 
     newFrame.id =
         "gamePreview";
 
+
     newFrame.title =
         "Game Preview";
+
 
     newFrame.setAttribute(
         "scrolling",
         "no"
     );
 
+
     if (oldFrame) {
-        oldFrame.replaceWith(newFrame);
+
+        oldFrame.replaceWith(
+            newFrame
+        );
     }
 
+
     fitPreview();
+
 
     requestAnimationFrame(
         function() {
@@ -225,9 +396,9 @@ function runGame() {
                 return;
             }
 
+
             newFrame.srcdoc =
                 code;
-
         }
     );
 
@@ -244,11 +415,8 @@ function runGame() {
 
                     previewStatus.textContent =
                         "Running";
-
                 }
-
             }
-
         };
 }
 
@@ -267,15 +435,19 @@ function clearCode() {
         return;
     }
 
+
     previewVersion++;
+
 
     codeEditor.value =
         "";
+
 
     const frame =
         document.getElementById(
             "gamePreview"
         );
+
 
     if (frame) {
 
@@ -286,11 +458,13 @@ function clearCode() {
             "none";
     }
 
+
     if (placeholder) {
 
         placeholder.style.display =
             "flex";
     }
+
 
     if (previewStatus) {
 
@@ -298,14 +472,16 @@ function clearCode() {
             "Waiting";
     }
 
+
     updateEditor();
+
 
     codeEditor.focus();
 }
 
 
 /* =========================
-   PUBLISH
+   PUBLISH / UPDATE
 ========================= */
 
 async function publishGame() {
@@ -313,15 +489,19 @@ async function publishGame() {
     const title =
         gameTitle.value.trim();
 
+
     const description =
         gameDescription.value.trim();
+
 
     const author =
         gameAuthor.value.trim() ||
         "Anonymous";
 
+
     const category =
         gameCategory.value;
+
 
     const code =
         codeEditor.value.trim();
@@ -329,6 +509,7 @@ async function publishGame() {
 
     publishMessage.textContent =
         "";
+
 
     publishMessage.style.color =
         "";
@@ -358,7 +539,10 @@ async function publishGame() {
 
     /* SIZE */
 
-    if (code.length > 500000) {
+    if (
+        code.length >
+        500000
+    ) {
 
         publishMessage.textContent =
             "Your game code is too large.";
@@ -370,16 +554,19 @@ async function publishGame() {
     publishButton.disabled =
         true;
 
+
     publishButton.textContent =
-        "Publishing...";
+        editingGame
+            ? "Saving..."
+            : "Publishing...";
 
 
     try {
 
         /*
           Use the Supabase client
-          that was already created
-          in scripting.html.
+          already created in
+          scripting.html.
         */
 
         if (
@@ -422,37 +609,99 @@ async function publishGame() {
 
 
         /*
-          Publish
+          Publish a new game
+          OR update an existing game.
         */
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("community_games")
-                .insert({
+        let data;
+        let error;
 
-                    title: title,
 
-                    description:
-                        description,
+        if (
+            editingGame &&
+            editGameId
+        ) {
 
-                    author:
-                        author,
+            const result =
+                await supabaseClient
+                    .from(
+                        "community_games"
+                    )
+                    .update({
 
-                    category:
-                        category,
+                        title:
+                            title,
 
-                    code:
-                        code,
+                        description:
+                            description,
 
-                    creator_id:
+                        author:
+                            author,
+
+                        category:
+                            category,
+
+                        code:
+                            code
+
+                    })
+                    .eq(
+                        "id",
+                        editGameId
+                    )
+                    .eq(
+                        "creator_id",
                         session.user.id
+                    )
+                    .select()
+                    .single();
 
-                })
-                .select()
-                .single();
+
+            data =
+                result.data;
+
+            error =
+                result.error;
+
+
+        } else {
+
+            const result =
+                await supabaseClient
+                    .from(
+                        "community_games"
+                    )
+                    .insert({
+
+                        title:
+                            title,
+
+                        description:
+                            description,
+
+                        author:
+                            author,
+
+                        category:
+                            category,
+
+                        code:
+                            code,
+
+                        creator_id:
+                            session.user.id
+
+                    })
+                    .select()
+                    .single();
+
+
+            data =
+                result.data;
+
+            error =
+                result.error;
+        }
 
 
         if (error) {
@@ -461,6 +710,7 @@ async function publishGame() {
                 "Supabase error:",
                 error
             );
+
 
             throw new Error(
                 error.message ||
@@ -476,13 +726,16 @@ async function publishGame() {
         resultTitle.textContent =
             data.title;
 
+
         resultDescription.textContent =
             data.description ||
             "No description.";
 
+
         resultAuthor.textContent =
             data.author ||
             "Anonymous";
+
 
         resultCategory.textContent =
             data.category ||
@@ -494,7 +747,10 @@ async function publishGame() {
 
 
         publishMessage.textContent =
-            "Game published successfully!";
+            editingGame
+                ? "Game updated successfully!"
+                : "Game published successfully!";
+
 
         publishMessage.style.color =
             "#22c55e";
@@ -513,20 +769,26 @@ async function publishGame() {
             error
         );
 
+
         publishMessage.textContent =
             error.message ||
             "Could not publish the game.";
 
+
         publishMessage.style.color =
             "#ef4444";
+
 
     } finally {
 
         publishButton.disabled =
             false;
 
+
         publishButton.textContent =
-            "Publish Game";
+            editingGame
+                ? "Save Changes"
+                : "Publish Game";
     }
 }
 
@@ -559,9 +821,7 @@ if (codeEditor) {
 
                 lineNumbers.scrollTop =
                     codeEditor.scrollTop;
-
             }
-
         }
     );
 
@@ -584,8 +844,10 @@ if (codeEditor) {
 
                 event.preventDefault();
 
+
                 const start =
                     codeEditor.selectionStart;
+
 
                 const end =
                     codeEditor.selectionEnd;
@@ -604,6 +866,7 @@ if (codeEditor) {
 
                 codeEditor.selectionStart =
                     start + 4;
+
 
                 codeEditor.selectionEnd =
                     start + 4;
@@ -645,7 +908,6 @@ if (runButton) {
         "click",
         runGame
     );
-
 }
 
 
@@ -659,7 +921,6 @@ if (clearButton) {
         "click",
         clearCode
     );
-
 }
 
 
@@ -669,13 +930,17 @@ if (clearButton) {
 
 function updateFullscreenButton() {
 
-    if (!fullscreenPreviewButton) {
+    if (
+        !fullscreenPreviewButton
+    ) {
         return;
     }
+
 
     const isFullscreen =
         document.fullscreenElement ===
         previewContainer;
+
 
     fullscreenPreviewButton.textContent =
         isFullscreen
@@ -684,7 +949,10 @@ function updateFullscreenButton() {
 }
 
 
-if (fullscreenPreviewButton && previewContainer) {
+if (
+    fullscreenPreviewButton &&
+    previewContainer
+) {
 
     fullscreenPreviewButton.addEventListener(
         "click",
@@ -702,7 +970,6 @@ if (fullscreenPreviewButton && previewContainer) {
                 } else {
 
                     await previewContainer.requestFullscreen();
-
                 }
 
             } catch (error) {
@@ -712,28 +979,26 @@ if (fullscreenPreviewButton && previewContainer) {
                     error
                 );
 
+
                 if (previewStatus) {
 
                     previewStatus.textContent =
                         "Fullscreen is unavailable";
-
                 }
-
             }
-
         }
     );
+
 
     document.addEventListener(
         "fullscreenchange",
         function() {
 
             updateFullscreenButton();
-            fitPreview();
 
+            fitPreview();
         }
     );
-
 }
 
 
@@ -753,7 +1018,6 @@ if (publishButton) {
         "click",
         publishGame
     );
-
 }
 
 
@@ -762,3 +1026,5 @@ if (publishButton) {
 ========================= */
 
 updateEditor();
+
+loadGameForEditing();
