@@ -1155,9 +1155,6 @@ async function openConversation(profile) {
 
     setActiveNav("inboxButton");
 
-    document.getElementById("pageTitle").textContent =
-        "Inbox";
-
     document.getElementById("mailLayout").style.display =
         "flex";
 
@@ -1719,10 +1716,6 @@ document
         showInbox
     );
 
-
-        }
-    );
-
 document
     .getElementById("otherButton")
     .addEventListener(
@@ -1738,11 +1731,6 @@ document
             setActiveNav(
                 "otherButton"
             );
-
-            document.getElementById(
-                "pageTitle"
-            ).textContent =
-                "Other DMail";
 
             document.getElementById(
                 "mailLayout"
