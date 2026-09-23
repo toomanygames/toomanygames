@@ -99,11 +99,19 @@ button {
     background: rgba(255,255,255,.1);
 }
 
+/* FUSED DMAIl HEADER */
+.content-header {
+    flex: 0 0 auto;
+    min-height: 70px;
+    padding: 12px 24px;
+}
+
 /* MAIN */
 
 .main {
     flex: 1;
     display: flex;
+    flex-direction: column;
     min-height: 0;
     height: auto;
     overflow: hidden;
@@ -607,6 +615,27 @@ button {
     color: #60a5fa;
 }
 
+
+@media (max-width: 650px) {
+    .content-header {
+        min-height: 64px;
+        padding: 10px 15px;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .home-button {
+        padding: 8px 11px;
+        font-size: 13px;
+    }
+}
 /* MOBILE */
 
 @media (max-width: 850px) {
@@ -737,18 +766,18 @@ html, body {
 
 <div class="app">
 
-    <header class="topbar">
-        <div class="logo">
-            <div class="logo-icon">✉</div>
-            <div>DMail</div>
-        </div>
-
-        <div class="top-actions">
-            <a href="index.html" class="home-button">← DougHub</a>
-        </div>
-    </header>
-
     <main class="main">
+
+        <div class="content-header">
+            <div class="logo">
+                <div class="logo-icon">✉</div>
+                <div>DMail</div>
+            </div>
+
+            <div class="top-actions">
+                <a href="index.html" class="home-button">← DougHub</a>
+            </div>
+        </div>
 
         <aside class="sidebar">
 
