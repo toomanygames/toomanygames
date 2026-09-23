@@ -217,17 +217,6 @@ button {
     font-weight: 900;
 }
 
-.refresh-button {
-    padding: 9px 13px;
-    border-radius: 9px;
-    border: 1px solid rgba(255,255,255,.08);
-    color: white;
-    background: rgba(255,255,255,.05);
-}
-
-.refresh-button:hover {
-    background: rgba(255,255,255,.1);
-}
 
 /* INBOX */
 
@@ -766,13 +755,6 @@ html, body {
                 </button>
 
                 <button
-                    class="nav-button"
-                    id="starredButton"
-                >
-                    ⭐ Starred
-                </button>
-
-                <button
                     class="nav-button admin"
                     id="otherButton"
                     style="display:none;"
@@ -795,20 +777,6 @@ html, body {
         </aside>
 
         <section class="content">
-
-            <div class="content-header">
-                <div class="content-title" id="pageTitle">
-                    Inbox
-                </div>
-
-                <button
-                    class="refresh-button"
-                    id="refreshButton"
-                >
-                    ↻ Refresh
-                </button>
-            </div>
-
             <div class="notice">
                 🔒 DMail messages are private and are not stored. Once a message is sent, it is not saved or accessible later.
 
@@ -1751,15 +1719,6 @@ document
         showInbox
     );
 
-document
-    .getElementById("starredButton")
-    .addEventListener(
-        "click",
-        () => {
-
-            alert(
-                "Starred messages can be added next."
-            );
 
         }
     );
@@ -1799,25 +1758,26 @@ document
         }
     );
 
+
 /* --------------------------------
-   REFRESH
+   AUTOMATIC REFRESH
 -------------------------------- */
 
-document
-    .getElementById("refreshButton")
-    .addEventListener(
-        "click",
-        async () => {
+async function refreshDMail() {
+    if (document.hidden) {
+        return;
+    }
 
-            if (currentTab === "other") {
-                await loadOtherMessages();
-            } else if (selectedUser) {
-                await loadConversation();
-            }
+    if (currentTab === "other") {
+        await loadOtherMessages();
+    } else if (selectedUser) {
+        await loadConversation();
+    }
 
-            await loadProfiles();
-        }
-    );
+    await loadProfiles();
+}
+
+setInterval(refreshDMail, 60000);
 
 /* --------------------------------
    COMPOSE
