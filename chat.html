@@ -607,6 +607,9 @@ let currentAvatarUrl = "";
 
 let loadingMessages = false;
 
+const CHAT_SEEN_KEY =
+  "doughub_chat_last_seen";
+
 
 /* =========================================
    ERROR
@@ -943,6 +946,59 @@ async function renderMessages(
 }
 
 
+async function markChatAsSeen() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("chat_messages")
+      .select("created_at")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      )
+      .limit(1);
+
+  if (error) {
+
+    console.error(
+      "Could not mark chat as seen:",
+      error
+    );
+
+    return;
+  }
+
+  const latest =
+    data?.[0]?.created_at;
+
+  if (latest) {
+
+    localStorage.setItem(
+      CHAT_SEEN_KEY,
+      latest
+    );
+
+  } else {
+
+    localStorage.setItem(
+      CHAT_SEEN_KEY,
+      new Date().toISOString()
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   LOAD MESSAGES
+========================================= */
+
 async function loadMessages() {
 
   if (loadingMessages) {
@@ -1193,6 +1249,9 @@ async function loadAccount() {
     currentUsername;
 
   await loadMessages();
+
+  /* Opening Community Chat clears the homepage red dot. */
+  await markChatAsSeen();
 
   startChatRefresh();
 
