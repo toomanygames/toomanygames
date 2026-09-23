@@ -47,64 +47,37 @@ button {
     overflow: hidden;
 }
 
-/* TOP BAR */
-
-.topbar {
-    height: 70px;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background: rgba(12, 8, 27, 0.88);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    backdrop-filter: blur(18px);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 22px;
-    font-weight: 900;
-}
-
-.logo-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    box-shadow: 0 8px 25px rgba(99,102,241,.3);
-}
-
-.top-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.home-button {
-    text-decoration: none;
-    color: white;
-    padding: 9px 14px;
-    border-radius: 10px;
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.08);
-}
-
-.home-button:hover {
-    background: rgba(255,255,255,.1);
-}
-
-/* FUSED DMAIl HEADER */
+/* UNIFIED DMAIL HEADER */
 .content-header {
     flex: 0 0 auto;
     min-height: 70px;
     padding: 12px 24px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
 }
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+}
+
+.header-title {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.mail-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow: hidden;
+}
+
 
 /* MAIN */
 
@@ -113,7 +86,7 @@ button {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    height: auto;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -616,26 +589,6 @@ button {
 }
 
 
-@media (max-width: 650px) {
-    .content-header {
-        min-height: 64px;
-        padding: 10px 15px;
-    }
-
-    .logo {
-        font-size: 19px;
-    }
-
-    .logo-icon {
-        width: 36px;
-        height: 36px;
-    }
-
-    .home-button {
-        padding: 8px 11px;
-        font-size: 13px;
-    }
-}
 /* MOBILE */
 
 @media (max-width: 850px) {
@@ -649,6 +602,47 @@ button {
 }
 
 @media (max-width: 650px) {
+    .content-header {
+        min-height: 64px;
+        padding: 10px 15px;
+        gap: 10px;
+    }
+
+    .header-left {
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .header-title {
+        display: none;
+    }
+
+    .top-actions {
+        gap: 6px;
+    }
+
+    .refresh-button {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    .home-button {
+        padding: 8px 11px;
+        font-size: 13px;
+    }
+
+    .mail-body {
+        flex-direction: column;
+    }
+
     .sidebar {
         width: 100%;
         max-height: 180px;
@@ -728,7 +722,7 @@ html, body {
 }
 
 .main {
-    height: calc(100vh - 70px);
+    height: 100vh;
     min-height: 0 !important;
     overflow: hidden;
 }
@@ -769,16 +763,21 @@ html, body {
     <main class="main">
 
         <div class="content-header">
-            <div class="logo">
-                <div class="logo-icon">✉</div>
-                <div>DMail</div>
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">✉</div>
+                    <div>DMail</div>
+                </div>
+                <div class="header-title" id="pageTitle">Inbox</div>
             </div>
 
             <div class="top-actions">
+                <button class="refresh-button" id="refreshButton">↻ Refresh</button>
                 <a href="index.html" class="home-button">← DougHub</a>
             </div>
         </div>
 
+        <div class="mail-body">
         <aside class="sidebar">
 
             <button class="compose-button" id="composeButton">
@@ -824,19 +823,6 @@ html, body {
         </aside>
 
         <section class="content">
-
-            <div class="content-header">
-                <div class="content-title" id="pageTitle">
-                    Inbox
-                </div>
-
-                <button
-                    class="refresh-button"
-                    id="refreshButton"
-                >
-                    ↻ Refresh
-                </button>
-            </div>
 
             <div class="notice">
                 🔒 DMail messages are private and are not stored. Once a message is sent, it is not saved or accessible later.
@@ -930,6 +916,7 @@ html, body {
             ></div>
 
         </section>
+        </div>
 
     </main>
 
