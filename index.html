@@ -1000,6 +1000,9 @@ main {
     scrollbar-width:
         thin;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: 8px;
+    mask-image: linear-gradient(to right, transparent 0, black 18px, black calc(100% - 18px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 18px, black calc(100% - 18px), transparent 100%);
     scroll-behavior: smooth;
     overscroll-behavior-x: contain;
 }
@@ -1007,6 +1010,7 @@ main {
 .community-card {
     flex:
         0 0 270px;
+    scroll-snap-align: start;
 
     min-height:
         190px;
@@ -1027,7 +1031,8 @@ main {
         pointer;
 
     transition:
-        0.2s;
+        transform 0.2s, border-color 0.2s, background 0.2s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.14);
 }
 
 .community-card:hover {
