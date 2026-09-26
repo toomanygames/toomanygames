@@ -2345,17 +2345,52 @@ async function loadUserCount() {
    GAME COUNT
 ========================================= */
 
-function updateGameCount() {
+async function updateGameCount() {
 
     const gameCount =
         document.getElementById(
             "gameCount"
         );
 
+    if (!gameCount) {
+        return;
+    }
+
+    /* Keep this number in one place: these are the built-in games. */
+    const BUILT_IN_GAME_COUNT = 4;
+
+    const {
+        count,
+        error
+    } =
+        await supabaseClient
+            .from("community_games")
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
+            );
+
+    if (error) {
+
+        console.error(
+            "Could not load community game count:",
+            error
+        );
+
+        /* Still show the built-in games if Supabase is unavailable. */
+        gameCount.textContent =
+            BUILT_IN_GAME_COUNT.toLocaleString();
+
+        return;
+    }
+
     gameCount.textContent =
         (
-            4 +
-            communityGames.length
+            BUILT_IN_GAME_COUNT +
+            Number(count || 0)
         ).toLocaleString();
 
 }
