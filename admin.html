@@ -542,6 +542,62 @@ button:disabled {
         flex-basis: 88%;
     }
 }
+
+
+/* VISIBLE SLIDER CONTROLS */
+.slider-shell {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.slider-arrow {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: linear-gradient(135deg, rgba(99,102,241,.18), rgba(168,85,247,.14));
+    color: white;
+    font-size: 22px;
+    box-shadow: 0 8px 22px rgba(0,0,0,.18);
+    transition: transform .18s ease, background .18s ease, opacity .18s ease;
+}
+
+.slider-arrow:hover {
+    transform: translateY(-1px) scale(1.03);
+    background: linear-gradient(135deg, rgba(99,102,241,.3), rgba(168,85,247,.24));
+}
+
+.slider-arrow:disabled {
+    opacity: .28;
+    transform: none;
+}
+
+.slider-shell > #usersList,
+.slider-shell > #activityList,
+.slider-shell > #warningsList,
+.slider-shell > #chatMessages,
+.slider-shell > #communityGames,
+.slider-shell > #dougTubeVideos {
+    min-width: 0;
+}
+
+@media (max-width: 700px) {
+    .slider-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .slider-arrow {
+        display: none;
+    }
+}
+
 </style>
 </head>
 
@@ -867,6 +923,77 @@ const videoModerationStatus =
 let currentAdminUser = null;
 let allUsers = [];
 let presenceMap = new Map();
+
+
+function setupAdminSliders() {
+
+    const sliderIds = [
+        "usersList",
+        "activityList",
+        "warningsList",
+        "chatMessages",
+        "communityGames",
+        "dougTubeVideos"
+    ];
+
+    sliderIds.forEach(function(id) {
+
+        const slider = document.getElementById(id);
+        if (!slider || slider.parentElement.classList.contains("slider-shell")) {
+            return;
+        }
+
+        const shell = document.createElement("div");
+        shell.className = "slider-shell";
+
+        const left = document.createElement("button");
+        left.type = "button";
+        left.className = "slider-arrow";
+        left.setAttribute("aria-label", "Scroll left");
+        left.textContent = "‹";
+
+        const right = document.createElement("button");
+        right.type = "button";
+        right.className = "slider-arrow";
+        right.setAttribute("aria-label", "Scroll right");
+        right.textContent = "›";
+
+        slider.parentNode.insertBefore(shell, slider);
+        shell.appendChild(left);
+        shell.appendChild(slider);
+        shell.appendChild(right);
+
+        function updateButtons() {
+            const max = slider.scrollWidth - slider.clientWidth;
+            left.disabled = slider.scrollLeft <= 2;
+            right.disabled = slider.scrollLeft >= max - 2;
+        }
+
+        function move(amount) {
+            slider.scrollBy({
+                left: amount,
+                behavior: "smooth"
+            });
+        }
+
+        left.addEventListener("click", function() {
+            move(-(slider.clientWidth * 0.82));
+        });
+
+        right.addEventListener("click", function() {
+            move(slider.clientWidth * 0.82);
+        });
+
+        slider.addEventListener("scroll", updateButtons, { passive: true });
+        window.addEventListener("resize", updateButtons);
+
+        const observer = new ResizeObserver(updateButtons);
+        observer.observe(slider);
+
+        updateButtons();
+    });
+}
+
 
 
 async function checkAdmin() {
@@ -3251,6 +3378,9 @@ banAccountButton.addEventListener(
 /* =========================================
    START ADMIN PANEL
 ========================================= */
+
+setupAdminSliders();
+
 
 async function startAdminPanel() {
 
