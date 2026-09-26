@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMail - DougHub</title>
+
+<link rel="icon" href="DougHub.ico" type="image/x-icon">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: Inter, Arial, sans-serif;
+    color: #f5f3ff;
+    background:
+        radial-gradient(circle at top left, #25104f 0%, transparent 35%),
+        radial-gradient(circle at bottom right, #111b4f 0%, transparent 35%),
+        #05030d;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    height: 100vh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* TOP BAR */
+
+.topbar {
+    height: 70px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(12, 8, 27, 0.88);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    box-shadow: 0 8px 25px rgba(99,102,241,.3);
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-button {
+    text-decoration: none;
+    color: white;
+    padding: 9px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.home-button:hover {
+    background: rgba(255,255,255,.1);
+}
+
+/* MAIN */
+
+.main {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 270px;
+    padding: 20px;
+    flex: 0 0 270px;
+    overflow-y: auto;
+
+    background: rgba(10, 7, 22, .82);
+    border-right: 1px solid rgba(255,255,255,.07);
+}
+
+.compose-button {
+    width: 100%;
+    border: 0;
+    padding: 14px;
+    border-radius: 13px;
+
+    color: white;
+    font-weight: 800;
+
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 10px 30px rgba(99,102,241,.25);
+}
+
+.compose-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+.nav {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nav-button {
+    width: 100%;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 10px;
+
+    text-align: left;
+    color: #c9c3db;
+    background: transparent;
+}
+
+.nav-button:hover,
+.nav-button.active {
+    color: white;
+    background: rgba(99,102,241,.16);
+}
+
+.nav-button.admin {
+    color: #93c5fd;
+}
+
+.nav-button.admin:hover,
+.nav-button.admin.active {
+    background: rgba(59,130,246,.15);
+}
+
+.user-box {
+    margin-top: 30px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.user-name {
+    font-weight: 800;
+    word-break: break-word;
+}
+
+.user-role {
+    margin-top: 4px;
+    color: #8f89a3;
+    font-size: 12px;
+}
+
+/* CONTENT */
+
+.content {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-header {
+    flex: 0 0 auto;
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(7,5,17,.42);
+}
+
+.content-title {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+
+/* INBOX */
+
+.mail-layout {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+.user-list {
+    width: 290px;
+    flex: 0 0 290px;
+    min-height: 0;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255,255,255,.07);
+}
+
+.search-box {
+    padding: 14px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 10px;
+
+    outline: none;
+    color: white;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.search-box input:focus {
+    border-color: rgba(129,140,248,.6);
+}
+
+.user-item {
+    padding: 13px 15px;
+    display: flex;
+    gap: 11px;
+    align-items: center;
+
+    border-bottom: 1px solid rgba(255,255,255,.045);
+    cursor: pointer;
+}
+
+.user-item:hover,
+.user-item.selected {
+    background: rgba(99,102,241,.12);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex: 0 0 40px;
+
+    display: grid;
+    place-items: center;
+
+    overflow: hidden;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    font-weight: 900;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info {
+    min-width: 0;
+}
+
+.username {
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-sub {
+    color: #817a96;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+/* CHAT */
+
+.chat {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    flex: 0 0 auto;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.chat-name {
+    font-weight: 900;
+}
+
+.messages {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty {
+    margin: auto;
+    max-width: 400px;
+    text-align: center;
+    color: #817a96;
+}
+
+.message {
+    width: fit-content;
+    max-width: min(650px, 75%);
+    align-self: flex-start;
+    padding: 9px 12px;
+    border-radius: 15px;
+    line-height: 1.4;
+
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.message.mine {
+    align-self: flex-end;
+    background: rgba(99,102,241,.2);
+    border-color: rgba(129,140,248,.2);
+}
+
+.message-author {
+    font-size: 12px;
+    font-weight: 800;
+    color: #a5b4fc;
+    margin-bottom: 5px;
+}
+
+.message-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.message-time {
+    margin-top: 7px;
+    color: #817a96;
+    font-size: 10px;
+}
+
+.message-image {
+    max-width: 100%;
+    max-height: 400px;
+    margin-top: 9px;
+    border-radius: 10px;
+    display: block;
+}
+
+/* COMPOSER */
+
+.composer {
+    flex: 0 0 auto;
+    padding: 13px;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.composer-inner {
+    display: flex;
+    gap: 8px;
+}
+
+.composer textarea {
+    flex: 1;
+    resize: none;
+    min-height: 45px;
+    max-height: 130px;
+
+    padding: 12px;
+    border-radius: 11px;
+
+    outline: none;
+    color: white;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.composer textarea:focus {
+    border-color: rgba(129,140,248,.6);
+}
+
+.attach-button,
+.send-button {
+    border: 0;
+    border-radius: 11px;
+    padding: 0 15px;
+    color: white;
+}
+
+.attach-button {
+    background: rgba(255,255,255,.07);
+}
+
+.send-button {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    font-weight: 800;
+}
+
+.file-name {
+    margin-top: 7px;
+    color: #8f89a3;
+    font-size: 12px;
+}
+
+/* OTHER / ADMIN */
+
+.other-view {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 22px;
+}
+
+.admin-warning {
+    margin-bottom: 18px;
+    padding: 13px 15px;
+    border-radius: 12px;
+
+    color: #dbeafe;
+    background: rgba(59,130,246,.1);
+    border: 1px solid rgba(59,130,246,.22);
+}
+
+.admin-message {
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.admin-message-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.admin-from {
+    font-weight: 900;
+    color: #a5b4fc;
+}
+
+.admin-to {
+    color: #8f89a3;
+    font-size: 12px;
+}
+
+.admin-date {
+    color: #817a96;
+    font-size: 11px;
+}
+
+.admin-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* MODAL */
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(8px);
+}
+
+.modal-backdrop.show {
+    display: flex;
+}
+
+.modal {
+    width: min(500px, 100%);
+    padding: 22px;
+    border-radius: 18px;
+
+    background: #100b1d;
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 25px 80px rgba(0,0,0,.5);
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 15px;
+}
+
+.modal input,
+.modal textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+
+    color: white;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    outline: none;
+}
+
+.modal textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.cancel-button,
+.modal-send {
+    border: 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.cancel-button {
+    color: white;
+    background: rgba(255,255,255,.07);
+}
+
+.modal-send {
+    color: white;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    font-weight: 800;
+}
+
+.notice {
+    flex: 0 0 auto;
+    padding: 11px 14px;
+    margin: 0 20px 10px;
+    border-radius: 10px;
+
+    color: #a9a3b8;
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.06);
+    font-size: 12px;
+}
+
+.notice a {
+    color: #60a5fa;
+}
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+    .sidebar {
+        width: 210px;
+    }
+
+    .user-list {
+        width: 230px;
+    }
+}
+
+@media (max-width: 650px) {
+    .sidebar {
+        width: 100%;
+        max-height: 180px;
+        overflow-y: auto;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .main {
+        flex-direction: column;
+    }
+
+    .nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .nav-button {
+        width: auto;
+    }
+
+    .user-box {
+        display: none;
+    }
+
+    .mail-layout {
+        flex-direction: column;
+    }
+
+    .user-list {
+        width: 100%;
+        max-height: 210px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+}
+/* MODERN MESSAGE SCROLLBAR */
+.messages {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.22) transparent;
+}
+
+.messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.22);
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,.34);
+    background-clip: padding-box;
+}
+
+/* FORCE MESSAGE-ONLY SCROLLING */
+html, body {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.app {
+    width: 100%;
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.main {
+    height: calc(100vh - 70px);
+    min-height: 0 !important;
+    overflow: hidden;
+}
+
+.content {
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+.mail-layout {
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+}
+
+.chat {
+    position: relative;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) auto !important;
+}
+
+.messages {
+    min-height: 0 !important;
+    height: auto !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <main class="main">
+
+        <aside class="sidebar">
+
+            <button class="compose-button" id="composeButton">
+                ✏️ Compose
+            </button>
+
+            <div class="nav">
+
+                <button
+                    class="nav-button active"
+                    id="inboxButton"
+                >
+                    📥 Inbox
+                </button>
+
+                <button
+                    class="nav-button admin"
+                    id="otherButton"
+                    style="display:none;"
+                >
+                    👀 Other
+                </button>
+
+            </div>
+
+            <div class="user-box">
+                <div class="user-name" id="currentUsername">
+                    Loading...
+                </div>
+
+                <div class="user-role" id="currentRole">
+                    Loading...
+                </div>
+            </div>
+
+        </aside>
+
+        <section class="content">
+
+            <div class="content-header">
+                <div class="content-title">Inbox</div>
+                <a class="home-button" href="index.html">← DougHub</a>
+            </div>
+
+            <div class="notice">
+                🔒 DMail messages are private and are not stored. Once a message is sent, it is not saved or accessible later.
+
+
+            </div>
+
+            <div class="mail-layout" id="mailLayout">
+
+                <div class="user-list">
+
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            id="userSearch"
+                            placeholder="Search users..."
+                        >
+                    </div>
+
+                    <div id="userList"></div>
+
+                </div>
+
+                <div class="chat">
+
+                    <div class="chat-header" id="chatHeader">
+                        <div class="avatar">?</div>
+
+                        <div>
+                            <div class="chat-name">
+                                Select a user
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="messages"
+                        id="messages"
+                    >
+                        <div class="empty">
+                            Select a user to open a private conversation.
+                        </div>
+                    </div>
+
+                    <div class="composer">
+
+                        <div class="composer-inner">
+
+                            <textarea
+                                id="messageInput"
+                                placeholder="Write a message..."
+                            ></textarea>
+
+                            <label
+                                class="attach-button"
+                                style="display:flex;align-items:center;justify-content:center;"
+                            >
+                                📎
+                                <input
+                                    type="file"
+                                    id="imageInput"
+                                    accept="image/*"
+                                    hidden
+                                >
+                            </label>
+
+                            <button
+                                class="send-button"
+                                id="sendButton"
+                            >
+                                Send
+                            </button>
+
+                        </div>
+
+                        <div
+                            class="file-name"
+                            id="fileName"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                class="other-view"
+                id="otherView"
+                style="display:none;"
+            ></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- COMPOSE MODAL -->
+
+<div
+    class="modal-backdrop"
+    id="composeModal"
+>
+    <div class="modal">
+
+        <div class="modal-title">
+            New DMail
+        </div>
+
+        <input
+            type="text"
+            id="composeRecipient"
+            placeholder="Recipient username"
+        >
+
+        <textarea
+            id="composeMessage"
+            placeholder="Write your message..."
+        ></textarea>
+
+        <div class="modal-actions">
+
+            <button
+                class="cancel-button"
+                id="cancelCompose"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="modal-send"
+                id="sendCompose"
+            >
+                Send
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL =
+    "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+let currentUser = null;
+let currentProfile = null;
+let selectedUser = null;
+let selectedFile = null;
+let currentTab = "inbox";
+let allProfiles = [];
+
+/* --------------------------------
+   HELPERS
+-------------------------------- */
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function formatDate(date) {
+    return new Date(date).toLocaleString();
+}
+
+function avatarHtml(profile) {
+    if (profile?.avatar_url) {
+        return `
+            <div class="avatar">
+                <img src="${escapeHtml(profile.avatar_url)}">
+            </div>
+        `;
+    }
+
+    const name =
+        profile?.username ||
+        "?";
+
+    return `
+        <div class="avatar">
+            ${escapeHtml(name.charAt(0).toUpperCase())}
+        </div>
+    `;
+}
+
+async function getSignedImageUrl(path) {
+    if (!path) {
+        return null;
+    }
+
+    const result =
+        await supabaseClient
+            .storage
+            .from("dmail-images")
+            .createSignedUrl(path, 3600);
+
+    if (result.error) {
+        console.error(result.error);
+        return null;
+    }
+
+    return result.data.signedUrl;
+}
+
+/* --------------------------------
+   AUTH
+-------------------------------- */
+
+async function loadUser() {
+
+    const {
+        data: {
+            user
+        },
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+    if (error || !user) {
+        alert("Please log into DougHub first.");
+        window.location.href = "index.html";
+        return false;
+    }
+
+    currentUser = user;
+
+    const profileResult =
+        await supabaseClient
+            .from("profiles")
+            .select("*")
+            .eq("id", currentUser.id)
+            .maybeSingle();
+
+    if (profileResult.error) {
+        console.error(profileResult.error);
+    }
+
+    currentProfile =
+        profileResult.data || {
+            id: currentUser.id,
+            username:
+                currentUser.email ||
+                "User",
+            is_admin: false
+        };
+
+    document.getElementById("currentUsername").textContent =
+        currentProfile.username ||
+        currentUser.email ||
+        "User";
+
+    document.getElementById("currentRole").textContent =
+        currentProfile.is_admin
+            ? "Administrator"
+            : "DMail User";
+
+    if (currentProfile.is_admin) {
+        document.getElementById("otherButton").style.display = "block";
+    }
+
+    return true;
+}
+
+/* --------------------------------
+   LOAD USERS
+-------------------------------- */
+
+async function loadProfiles() {
+
+    const result =
+        await supabaseClient
+            .from("profiles")
+            .select("id, username, avatar_url")
+            .neq("id", currentUser.id)
+            .order("username");
+
+    if (result.error) {
+        console.error(result.error);
+        return;
+    }
+
+    allProfiles =
+        result.data || [];
+
+    renderProfiles(allProfiles);
+}
+
+function renderProfiles(profiles) {
+
+    const container =
+        document.getElementById("userList");
+
+    if (!profiles.length) {
+        container.innerHTML =
+            `<div class="empty" style="padding:25px;">
+                No users found.
+            </div>`;
+        return;
+    }
+
+    container.innerHTML =
+        profiles.map(profile => `
+            <div
+                class="user-item ${
+                    selectedUser?.id === profile.id
+                        ? "selected"
+                        : ""
+                }"
+                data-id="${profile.id}"
+            >
+
+                ${avatarHtml(profile)}
+
+                <div class="user-info">
+
+                    <div class="username">
+                        ${escapeHtml(profile.username || "User")}
+                    </div>
+
+                    <div class="user-sub">
+                        Send private DMail
+                    </div>
+
+                </div>
+
+            </div>
+        `).join("");
+
+    container
+        .querySelectorAll(".user-item")
+        .forEach(item => {
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    const profile =
+                        allProfiles.find(
+                            p => p.id === item.dataset.id
+                        );
+
+                    if (profile) {
+                        openConversation(profile);
+                    }
+
+                }
+            );
+
+        });
+}
+
+/* --------------------------------
+   CONVERSATION
+-------------------------------- */
+
+async function openConversation(profile) {
+
+    selectedUser = profile;
+
+    currentTab = "inbox";
+
+    setActiveNav("inboxButton");
+
+    document.getElementById("mailLayout").style.display =
+        "flex";
+
+    document.getElementById("otherView").style.display =
+        "none";
+
+    document.getElementById("chatHeader").innerHTML = `
+        ${avatarHtml(profile)}
+
+        <div>
+            <div class="chat-name">
+                ${escapeHtml(profile.username || "User")}
+            </div>
+        </div>
+    `;
+
+    renderProfiles(allProfiles);
+
+    await loadConversation();
+}
+
+async function loadConversation() {
+
+    if (!selectedUser) {
+        return;
+    }
+
+    const result =
+        await supabaseClient
+            .from("direct_messages")
+            .select("*")
+            .or(
+                `and(sender_id.eq.${currentUser.id},receiver_id.eq.${selectedUser.id}),and(sender_id.eq.${selectedUser.id},receiver_id.eq.${currentUser.id})`
+            )
+            .order("created_at", {
+                ascending: true
+            });
+
+    if (result.error) {
+        console.error(result.error);
+
+        document.getElementById("messages").innerHTML =
+            `<div class="empty">
+                Could not load messages.
+            </div>`;
+
+        return;
+    }
+
+    await renderMessages(
+        result.data || []
+    );
+}
+
+async function renderMessages(messages) {
+
+    const container =
+        document.getElementById("messages");
+
+    if (!messages.length) {
+        container.innerHTML =
+            `<div class="empty">
+                No messages yet. Start the conversation!
+            </div>`;
+        return;
+    }
+
+    const htmlParts = [];
+
+    for (const message of messages) {
+
+        let imageHtml = "";
+
+        if (message.image_url) {
+
+            const signedUrl =
+                await getSignedImageUrl(
+                    message.image_url
+                );
+
+            if (signedUrl) {
+                imageHtml = `
+                    <img
+                        class="message-image"
+                        src="${escapeHtml(signedUrl)}"
+                        alt="Attached image"
+                    >
+                `;
+            }
+        }
+
+        htmlParts.push(`
+            <div class="message ${
+                message.sender_id === currentUser.id
+                    ? "mine"
+                    : ""
+            }">
+
+                <div class="message-text">
+                    ${escapeHtml(message.message || "")}
+                </div>
+
+                ${imageHtml}
+
+                <div class="message-time">
+                    ${formatDate(message.created_at)}
+                </div>
+
+            </div>
+        `);
+    }
+
+    container.innerHTML =
+        htmlParts.join("");
+
+    container.scrollTop =
+        container.scrollHeight;
+}
+
+/* --------------------------------
+   SEND MESSAGE
+-------------------------------- */
+
+async function sendMessage(
+    recipientId,
+    text,
+    file
+) {
+
+    if (!recipientId) {
+        return;
+    }
+
+    text =
+        String(text || "").trim();
+
+    if (!text && !file) {
+        return;
+    }
+
+    let imagePath = null;
+
+    if (file) {
+
+        const extension =
+            file.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+        const imageName =
+            Date.now() +
+            "-" +
+            crypto.randomUUID() +
+            "." +
+            extension;
+
+        imagePath =
+            currentUser.id +
+            "/" +
+            recipientId +
+            "/" +
+            imageName;
+
+        const upload =
+            await supabaseClient
+                .storage
+                .from("dmail-images")
+                .upload(
+                    imagePath,
+                    file,
+                    {
+                        upsert: false,
+                        contentType: file.type
+                    }
+                );
+
+        if (upload.error) {
+            console.error(upload.error);
+            alert(
+                "The image could not be uploaded."
+            );
+            return;
+        }
+    }
+
+    const insert =
+        await supabaseClient
+            .from("direct_messages")
+            .insert({
+                sender_id:
+                    currentUser.id,
+
+                receiver_id:
+                    recipientId,
+
+                message:
+                    text || null,
+
+                image_url:
+                    imagePath
+            });
+
+    if (insert.error) {
+
+        console.error(insert.error);
+
+        alert(
+            "The message could not be sent."
+        );
+
+        return;
+    }
+
+    return true;
+}
+
+document
+    .getElementById("sendButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            if (!selectedUser) {
+                alert(
+                    "Select a user first."
+                );
+                return;
+            }
+
+            const input =
+                document.getElementById(
+                    "messageInput"
+                );
+
+            const button =
+                document.getElementById(
+                    "sendButton"
+                );
+
+            button.disabled = true;
+
+            const success =
+                await sendMessage(
+                    selectedUser.id,
+                    input.value,
+                    selectedFile
+                );
+
+            button.disabled = false;
+
+            if (success) {
+
+                input.value = "";
+
+                selectedFile = null;
+
+                document.getElementById(
+                    "imageInput"
+                ).value = "";
+
+                document.getElementById(
+                    "fileName"
+                ).textContent = "";
+
+                await loadConversation();
+            }
+        }
+    );
+
+/* --------------------------------
+   IMAGE PICKER
+-------------------------------- */
+
+document
+    .getElementById("imageInput")
+    .addEventListener(
+        "change",
+        event => {
+
+            selectedFile =
+                event.target.files[0] ||
+                null;
+
+            document.getElementById(
+                "fileName"
+            ).textContent =
+                selectedFile
+                    ? selectedFile.name
+                    : "";
+        }
+    );
+
+/* --------------------------------
+   SEARCH
+-------------------------------- */
+
+document
+    .getElementById("userSearch")
+    .addEventListener(
+        "input",
+        event => {
+
+            const query =
+                event.target.value
+                    .toLowerCase()
+                    .trim();
+
+            const filtered =
+                allProfiles.filter(
+                    profile =>
+                        String(
+                            profile.username || ""
+                        )
+                        .toLowerCase()
+                        .includes(query)
+                );
+
+            renderProfiles(filtered);
+        }
+    );
+
+/* --------------------------------
+   ADMIN OTHER TAB
+-------------------------------- */
+
+async function loadOtherMessages() {
+
+    if (!currentProfile?.is_admin) {
+        return;
+    }
+
+    const view =
+        document.getElementById(
+            "otherView"
+        );
+
+    view.innerHTML =
+        `<div class="empty">
+            Loading DMail messages...
+        </div>`;
+
+    const result =
+        await supabaseClient
+            .from("direct_messages")
+            .select(`
+                id,
+                sender_id,
+                receiver_id,
+                message,
+                image_url,
+                created_at
+            `)
+            .order("created_at", {
+                ascending: false
+            });
+
+    if (result.error) {
+
+        console.error(result.error);
+
+        view.innerHTML =
+            `<div class="empty">
+                You do not have permission to browse DMail messages.
+            </div>`;
+
+        return;
+    }
+
+    const messages =
+        result.data || [];
+
+    if (!messages.length) {
+
+        view.innerHTML =
+            `<div class="empty">
+                No DMail messages exist yet.
+            </div>`;
+
+        return;
+    }
+
+    const profileMap =
+        new Map(
+            allProfiles.map(
+                profile =>
+                    [profile.id, profile]
+            )
+        );
+
+    const ownProfileResult =
+        await supabaseClient
+            .from("profiles")
+            .select("id, username, avatar_url")
+            .in(
+                "id",
+                [
+                    ...new Set(
+                        messages.flatMap(
+                            message => [
+                                message.sender_id,
+                                message.receiver_id
+                            ]
+                        )
+                    )
+                ]
+            );
+
+    if (!ownProfileResult.error) {
+
+        for (
+            const profile
+            of ownProfileResult.data || []
+        ) {
+            profileMap.set(
+                profile.id,
+                profile
+            );
+        }
+    }
+
+    let html = `
+        <div class="admin-warning">
+            👀 <strong>Teacher / Admin browsing</strong><br>
+            This section is restricted to authorized administrators.
+            These are private DMail records and should only be viewed for
+            legitimate moderation or classroom administration purposes.
+        </div>
+    `;
+
+    for (
+        const message
+        of messages
+    ) {
+
+        const sender =
+            profileMap.get(
+                message.sender_id
+            );
+
+        const receiver =
+            profileMap.get(
+                message.receiver_id
+            );
+
+        let imageHtml = "";
+
+        if (message.image_url) {
+
+            const signedUrl =
+                await getSignedImageUrl(
+                    message.image_url
+                );
+
+            if (signedUrl) {
+                imageHtml = `
+                    <img
+                        class="message-image"
+                        src="${escapeHtml(signedUrl)}"
+                        alt="Attached image"
+                    >
+                `;
+            }
+        }
+
+        html += `
+            <div class="admin-message">
+
+                <div class="admin-message-head">
+
+                    <div>
+                        <div class="admin-from">
+                            ${escapeHtml(
+                                sender?.username ||
+                                "Unknown user"
+                            )}
+                        </div>
+
+                        <div class="admin-to">
+                            → ${escapeHtml(
+                                receiver?.username ||
+                                "Unknown user"
+                            )}
+                        </div>
+                    </div>
+
+                    <div class="admin-date">
+                        ${formatDate(
+                            message.created_at
+                        )}
+                    </div>
+
+                </div>
+
+                <div class="admin-text">
+                    ${escapeHtml(
+                        message.message || ""
+                    )}
+                </div>
+
+                ${imageHtml}
+
+            </div>
+        `;
+    }
+
+    view.innerHTML = html;
+}
+
+/* --------------------------------
+   NAVIGATION
+-------------------------------- */
+
+function setActiveNav(id) {
+
+    document
+        .querySelectorAll(".nav-button")
+        .forEach(button => {
+            button.classList.remove(
+                "active"
+            );
+        });
+
+    document
+        .getElementById(id)
+        .classList.add(
+            "active"
+        );
+}
+
+function showInbox() {
+
+    currentTab = "inbox";
+
+    setActiveNav(
+        "inboxButton"
+    );
+
+    document.getElementById(
+        "pageTitle"
+    ).textContent =
+        "Inbox";
+
+    document.getElementById(
+        "mailLayout"
+    ).style.display =
+        "flex";
+
+    document.getElementById(
+        "otherView"
+    ).style.display =
+        "none";
+}
+
+document
+    .getElementById("inboxButton")
+    .addEventListener(
+        "click",
+        showInbox
+    );
+
+document
+    .getElementById("otherButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            if (!currentProfile?.is_admin) {
+                return;
+            }
+
+            currentTab = "other";
+
+            setActiveNav(
+                "otherButton"
+            );
+
+            document.getElementById(
+                "mailLayout"
+            ).style.display =
+                "none";
+
+            document.getElementById(
+                "otherView"
+            ).style.display =
+                "block";
+
+            await loadOtherMessages();
+        }
+    );
+
+
+/* --------------------------------
+   AUTOMATIC REFRESH
+-------------------------------- */
+
+async function refreshDMail() {
+    if (document.hidden) {
+        return;
+    }
+
+    if (currentTab === "other") {
+        await loadOtherMessages();
+    } else if (selectedUser) {
+        await loadConversation();
+    }
+
+    await loadProfiles();
+}
+
+setInterval(refreshDMail, 60000);
+
+/* --------------------------------
+   COMPOSE
+-------------------------------- */
+
+const composeModal =
+    document.getElementById(
+        "composeModal"
+    );
+
+document
+    .getElementById("composeButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            composeModal
+                .classList
+                .add("show");
+
+            document
+                .getElementById(
+                    "composeRecipient"
+                )
+                .focus();
+        }
+    );
+
+document
+    .getElementById("cancelCompose")
+    .addEventListener(
+        "click",
+        () => {
+            composeModal
+                .classList
+                .remove("show");
+        }
+    );
+
+document
+    .getElementById("sendCompose")
+    .addEventListener(
+        "click",
+        async () => {
+
+            const username =
+                document
+                    .getElementById(
+                        "composeRecipient"
+                    )
+                    .value
+                    .trim();
+
+            const message =
+                document
+                    .getElementById(
+                        "composeMessage"
+                    )
+                    .value
+                    .trim();
+
+            if (!username || !message) {
+                alert(
+                    "Enter a recipient and message."
+                );
+                return;
+            }
+
+            const recipient =
+                allProfiles.find(
+                    profile =>
+                        String(
+                            profile.username
+                        ).toLowerCase() ===
+                        username.toLowerCase()
+                );
+
+            if (!recipient) {
+                alert(
+                    "That user could not be found."
+                );
+                return;
+            }
+
+            const button =
+                document.getElementById(
+                    "sendCompose"
+                );
+
+            button.disabled = true;
+
+            const success =
+                await sendMessage(
+                    recipient.id,
+                    message,
+                    null
+                );
+
+            button.disabled = false;
+
+            if (success) {
+
+                composeModal
+                    .classList
+                    .remove("show");
+
+                document
+                    .getElementById(
+                        "composeRecipient"
+                    )
+                    .value = "";
+
+                document
+                    .getElementById(
+                        "composeMessage"
+                    )
+                    .value = "";
+
+                await openConversation(
+                    recipient
+                );
+            }
+        }
+    );
+
+/* --------------------------------
+   START
+-------------------------------- */
+
+async function start() {
+
+    const loggedIn =
+        await loadUser();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    await loadProfiles();
+}
+
+start();
+</script>
+
+</body>
+</html>

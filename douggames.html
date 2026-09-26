@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>DougHub</title>
+<title>Doug Games • DougHub</title>
 
 <link rel="icon" href="DougHub.ico" type="image/x-icon">
 
@@ -149,22 +149,6 @@ header {
 
 .dmail-badge.show {
     display: inline-flex;
-}
-
-/* COMMUNITY CHAT NOTIFICATION */
-.chat-notification {
-    display: none;
-    width: 9px;
-    height: 9px;
-    margin-left: 6px;
-    border-radius: 50%;
-    background: #ef4444;
-    box-shadow: 0 0 12px rgba(239,68,68,0.8);
-    vertical-align: middle;
-}
-
-.chat-notification.show {
-    display: inline-block;
 }
 
 /* ACCOUNT */
@@ -502,225 +486,6 @@ main {
 
     font-size:
         13px;
-}
-
-/* EVERYTHING DOUGHUB HAS */
-
-.feature-overview {
-    position: relative;
-
-    height: 100%;
-    padding: 20px;
-
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-
-    background:
-        linear-gradient(145deg, rgba(99,102,241,0.16), rgba(13,17,39,0.76));
-
-    box-shadow: 0 16px 40px rgba(0,0,0,0.16);
-}
-
-.feature-overview h2 {
-    margin: 4px 0 14px;
-
-    color: #f4f3ff;
-
-    font-size: 21px;
-}
-
-.overview-section {
-    display: grid;
-
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    gap: 18px;
-}
-
-.overview-eyebrow {
-    margin: 0;
-
-    color: #aaa9ff;
-
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-.feature-list {
-    display: grid;
-
-    grid-template-columns: 1fr;
-
-    gap: 10px 18px;
-
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-}
-
-.feature-list li {
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    color: #c7c6d5;
-
-    font-size: 14px;
-}
-
-.feature-check {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: 19px;
-    height: 19px;
-
-    flex: 0 0 19px;
-
-    border-radius: 50%;
-
-    color: #d7ffed;
-    background: rgba(34,197,94,0.18);
-    border: 1px solid rgba(34,197,94,0.34);
-
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.douggames-overview {
-    position: relative;
-
-    min-height: 100%;
-    padding: 25px;
-
-    overflow: hidden;
-
-    border: 1px solid rgba(168,85,247,0.25);
-    border-radius: 20px;
-
-    background:
-        radial-gradient(circle at 100% 0%, rgba(168,85,247,0.24), transparent 43%),
-        rgba(13,17,39,0.78);
-
-    box-shadow: 0 16px 40px rgba(0,0,0,0.16);
-}
-
-.douggames-overview h2 {
-    margin: 4px 0 10px;
-
-    font-size: 24px;
-}
-
-.douggames-overview p:not(.overview-eyebrow) {
-    max-width: 430px;
-    margin: 0;
-
-    color: #b1b0c2;
-
-    font-size: 14px;
-    line-height: 1.65;
-}
-
-.douggames-link {
-    display: inline-flex;
-
-    margin-top: 20px;
-    padding: 10px 14px;
-
-    border: 1px solid rgba(196,181,253,0.32);
-    border-radius: 10px;
-
-    color: #f4f1ff;
-    background: rgba(168,85,247,0.16);
-
-    font-size: 13px;
-    font-weight: 800;
-
-    transition: 0.2s;
-}
-
-.douggames-link:hover {
-    transform: translateY(-2px);
-
-    background: rgba(168,85,247,0.29);
-}
-
-.service-list {
-    display: grid;
-
-    gap: 10px;
-}
-
-.service-row {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 16px;
-    min-height: 74px;
-    padding: 14px 16px 14px 20px;
-
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-
-    background: rgba(13,17,39,0.62);
-
-    transition: 0.2s;
-}
-
-.service-row:hover {
-    border-color: rgba(129,140,248,0.3);
-
-    background: rgba(19,23,51,0.76);
-}
-
-.service-row h2 {
-    margin: 0;
-
-    font-size: 17px;
-}
-
-.service-row p {
-    margin: 3px 0 0;
-
-    color: #858494;
-
-    font-size: 13px;
-}
-
-.service-button {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    min-width: 100px;
-    padding: 10px 14px;
-
-    border: 1px solid rgba(129,140,248,0.35);
-    border-radius: 10px;
-
-    color: white;
-    background: rgba(99,102,241,0.18);
-
-    font-size: 13px;
-    font-weight: 800;
-
-    transition: 0.2s;
-}
-
-.service-button:hover {
-    transform: translateY(-1px);
-
-    background: rgba(99,102,241,0.32);
 }
 
 /* CREATE GAME */
@@ -1625,20 +1390,6 @@ footer {
             1fr;
     }
 
-    .overview-section {
-        grid-template-columns: 1fr;
-    }
-
-    .service-row {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-    .service-button {
-        width: 100%;
-    }
-
     .section-header {
         align-items:
             flex-start;
@@ -1718,25 +1469,14 @@ footer {
             class="nav-link dmail-nav"
         >
             <span>DMail</span>
-            <span
-                id="dmailBadge"
-                class="dmail-badge"
-            >
-                0
-            </span>
+            
         </a>
 
         <a
             href="chat.html"
             class="nav-link"
-            id="communityChatLink"
         >
             Chat
-            <span
-                id="chatNotification"
-                class="chat-notification"
-                aria-label="New chat messages"
-            ></span>
         </a>
 
         <div class="account-area">
@@ -1813,15 +1553,15 @@ footer {
         <div class="hero-card">
 
             <div class="hero-badge">
-                The DougHub Platform
+                DougHub Games
             </div>
 
             <h1>
-                Welcome to <span>DougHub</span>
+                Play on <span>DougHub</span>
             </h1>
 
             <p>
-                Play games made by Doug and the community, chat with others, send direct messages to friends, post and watch vidios on DougTube, and much more! All on DougHub.
+                Discover games made by Doug and the DougHub community, or make your own and publish it for everyone to play.
             </p>
 
             <div class="hero-stats">
@@ -1858,71 +1598,164 @@ footer {
 
             </div>
 
+            <a
+                href="Scripting/scripting.html"
+                class="hero-create-button"
+            >
+                + Create a Game
+            </a>
+
         </div>
 
     </section>
 
-    <section class="section" aria-labelledby="featureOverviewTitle">
+    <!-- DOUG'S GAMES -->
 
-        <div class="overview-section">
+    <section class="section">
 
-            <div class="feature-overview">
-                <p class="overview-eyebrow">One place, many things</p>
-                <h2 id="featureOverviewTitle">Everything DougHub Has</h2>
+        <div class="section-header">
 
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span>Games</li>
-                    <li><span class="feature-check">✓</span>Community Games</li>
-                    <li><span class="feature-check">✓</span>DougTube</li>
-                    <li><span class="feature-check">✓</span>DMail</li>
-                    <li><span class="feature-check">✓</span>Community Chat</li>
-                    <li><span class="feature-check">✓</span>DougMedia</li>
-                    <li><span class="feature-check">✓</span>DougBank</li>
-                    <li><span class="feature-check">✓</span>DougAI</li>
-                    <li><span class="feature-check">✓</span>Game Publishing</li>
-                    <li><span class="feature-check">✓</span>User Accounts</li>
-                </ul>
-            </div>
+            <div>
 
-            <div class="douggames-overview">
-                <p class="overview-eyebrow">Play or create</p>
-                <h2>DougGames</h2>
-                <p>
-                    Find Doug's games and games made by the community in one place. Want to make your own? Open the creator and publish it to DougHub.
+                <h2 class="section-title">
+                    Doug's Games
+                </h2>
+
+                <p class="section-subtitle">
+                    Games made by Doug.
                 </p>
-                <a href="douggames.html" class="douggames-link">Explore DougGames →</a>
+
             </div>
+
+        </div>
+
+        <div class="games-grid">
+
+            <a
+                href="Games/pig-clicker.html"
+                class="game-card"
+            >
+                <div class="game-icon">🐷</div>
+
+                <h3>
+                    Pig Clicker
+                </h3>
+
+                <p>
+                    Click the pig, earn points, and keep upgrading.
+                </p>
+
+                <div class="play-label">
+                    PLAY →
+                </div>
+            </a>
+
+            <a
+                href="Games/rebirth-clicker.html"
+                class="game-card"
+            >
+                <div class="game-icon">🔄</div>
+
+                <h3>
+                    Rebirth Clicker
+                </h3>
+
+                <p>
+                    Click, upgrade, rebirth, and build your progress.
+                </p>
+
+                <div class="play-label">
+                    PLAY →
+                </div>
+            </a>
+
+            <a
+                href="Games/racing.html"
+                class="game-card"
+            >
+                <div class="game-icon">🏎️</div>
+
+                <h3>
+                    Doug Racing
+                </h3>
+
+                <p>
+                    Race around the track and try to beat your best time.
+                </p>
+
+                <div class="play-label">
+                    PLAY →
+                </div>
+            </a>
+
+            <a
+                href="Games/puzzle.html"
+                class="game-card"
+            >
+                <div class="game-icon">🧩</div>
+
+                <h3>
+                    Doug Puzzle
+                </h3>
+
+                <p>
+                    Solve puzzles and test your skills.
+                </p>
+
+                <div class="play-label">
+                    PLAY →
+                </div>
+            </a>
 
         </div>
 
     </section>
 
-    <section class="section" aria-label="DougHub services">
+    <!-- COMMUNITY GAMES -->
 
-        <div class="service-list">
+    <section class="section">
 
-            <div class="service-row">
-                <div>
-                    <h2>DMail</h2>
-                    <p>Send direct messages to friends on DougHub.</p>
-                </div>
-                <a href="DMail.html" class="service-button">Open DMail</a>
+        <div class="section-header">
+
+            <div>
+
+                <h2 class="section-title">
+                    Community Games
+                </h2>
+
+                <p class="section-subtitle">
+                    Games created with the DougHub Creator.
+                </p>
+
             </div>
 
-            <div class="service-row">
-                <div>
-                    <h2>DougTube</h2>
-                    <p>Watch and share videos with the DougHub community.</p>
-                </div>
-                <a href="DougTube.html" class="service-button">Open DougTube</a>
-            </div>
+            <input
+                type="search"
+                id="gameSearch"
+                class="search-box"
+                name="q"
+                placeholder="Search DougHub..."
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                inputmode="search"
+                aria-label="Search DougHub"
+                data-form-type="other"
+                data-lpignore="true"
+                data-1p-ignore="true"
+                readonly
+            >
 
-            <div class="service-row">
-                <div>
-                    <h2>Community Chat</h2>
-                    <p>Talk with other people in the DougHub community.</p>
-                </div>
-                <a href="chat.html" class="service-button">Open Chat</a>
+        </div>
+
+        <div
+            id="communityGames"
+            class="community-games"
+        >
+
+            <div class="empty">
+                Loading community games...
             </div>
 
         </div>
@@ -2057,35 +1890,6 @@ footer {
 </div>
 
 <script>
-
-/* Clear the DMail notification immediately when any DMail link is clicked. */
-const DMAIl_SEEN_KEY = "doughub_dmail_last_seen";
-
-document.addEventListener("click", function(event) {
-
-    const dmailLink =
-        event.target.closest('a[href="DMail.html"]');
-
-    if (!dmailLink) {
-        return;
-    }
-
-    const badge =
-        document.getElementById("dmailBadge");
-
-    if (badge) {
-        badge.textContent = "0";
-        badge.classList.remove("show");
-        badge.style.display = "none";
-    }
-
-    /* Mark everything currently in the inbox as seen. */
-    localStorage.setItem(
-        DMAIl_SEEN_KEY,
-        new Date().toISOString()
-    );
-
-});
 
 const SUPABASE_URL =
     "https://agsqdqcsmsppcdqxlppj.supabase.co";
@@ -2297,17 +2101,27 @@ async function loadAccount() {
 
 
 /* =========================================
-   COMMUNITY CHAT NOTIFICATION
+   DMAIL COUNT
 ========================================= */
 
-const CHAT_SEEN_KEY = "doughub_chat_last_seen";
+const DMAIL_SEEN_KEY =
+    "doughub_dmail_last_seen";
 
-async function checkChatNotification() {
+async function loadDMailCount() {
 
-    const dot =
-        document.getElementById("chatNotification");
+    const badge =
+        document.getElementById(
+            "dmailBadge"
+        );
 
-    if (!dot) {
+    if (!badge) {
+        return;
+    }
+
+    badge.textContent = "0";
+    badge.classList.remove("show");
+
+    if (!currentUser) {
         return;
     }
 
@@ -2316,121 +2130,139 @@ async function checkChatNotification() {
         error
     } =
         await supabaseClient
-            .from("chat_messages")
+            .from("direct_messages")
             .select("created_at")
-            .order("created_at", { ascending: false })
+            .eq("receiver_id", currentUser.id)
+            .order("created_at", {
+                ascending: false
+            })
             .limit(1);
 
     if (error) {
-
         console.error(
-            "Could not check chat notification:",
+            "Could not check DMail count:",
             error
         );
-
         return;
     }
 
-    const latest =
+    const latestMessage =
         data?.[0]?.created_at;
 
-    if (!latest) {
-
-        dot.classList.remove("show");
-
+    if (!latestMessage) {
         return;
     }
 
-    const seen =
+    let lastSeen =
         localStorage.getItem(
-            CHAT_SEEN_KEY
+            DMAIL_SEEN_KEY
         );
 
-    /* First time: don't show old messages. */
-    if (!seen) {
-
+    /*
+       On the first visit, use the newest existing
+       message as the starting point. This prevents
+       old DMail messages from appearing as new.
+    */
+    if (!lastSeen) {
         localStorage.setItem(
-            CHAT_SEEN_KEY,
-            latest
+            DMAIL_SEEN_KEY,
+            latestMessage
         );
-
-        dot.classList.remove("show");
-
         return;
     }
 
-    if (
-        new Date(latest).getTime() >
-        new Date(seen).getTime()
-    ) {
+    const {
+        count,
+        error: countError
+    } =
+        await supabaseClient
+            .from("direct_messages")
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
+            )
+            .eq(
+                "receiver_id",
+                currentUser.id
+            )
+            .gt(
+                "created_at",
+                lastSeen
+            );
 
-        dot.classList.add("show");
-
-    } else {
-
-        dot.classList.remove("show");
-
+    if (countError) {
+        console.error(
+            "Could not load new DMail count:",
+            countError
+        );
+        return;
     }
 
+    const messageCount =
+        Number(count || 0);
+
+    if (messageCount > 0) {
+        badge.textContent =
+            messageCount > 99
+                ? "99+"
+                : messageCount;
+
+        badge.classList.add("show");
+    }
 }
 
-
-/* Clicking Community Chat hides the red dot and opens chat.html. */
+/*
+   Opening DMail marks the current messages as seen.
+*/
 document.addEventListener(
     "click",
     function(event) {
 
-        const chatLink =
+        const dmailLink =
             event.target.closest(
-                'a[href="chat.html"]'
+                'a[href="DMail.html"]'
             );
 
-        if (!chatLink) {
+        if (!dmailLink) {
             return;
         }
 
-        const dot =
-            document.getElementById(
-                "chatNotification"
-            );
+        if (currentUser) {
+            supabaseClient
+                .from("direct_messages")
+                .select("created_at")
+                .eq("receiver_id", currentUser.id)
+                .order("created_at", {
+                    ascending: false
+                })
+                .limit(1)
+                .then(function(result) {
 
-        if (dot) {
-            dot.classList.remove("show");
+                    const latest =
+                        result.data?.[0]?.created_at;
+
+                    if (latest) {
+                        localStorage.setItem(
+                            DMAIL_SEEN_KEY,
+                            latest
+                        );
+                    }
+
+                });
         }
 
-        /*
-         * The chat page will immediately save the actual
-         * newest message as seen when it opens.
-         */
-        localStorage.setItem(
-            CHAT_SEEN_KEY,
-            new Date().toISOString()
-        );
+        const badge =
+            document.getElementById("dmailBadge");
 
+        if (badge) {
+            badge.textContent = "0";
+            badge.classList.remove("show");
+        }
     }
 );
-
-
-/* =========================================
-   DMAIL COUNT
-========================================= */
-
-async function loadDMailCount() {
-
-    const badge = document.getElementById("dmailBadge");
-
-    if (!badge) return;
-
-    badge.textContent = "0";
-    badge.classList.remove("show");
-    badge.style.display = "none";
-
-    if (!currentUser) return;
-
-    /* DMail has no persistent read/unread column yet.
-       Keep the homepage badge hidden until a new-message
-       tracking system is added, instead of showing old messages. */
-}
 
 
 /* =========================================
@@ -2513,42 +2345,17 @@ async function loadUserCount() {
    GAME COUNT
 ========================================= */
 
-async function updateGameCount() {
+function updateGameCount() {
 
     const gameCount =
         document.getElementById(
             "gameCount"
         );
 
-    if (!gameCount) {
-        return;
-    }
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from("community_games")
-            .select("id");
-
-    if (error) {
-
-        console.error(
-            "Could not load community game count:",
-            error
-        );
-
-        gameCount.textContent =
-            "4";
-
-        return;
-    }
-
     gameCount.textContent =
         (
             4 +
-            (data?.length || 0)
+            communityGames.length
         ).toLocaleString();
 
 }
@@ -2564,12 +2371,6 @@ async function loadCommunityGames() {
         document.getElementById(
             "communityGames"
         );
-
-    /* Community Games live on douggames.html. */
-    if (!container) {
-        await updateGameCount();
-        return;
-    }
 
     const {
         data,
@@ -3263,13 +3064,6 @@ loadAccount();
 loadCommunityGames();
 loadUserCount();
 updateFeedbackCount();
-
-/* Check for new Community Chat messages immediately and keep checking. */
-checkChatNotification();
-setInterval(
-    checkChatNotification,
-    2000
-);
 
 </script>
 

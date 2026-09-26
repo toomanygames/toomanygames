@@ -1,0 +1,4090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>DougTube</title>
+
+<link
+    rel="icon"
+    href="DougHub.ico"
+    type="image/x-icon"
+>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            #17133b 0%,
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at top right,
+            #25104b 0%,
+            transparent 30%
+        ),
+        #02040a;
+
+    color: white;
+
+    min-height: 100vh;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+header {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    height: 72px;
+
+    padding: 0 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background:
+        rgba(4,5,15,0.82);
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:
+        blur(18px);
+}
+
+.logo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 21px;
+
+    font-weight: 800;
+}
+
+.logo-icon {
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366f1,
+            #a855f7
+        );
+
+    box-shadow:
+        0 0 25px
+        rgba(99,102,241,0.35);
+
+    font-weight: 900;
+}
+
+.nav {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 22px;
+
+    margin-left: auto;
+}
+
+.nav-link {
+    color: #aaa9bb;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition:
+        color 0.2s,
+        transform 0.2s;
+}
+
+.nav-link:hover {
+    color: white;
+
+    transform:
+        translateY(-1px);
+}
+
+.account-area {
+    position: relative;
+}
+
+.account-btn {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 7px 11px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    cursor: pointer;
+}
+
+.account-btn:hover {
+    background:
+        rgba(255,255,255,0.09);
+}
+
+.account-avatar {
+    width: 32px;
+
+    height: 32px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366f1,
+            #a855f7
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 800;
+}
+
+.account-avatar img {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.account-menu {
+    position: absolute;
+
+    right: 0;
+
+    top: calc(100% + 10px);
+
+    width: 190px;
+
+    padding: 8px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(12,13,28,0.97);
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+
+    box-shadow:
+        0 20px 60px
+        rgba(0,0,0,0.4);
+
+    backdrop-filter:
+        blur(20px);
+
+    display: none;
+}
+
+.account-menu.show {
+    display: block;
+}
+
+.account-menu a,
+.account-menu button {
+    display: block;
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    text-align: left;
+
+    color: #d8d7e5;
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+}
+
+.account-menu a:hover,
+.account-menu button:hover {
+    background:
+        rgba(255,255,255,0.07);
+
+    color: white;
+}
+
+.logout {
+    color:
+        #ff7777 !important;
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+main {
+    width:
+        min(
+            1100px,
+            calc(100% - 32px)
+        );
+
+    margin:
+        auto;
+
+    padding:
+        40px 0 70px;
+}
+
+
+/* =========================================
+   TITLE
+========================================= */
+
+.page-title {
+    text-align: center;
+
+    margin-bottom: 30px;
+}
+
+.page-title h1 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            42px,
+            7vw,
+            68px
+        );
+
+    letter-spacing:
+        -3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #818cf8,
+            #c084fc
+        );
+
+    -webkit-background-clip:
+        text;
+
+    background-clip:
+        text;
+
+    color:
+        transparent;
+}
+
+.page-title p {
+    margin:
+        12px auto 0;
+
+    max-width:
+        650px;
+
+    color:
+        #9291a4;
+
+    line-height:
+        1.6;
+}
+
+
+/* =========================================
+   TOP CONTROLS
+========================================= */
+
+.controls {
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    gap: 15px;
+
+    margin-bottom:
+        25px;
+}
+
+.search-wrapper {
+    flex: 1;
+
+    position: relative;
+}
+
+.search-box {
+    width: 100%;
+
+    padding:
+        13px 16px;
+
+    border-radius:
+        12px;
+
+    outline:
+        none;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.09);
+}
+
+.search-box::placeholder {
+    color:
+        #707080;
+}
+
+.search-box:focus {
+    border-color:
+        rgba(129,140,248,0.65);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(99,102,241,0.08);
+}
+
+.publish-button {
+    flex:
+        0 0 auto;
+
+    padding:
+        13px 19px;
+
+    border:
+        none;
+
+    border-radius:
+        12px;
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366f1,
+            #8b5cf6
+        );
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.2s;
+
+    box-shadow:
+        0 10px 30px
+        rgba(99,102,241,0.2);
+}
+
+.publish-button:hover {
+    transform:
+        translateY(-2px);
+
+    filter:
+        brightness(1.1);
+}
+
+
+/* =========================================
+   VIDEO FEED
+========================================= */
+
+.video-feed {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap:
+        18px;
+
+    max-height:
+        760px;
+
+    overflow-y:
+        auto;
+
+    padding:
+        4px;
+
+    scrollbar-width:
+        thin;
+}
+
+.video-card {
+    display:
+        grid;
+
+    grid-template-columns:
+        300px 1fr;
+
+    gap:
+        22px;
+
+    padding:
+        16px;
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(13,17,39,0.72);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    cursor:
+        pointer;
+
+    transition:
+        0.22s;
+}
+
+.video-card:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(129,140,248,0.35);
+
+    box-shadow:
+        0 18px 45px
+        rgba(0,0,0,0.25);
+}
+
+.thumbnail {
+    width: 100%;
+
+    aspect-ratio:
+        16 / 9;
+
+    border-radius:
+        14px;
+
+    overflow:
+        hidden;
+
+    background:
+        #05060d;
+}
+
+.thumbnail video {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    pointer-events: none;
+}
+
+.video-info {
+    min-width: 0;
+
+    padding:
+        5px 5px 5px 0;
+}
+
+.video-info h2 {
+    margin:
+        0 0 9px;
+
+    font-size:
+        21px;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+}
+
+.video-description {
+    color:
+        #9291a4;
+
+    line-height:
+        1.5;
+
+    font-size:
+        14px;
+
+    display:
+        -webkit-box;
+
+    line-clamp:
+        3;
+
+    -webkit-line-clamp:
+        3;
+
+    -webkit-box-orient:
+        vertical;
+
+    overflow:
+        hidden;
+}
+
+.video-meta {
+    margin-top:
+        16px;
+
+    display:
+        flex;
+
+    gap:
+        15px;
+
+    color:
+        #777687;
+
+    font-size:
+        12px;
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.empty {
+    padding:
+        55px 25px;
+
+    text-align:
+        center;
+
+    color:
+        #777687;
+
+    border:
+        1px dashed
+        rgba(255,255,255,0.1);
+
+    border-radius:
+        18px;
+}
+
+
+/* =========================================
+   VIEWER
+========================================= */
+
+.viewer {
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        3000;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    background:
+        rgba(0,0,0,0.78);
+
+    backdrop-filter:
+        blur(12px);
+}
+
+.viewer.show {
+    display:
+        flex;
+}
+
+.viewer-box {
+    width:
+        min(
+            950px,
+            100%
+        );
+
+    max-height:
+        92vh;
+
+    overflow-y:
+        auto;
+
+    border-radius:
+        22px;
+
+    background:
+        #080a16;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.1);
+
+    box-shadow:
+        0 30px 100px
+        rgba(0,0,0,0.65);
+}
+
+.viewer-video {
+    width:
+        100%;
+
+    max-height:
+        65vh;
+
+    display:
+        block;
+
+    background:
+        black;
+}
+
+.viewer-content {
+    padding:
+        22px;
+}
+
+.viewer-top {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    gap:
+        15px;
+}
+
+.viewer-title {
+    margin:
+        0;
+
+    font-size:
+        26px;
+}
+
+.close-viewer {
+    width:
+        36px;
+
+    height:
+        36px;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.07);
+
+    cursor:
+        pointer;
+
+    font-size:
+        20px;
+}
+
+.close-viewer:hover {
+    background:
+        rgba(255,255,255,0.12);
+}
+
+.viewer-description {
+    margin:
+        12px 0 0;
+
+    color:
+        #9291a4;
+
+    line-height:
+        1.6;
+
+    white-space:
+        pre-wrap;
+}
+
+.viewer-actions {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    margin-top:
+        20px;
+}
+
+.like-button {
+    border:
+        1px solid
+        rgba(255,255,255,0.1);
+
+    border-radius:
+        11px;
+
+    padding:
+        10px 15px;
+
+    color:
+        #d8d7e5;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    cursor:
+        pointer;
+
+    font-weight:
+        800;
+
+    transition:
+        0.2s;
+}
+
+.like-button:hover {
+    background:
+        rgba(255,255,255,0.09);
+}
+
+.like-button.liked {
+    background:
+        rgba(99,102,241,0.18);
+
+    border-color:
+        rgba(129,140,248,0.45);
+
+    color:
+        #c4b5fd;
+}
+
+.like-button:disabled {
+    opacity:
+        0.6;
+
+    cursor:
+        not-allowed;
+}
+
+.like-count {
+    color:
+        #777687;
+
+    font-size:
+        13px;
+}
+
+
+/* =========================================
+   COMMENTS
+========================================= */
+
+.comments {
+    margin-top:
+        30px;
+
+    padding-top:
+        25px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.08);
+}
+
+.comments h3 {
+    margin:
+        0 0 15px;
+}
+
+.comment-form {
+    display:
+        flex;
+
+    gap:
+        10px;
+}
+
+.comment-input {
+    flex:
+        1;
+
+    min-width:
+        0;
+
+    padding:
+        12px 14px;
+
+    border-radius:
+        11px;
+
+    outline:
+        none;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.09);
+}
+
+.comment-input:focus {
+    border-color:
+        rgba(129,140,248,0.6);
+}
+
+.comment-submit {
+    padding:
+        12px 16px;
+
+    border:
+        none;
+
+    border-radius:
+        11px;
+
+    color:
+        white;
+
+    background:
+        #6366f1;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+}
+
+.login-note {
+    padding:
+        13px 15px;
+
+    border-radius:
+        11px;
+
+    color:
+        #aaa9bb;
+
+    background:
+        rgba(255,255,255,0.04);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.07);
+
+    font-size:
+        13px;
+}
+
+.comments-list {
+    margin-top:
+        18px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        12px;
+}
+
+.comment {
+    padding:
+        13px 15px;
+
+    border-radius:
+        13px;
+
+    background:
+        rgba(255,255,255,0.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.06);
+}
+
+.comment-header {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    gap:
+        10px;
+
+    margin-bottom:
+        6px;
+}
+
+.comment-user {
+    color:
+        #c4b5fd;
+
+    font-size:
+        13px;
+
+    font-weight:
+        800;
+}
+
+.comment-date {
+    color:
+        #656577;
+
+    font-size:
+        11px;
+}
+
+.comment-text {
+    color:
+        #c9c8d8;
+
+    font-size:
+        14px;
+
+    line-height:
+        1.5;
+
+    white-space:
+        pre-wrap;
+
+    word-break:
+        break-word;
+}
+
+
+/* =========================================
+   PUBLISH MODAL
+========================================= */
+
+.publish-overlay {
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        4000;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    background:
+        rgba(0,0,0,0.78);
+
+    backdrop-filter:
+        blur(10px);
+}
+
+.publish-overlay.show {
+    display:
+        flex;
+}
+
+.publish-box {
+    width:
+        min(
+            550px,
+            100%
+        );
+
+    padding:
+        25px;
+
+    border-radius:
+        20px;
+
+    background:
+        #0d1020;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.1);
+
+    box-shadow:
+        0 30px 90px
+        rgba(0,0,0,0.55);
+}
+
+.publish-header {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+}
+
+.publish-header h2 {
+    margin:
+        0;
+}
+
+.publish-close {
+    width:
+        34px;
+
+    height:
+        34px;
+
+    border:
+        none;
+
+    border-radius:
+        9px;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.07);
+
+    cursor:
+        pointer;
+
+    font-size:
+        18px;
+}
+
+.field {
+    margin-top:
+        17px;
+}
+
+.field label {
+    display:
+        block;
+
+    margin-bottom:
+        7px;
+
+    color:
+        #c9c8d8;
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+}
+
+.field input,
+.field textarea {
+    width:
+        100%;
+
+    padding:
+        12px 13px;
+
+    border-radius:
+        10px;
+
+    outline:
+        none;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.1);
+}
+
+.field textarea {
+    min-height:
+        110px;
+
+    resize:
+        vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+    border-color:
+        rgba(129,140,248,0.6);
+}
+
+.file-input {
+    padding:
+        10px !important;
+}
+
+.publish-actions {
+    display:
+        flex;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        10px;
+
+    margin-top:
+        20px;
+}
+
+.cancel-publish {
+    padding:
+        11px 16px;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    cursor:
+        pointer;
+}
+
+.submit-publish {
+    padding:
+        11px 18px;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366f1,
+            #8b5cf6
+        );
+
+    cursor:
+        pointer;
+
+    font-weight:
+        800;
+}
+
+.submit-publish:disabled {
+    opacity:
+        0.55;
+
+    cursor:
+        not-allowed;
+}
+
+.publish-status {
+    min-height:
+        18px;
+
+    margin-top:
+        10px;
+
+    color:
+        #858ca1;
+
+    font-size:
+        13px;
+}
+
+
+
+/* =========================================
+   MEDIA / PHOTOS
+========================================= */
+
+.media-section{
+    margin-top:55px;
+}
+
+.media-heading{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.media-heading h2{
+    margin:0;
+    font-size:28px;
+}
+
+.media-heading p{
+    margin:6px 0 0;
+    color:#85869a;
+    font-size:13px;
+}
+
+.media-heading-actions{
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap;
+}
+
+.media-publish-button,
+.media-refresh-button{
+    padding:11px 16px;
+    border:none;
+    border-radius:11px;
+    color:white;
+    font-weight:800;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.media-publish-button{
+    background:linear-gradient(135deg,#8b5cf6,#6366f1);
+}
+
+.media-refresh-button{
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.09);
+}
+
+.media-publish-button:hover,
+.media-refresh-button:hover{
+    filter:brightness(1.08);
+}
+
+.media-feed{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:18px;
+}
+
+.media-card{
+    overflow:hidden;
+    border-radius:20px;
+    background:rgba(13,17,39,.72);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 14px 35px rgba(0,0,0,.16);
+}
+
+.media-image-wrap{
+    width:100%;
+    min-height:180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#05060d;
+}
+
+.media-image{
+    width:100%;
+    max-height:560px;
+    display:block;
+    object-fit:cover;
+}
+
+.media-image-fallback{
+    padding:35px 20px;
+    color:#777687;
+    text-align:center;
+}
+
+.media-info{
+    padding:18px;
+}
+
+.media-title{
+    margin:0 0 7px;
+    font-size:20px;
+}
+
+.media-description{
+    margin:0;
+    color:#9291a4;
+    font-size:14px;
+    line-height:1.5;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+.media-meta{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:13px;
+    color:#777687;
+    font-size:12px;
+}
+
+.media-actions{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:15px;
+}
+
+.media-like-button{
+    padding:9px 13px;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:10px;
+    color:#d8d7e5;
+    background:rgba(255,255,255,.045);
+    cursor:pointer;
+    font-weight:800;
+}
+
+.media-like-button:hover{
+    background:rgba(255,255,255,.09);
+}
+
+.media-like-button.liked{
+    color:#c4b5fd;
+    background:rgba(99,102,241,.18);
+    border-color:rgba(129,140,248,.45);
+}
+
+.media-like-button:disabled,
+.media-comment-submit:disabled,
+.media-refresh-button:disabled,
+.media-publish-button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.media-like-count{
+    color:#777687;
+    font-size:12px;
+}
+
+.media-comments{
+    margin-top:16px;
+    padding-top:15px;
+    border-top:1px solid rgba(255,255,255,.07);
+}
+
+.media-comment-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    max-height:230px;
+    overflow-y:auto;
+}
+
+.media-comment{
+    padding:9px 11px;
+    border-radius:10px;
+    background:rgba(255,255,255,.035);
+}
+
+.media-comment-user{
+    color:#c4b5fd;
+    font-size:12px;
+    font-weight:800;
+}
+
+.media-comment-text{
+    margin-top:3px;
+    color:#c9c8d8;
+    font-size:13px;
+    line-height:1.45;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+.media-comment-form{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.media-comment-input{
+    min-width:0;
+    flex:1;
+    padding:10px 11px;
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:10px;
+    outline:none;
+    color:white;
+    background:rgba(255,255,255,.045);
+}
+
+.media-comment-submit{
+    padding:10px 12px;
+    border:none;
+    border-radius:10px;
+    color:white;
+    background:#6366f1;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.media-empty{
+    grid-column:1/-1;
+}
+
+.media-note{
+    margin-top:8px;
+    color:#777687;
+    font-size:12px;
+}
+
+@media (max-width:750px){
+    .media-feed{
+        grid-template-columns:1fr;
+    }
+
+    .media-heading{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .media-heading-actions{
+        width:100%;
+    }
+
+    .media-publish-button,
+    .media-refresh-button{
+        flex:1;
+    }
+
+    .media-comment-form{
+        flex-direction:column;
+    }
+
+    .media-comment-submit{
+        width:100%;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 750px) {
+
+    header {
+        height:
+            auto;
+
+        min-height:
+            72px;
+
+        padding:
+            10px 15px;
+
+        gap:
+            10px;
+    }
+
+    .logo {
+        font-size:
+            18px;
+    }
+
+    .logo-icon {
+        width:
+            34px;
+
+        height:
+            34px;
+    }
+
+    .nav {
+        gap:
+            10px;
+
+        flex-wrap:
+            wrap;
+    }
+
+    .nav-link {
+        font-size:
+            12px;
+    }
+
+    .account-btn {
+        padding:
+            5px 7px;
+    }
+
+    .account-btn span {
+        display:
+            none;
+    }
+
+    .controls {
+        align-items:
+            stretch;
+
+        flex-direction:
+            column;
+    }
+
+    .publish-button {
+        width:
+            100%;
+    }
+
+    .video-feed {
+        grid-template-columns:
+            1fr;
+
+        max-height:
+            760px;
+    }
+
+    .video-card {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            14px;
+    }
+
+    .video-info {
+        padding:
+            0 3px 5px;
+    }
+
+    .video-info h2 {
+        white-space:
+            normal;
+    }
+
+    .comment-form {
+        flex-direction:
+            column;
+    }
+
+    .comment-submit {
+        width:
+            100%;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+    <a
+        href="index.html"
+        class="logo"
+    >
+
+        <div class="logo-icon">
+            D
+        </div>
+
+        <span>
+            DougHub
+        </span>
+
+    </a>
+
+
+    <div class="nav">
+
+        <a
+            href="index.html"
+            class="nav-link"
+        >
+            Home
+        </a>
+
+        <a
+            href="DougTube.html"
+            class="nav-link"
+        >
+            DougTube
+        </a>
+
+        <a
+            href="douggames.html"
+            class="nav-link"
+        >
+            Games
+        </a>
+
+        <a
+            href="DMail.html"
+            class="nav-link"
+        >
+            DMail
+        </a>
+
+        <a
+            href="chat.html"
+            class="nav-link"
+        >
+            Chat
+        </a>
+
+
+        <div class="account-area">
+
+            <button
+                id="accountButton"
+                class="account-btn"
+                type="button"
+            >
+
+                <div
+                    id="accountAvatar"
+                    class="account-avatar"
+                >
+                    ?
+                </div>
+
+                <span id="accountName">
+                    Log In
+                </span>
+
+            </button>
+
+
+            <div
+                id="accountMenu"
+                class="account-menu"
+            >
+
+                <a href="my-games.html">
+                    My Games
+                </a>
+
+                <a
+                    href="admin.html"
+                    id="adminLink"
+                    style="display:none;"
+                >
+                    Admin Panel
+                </a>
+
+                <a
+                    href="inbox.html"
+                    id="feedbackLink"
+                    style="display:none;"
+                >
+                    Feedback
+                </a>
+
+                <a href="settings.html">
+                    Settings
+                </a>
+
+                <button
+                    id="logoutButton"
+                    class="logout"
+                    type="button"
+                >
+                    Log Out
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+
+    <div class="page-title">
+
+        <h1>
+            DougTube
+        </h1>
+
+        <p>
+            Watch videos from the DougHub community.
+            Find something interesting, open it, and join the conversation.
+        </p>
+
+    </div>
+
+
+    <div class="controls">
+
+        <div class="search-wrapper">
+
+            <input
+                type="search"
+                id="videoSearch"
+                class="search-box"
+                placeholder="Search videos..."
+                name="video-search"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                inputmode="search"
+                aria-label="Search DougTube videos"
+                data-form-type="search"
+                data-lpignore="true"
+                data-1p-ignore="true"
+                readonly
+            >
+
+        </div>
+
+
+        <button
+            id="publishButton"
+            class="publish-button"
+            type="button"
+        >
+            + Publish Video
+        </button>
+
+    </div>
+
+
+    <div
+        id="videoFeed"
+        class="video-feed"
+    >
+
+        <div class="empty">
+            Loading DougTube...
+        </div>
+
+    </div>
+
+    <!-- PHOTOS / MEDIA -->
+    <section class="media-section" aria-label="DougTube photos and media">
+
+        <div class="media-heading">
+            <div>
+                <h2>📸 Photos &amp; Media</h2>
+                <p>Share photos with the DougHub community, then like and comment on them.</p>
+            </div>
+
+            <div class="media-heading-actions">
+                <button id="mediaRefreshButton" class="media-refresh-button" type="button">
+                    ↻ Refresh
+                </button>
+                <button id="mediaPublishButton" class="media-publish-button" type="button">
+                    + Post Photo
+                </button>
+            </div>
+        </div>
+
+        <div id="mediaFeed" class="media-feed">
+            <div class="empty media-empty">Loading photos...</div>
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- VIDEO VIEWER -->
+
+<div
+    id="viewer"
+    class="viewer"
+>
+
+    <div class="viewer-box">
+
+        <video
+            id="viewerVideo"
+            class="viewer-video"
+            controls
+            playsinline
+        ></video>
+
+
+        <div class="viewer-content">
+
+            <div class="viewer-top">
+
+                <div>
+
+                    <h2
+                        id="viewerTitle"
+                        class="viewer-title"
+                    >
+                        Video
+                    </h2>
+
+                    <p
+                        id="viewerDescription"
+                        class="viewer-description"
+                    ></p>
+
+                </div>
+
+
+                <button
+                    id="closeViewer"
+                    class="close-viewer"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="viewer-actions">
+
+                <button
+                    id="likeButton"
+                    class="like-button"
+                    type="button"
+                >
+                    👍 Like
+                </button>
+
+                <span
+                    id="likeCount"
+                    class="like-count"
+                >
+                    0 likes
+                </span>
+
+            </div>
+
+
+            <div class="comments">
+
+                <h3>
+                    Comments
+                </h3>
+
+
+                <div
+                    id="commentArea"
+                ></div>
+
+
+                <div
+                    id="commentsList"
+                    class="comments-list"
+                >
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- PUBLISH MODAL -->
+
+<div
+    id="publishOverlay"
+    class="publish-overlay"
+>
+
+    <div class="publish-box">
+
+        <div class="publish-header">
+
+            <h2>
+                Publish Video
+            </h2>
+
+            <button
+                id="publishClose"
+                class="publish-close"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="videoFile">
+                Video
+            </label>
+
+            <input
+                id="videoFile"
+                class="file-input"
+                type="file"
+                accept="video/*"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="videoTitle">
+                Video Name
+            </label>
+
+            <input
+                id="videoTitle"
+                type="text"
+                maxlength="120"
+                placeholder="Give your video a name..."
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="videoDescription">
+                Description
+            </label>
+
+            <textarea
+                id="videoDescription"
+                maxlength="2000"
+                placeholder="Tell people about your video..."
+            ></textarea>
+
+        </div>
+
+
+        <div
+            id="publishStatus"
+            class="publish-status"
+        ></div>
+
+
+        <div class="publish-actions">
+
+            <button
+                id="cancelPublish"
+                class="cancel-publish"
+                type="button"
+            >
+                Cancel
+            </button>
+
+            <button
+                id="submitPublish"
+                class="submit-publish"
+                type="button"
+            >
+                Publish
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- POST PHOTO MODAL -->
+<div id="mediaPublishOverlay" class="publish-overlay">
+    <div class="publish-box">
+        <div class="publish-header">
+            <h2>Post Photo</h2>
+            <button id="mediaPublishClose" class="publish-close" type="button">×</button>
+        </div>
+
+        <div class="field">
+            <label for="mediaFile">Photo</label>
+            <input id="mediaFile" class="file-input" type="file" accept="image/*">
+        </div>
+
+        <div class="field">
+            <label for="mediaTitle">Photo Name</label>
+            <input id="mediaTitle" type="text" maxlength="120" placeholder="Give your photo a name...">
+        </div>
+
+        <div class="field">
+            <label for="mediaDescription">Description</label>
+            <textarea id="mediaDescription" maxlength="2000" placeholder="Tell people about your photo..."></textarea>
+        </div>
+
+        <div id="mediaPublishStatus" class="publish-status"></div>
+
+        <div class="publish-actions">
+            <button id="mediaCancelPublish" class="cancel-publish" type="button">Cancel</button>
+            <button id="mediaSubmitPublish" class="submit-publish" type="button">Post Photo</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://agsqdqcsmsppcdqxlppj.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Oq1WvEHgoHcjmCBGbEnoYQ_BqYA1p52";
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+let currentUser = null;
+
+let currentProfile = null;
+
+let videos = [];
+
+let mediaPosts = [];
+
+const VIDEO_BUCKET = "dougtube-videos";
+const MEDIA_BUCKET = "dougtube-media";
+
+let selectedVideo = null;
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const accountButton =
+    document.getElementById(
+        "accountButton"
+    );
+
+const accountMenu =
+    document.getElementById(
+        "accountMenu"
+    );
+
+const publishButton =
+    document.getElementById(
+        "publishButton"
+    );
+
+const publishOverlay =
+    document.getElementById(
+        "publishOverlay"
+    );
+
+const publishClose =
+    document.getElementById(
+        "publishClose"
+    );
+
+const cancelPublish =
+    document.getElementById(
+        "cancelPublish"
+    );
+
+const submitPublish =
+    document.getElementById(
+        "submitPublish"
+    );
+
+const videoSearch = document.getElementById("videoSearch");
+
+const mediaPublishButton=document.getElementById("mediaPublishButton");
+const mediaPublishOverlay=document.getElementById("mediaPublishOverlay");
+const mediaPublishClose=document.getElementById("mediaPublishClose");
+const mediaCancelPublish=document.getElementById("mediaCancelPublish");
+const mediaSubmitPublish=document.getElementById("mediaSubmitPublish");
+
+
+/* =========================================
+   ACCOUNT MENU
+========================================= */
+
+accountButton.addEventListener(
+    "click",
+    function(event) {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        if (!currentUser) {
+
+            window.location.href =
+                "log-in.html";
+
+            return;
+        }
+
+        accountMenu.classList.toggle(
+            "show"
+        );
+
+    }
+);
+
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            !event.target.closest(
+                ".account-area"
+            )
+        ) {
+
+            accountMenu.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   LOAD ACCOUNT
+========================================= */
+
+async function loadAccount() {
+
+    const {
+        data: {
+            session
+        }
+    } =
+        await supabaseClient.auth.getSession();
+
+
+    if (!session) {
+
+        currentUser =
+            null;
+
+        document
+            .getElementById(
+                "accountName"
+            )
+            .textContent =
+                "Log In";
+
+        document
+            .getElementById(
+                "accountAvatar"
+            )
+            .textContent =
+                "?";
+
+        return;
+    }
+
+
+    currentUser =
+        session.user;
+
+
+    const {
+        data: profile,
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "username, avatar_url, is_admin"
+            )
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    currentProfile =
+        profile;
+
+
+    if (error) {
+
+        console.error(
+            "Profile error:",
+            error
+        );
+
+    }
+
+
+    const username =
+        profile?.username ||
+        currentUser.email
+            ?.split("@")[0] ||
+        "User";
+
+
+    document
+        .getElementById(
+            "accountName"
+        )
+        .textContent =
+            username;
+
+
+    const avatar =
+        document.getElementById(
+            "accountAvatar"
+        );
+
+
+    if (profile?.avatar_url) {
+
+        avatar.innerHTML =
+            `<img
+                src="${escapeHtml(profile.avatar_url)}"
+                alt="Profile"
+            >`;
+
+    } else {
+
+        avatar.textContent =
+            username
+                .charAt(0)
+                .toUpperCase();
+
+    }
+
+
+    if (
+        profile?.is_admin === true
+    ) {
+
+        document
+            .getElementById(
+                "adminLink"
+            )
+            .style.display =
+                "block";
+
+        document
+            .getElementById(
+                "feedbackLink"
+            )
+            .style.display =
+                "block";
+
+    }
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+    .getElementById(
+        "logoutButton"
+    )
+    .addEventListener(
+        "click",
+        async function() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+            window.location.reload();
+
+        }
+    );
+
+
+/* =========================================
+   PUBLISH MODAL
+========================================= */
+
+publishButton.addEventListener(
+    "click",
+    async function() {
+
+        if (!currentUser) {
+
+            window.location.href =
+                "log-in.html";
+
+            return;
+        }
+
+        publishOverlay.classList.add(
+            "show"
+        );
+
+    }
+);
+
+
+function closePublish() {
+
+    publishOverlay.classList.remove(
+        "show"
+    );
+
+    document
+        .getElementById(
+            "videoFile"
+        )
+        .value =
+            "";
+
+    document
+        .getElementById(
+            "videoTitle"
+        )
+        .value =
+            "";
+
+    document
+        .getElementById(
+            "videoDescription"
+        )
+        .value =
+            "";
+
+    document
+        .getElementById(
+            "publishStatus"
+        )
+        .textContent =
+            "";
+
+}
+
+
+publishClose.addEventListener(
+    "click",
+    closePublish
+);
+
+
+cancelPublish.addEventListener(
+    "click",
+    closePublish
+);
+
+
+/* =========================================
+   PUBLISH VIDEO
+========================================= */
+
+submitPublish.addEventListener(
+    "click",
+    async function() {
+
+        const file =
+            document.getElementById(
+                "videoFile"
+            ).files[0];
+
+        const title =
+            document
+                .getElementById(
+                    "videoTitle"
+                )
+                .value
+                .trim();
+
+        const description =
+            document
+                .getElementById(
+                    "videoDescription"
+                )
+                .value
+                .trim();
+
+        const status =
+            document.getElementById(
+                "publishStatus"
+            );
+
+
+        if (!currentUser) {
+
+            window.location.href =
+                "log-in.html";
+
+            return;
+        }
+
+
+        if (!file) {
+
+            status.textContent =
+                "Please choose a video.";
+
+            return;
+        }
+
+
+        if (!file.type.startsWith("video/")) {
+
+            status.textContent =
+                "Please choose a video file.";
+
+            return;
+        }
+
+
+        if (!title) {
+
+            status.textContent =
+                "Please give your video a name.";
+
+            return;
+        }
+
+
+        if (file.size > 200 * 1024 * 1024) {
+
+            status.textContent =
+                "That video is too large. The maximum is 200 MB.";
+
+            return;
+        }
+
+
+        submitPublish.disabled =
+            true;
+
+        submitPublish.textContent =
+            "Uploading...";
+
+
+        try {
+
+            const extension =
+                file.name
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+
+            const filePath =
+                currentUser.id +
+                "/" +
+                Date.now() +
+                "-" +
+                crypto.randomUUID() +
+                "." +
+                extension;
+
+
+            status.textContent =
+                "Uploading video...";
+
+
+            const {
+                error: uploadError
+            } =
+                await supabaseClient
+                    .storage
+                    .from(VIDEO_BUCKET)
+                    .upload(
+                        filePath,
+                        file,
+                        {
+                            contentType:
+                                file.type,
+
+                            upsert:
+                                false
+                        }
+                    );
+
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+
+            const {
+                data: publicUrlData
+            } =
+                supabaseClient
+                    .storage
+                    .from(VIDEO_BUCKET)
+                    .getPublicUrl(
+                        filePath
+                    );
+
+
+            const videoUrl =
+                publicUrlData
+                    .publicUrl;
+
+
+            status.textContent =
+                "Publishing video...";
+
+
+            const {
+                error: databaseError
+            } =
+                await supabaseClient
+                    .from(
+                        "dougtube_videos"
+                    )
+                    .insert({
+
+                        creator_id:
+                            currentUser.id,
+
+                        title:
+                            title,
+
+                        description:
+                            description ||
+                            null,
+
+                        video_url:
+                            videoUrl
+
+                    });
+
+
+            if (databaseError) {
+                throw databaseError;
+            }
+
+
+            status.textContent =
+                "Published!";
+
+
+            setTimeout(
+                async function() {
+
+                    closePublish();
+
+                    await loadVideos();
+
+                },
+                700
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Publish error:",
+                error
+            );
+
+            status.textContent=error.message==="Bucket not found"
+                ?"DougTube storage is not set up yet. Run supabase_dougtube_setup.sql in Supabase SQL Editor."
+                :error.message||"Could not publish the video.";
+
+        } finally {
+
+            submitPublish.disabled =
+                false;
+
+            submitPublish.textContent =
+                "Publish";
+
+        }
+
+    }
+);
+
+
+
+/* =========================================
+   PHOTOS / MEDIA
+========================================= */
+
+mediaPublishButton.addEventListener("click", function(){
+    if(!currentUser){
+        window.location.href="log-in.html";
+        return;
+    }
+    mediaPublishOverlay.classList.add("show");
+});
+
+document.getElementById("mediaRefreshButton").addEventListener("click", async function(){
+    const button=this;
+    button.disabled=true;
+    button.textContent="Refreshing...";
+    try{
+        await loadMediaPosts();
+    }finally{
+        button.disabled=false;
+        button.textContent="↻ Refresh";
+    }
+});
+
+function closeMediaPublish(){
+    mediaPublishOverlay.classList.remove("show");
+    document.getElementById("mediaFile").value="";
+    document.getElementById("mediaTitle").value="";
+    document.getElementById("mediaDescription").value="";
+    document.getElementById("mediaPublishStatus").textContent="";
+}
+
+mediaPublishClose.addEventListener("click",closeMediaPublish);
+mediaCancelPublish.addEventListener("click",closeMediaPublish);
+
+mediaPublishOverlay.addEventListener("click",function(event){
+    if(event.target===mediaPublishOverlay){
+        closeMediaPublish();
+    }
+});
+
+mediaSubmitPublish.addEventListener("click",async function(){
+    if(!currentUser){
+        window.location.href="log-in.html";
+        return;
+    }
+
+    const file=document.getElementById("mediaFile").files[0];
+    const title=document.getElementById("mediaTitle").value.trim();
+    const description=document.getElementById("mediaDescription").value.trim();
+    const status=document.getElementById("mediaPublishStatus");
+
+    status.textContent="";
+
+    if(!file){
+        status.textContent="Please choose a photo.";
+        return;
+    }
+
+    const allowedTypes=["image/jpeg","image/png","image/webp","image/gif"];
+    if(!allowedTypes.includes(file.type)){
+        status.textContent="Please choose a JPG, PNG, WebP, or GIF image.";
+        return;
+    }
+
+    if(!title){
+        status.textContent="Please give your photo a name.";
+        return;
+    }
+
+    if(file.size>10*1024*1024){
+        status.textContent="That photo is too large. The maximum is 10 MB.";
+        return;
+    }
+
+    mediaSubmitPublish.disabled=true;
+    mediaSubmitPublish.textContent="Uploading...";
+
+    let uploadedPath=null;
+
+    try{
+        const extension=file.name.split(".").pop().toLowerCase();
+        const filePath=currentUser.id+"/"+Date.now()+"-"+crypto.randomUUID()+"."+extension;
+        uploadedPath=filePath;
+
+        status.textContent="Uploading photo...";
+
+        const {error:uploadError}=await supabaseClient
+            .storage
+            .from(MEDIA_BUCKET)
+            .upload(filePath,file,{
+                contentType:file.type,
+                upsert:false
+            });
+
+        if(uploadError) throw uploadError;
+
+        const {data:publicUrlData}=supabaseClient
+            .storage
+            .from(MEDIA_BUCKET)
+            .getPublicUrl(filePath);
+
+        const mediaUrl=publicUrlData?.publicUrl;
+
+        if(!mediaUrl){
+            throw new Error("Could not create the photo URL.");
+        }
+
+        status.textContent="Posting photo...";
+
+        const {error:databaseError}=await supabaseClient
+            .from("dougtube_media")
+            .insert({
+                creator_id:currentUser.id,
+                title:title,
+                description:description||null,
+                media_url:mediaUrl
+            });
+
+        if(databaseError) throw databaseError;
+
+        status.textContent="Photo posted!";
+
+        setTimeout(async function(){
+            closeMediaPublish();
+            await loadMediaPosts();
+        },600);
+
+    }catch(error){
+        console.error("Media publish error:",error);
+
+        if(uploadedPath){
+            await supabaseClient
+                .storage
+                .from(MEDIA_BUCKET)
+                .remove([uploadedPath])
+                .catch(function(cleanupError){
+                    console.error("Media cleanup error:",cleanupError);
+                });
+        }
+
+        status.textContent=error.message||"Could not post the photo.";
+    }finally{
+        mediaSubmitPublish.disabled=false;
+        mediaSubmitPublish.textContent="Post Photo";
+    }
+});
+
+async function loadMediaPosts(){
+    const feed=document.getElementById("mediaFeed");
+
+    feed.innerHTML='<div class="empty media-empty">Loading photos...</div>';
+
+    const {data,error}=await supabaseClient
+        .from("dougtube_media")
+        .select("id, creator_id, title, description, media_url, created_at")
+        .order("created_at",{ascending:false});
+
+    if(error){
+        console.error("Media loading error:",error);
+        feed.innerHTML='<div class="empty media-empty">Could not load photos.<br><span class="media-note">'+escapeHtml(error.message||"Check your Supabase media table and policies.")+'</span></div>';
+        return;
+    }
+
+    mediaPosts=data||[];
+
+    if(!mediaPosts.length){
+        feed.innerHTML='<div class="empty media-empty">No photos have been posted yet.</div>';
+        return;
+    }
+
+    const cards=await Promise.all(mediaPosts.map(buildMediaCard));
+    feed.innerHTML=cards.join("");
+    attachMediaEvents();
+}
+
+async function buildMediaCard(post){
+    const {count:likeCount,error:likeCountError}=await supabaseClient
+        .from("dougtube_media_likes")
+        .select("id",{count:"exact",head:true})
+        .eq("media_id",post.id);
+
+    if(likeCountError){
+        console.error("Media like count error:",likeCountError);
+    }
+
+    let liked=false;
+
+    if(currentUser){
+        const {data:existingLike,error:existingLikeError}=await supabaseClient
+            .from("dougtube_media_likes")
+            .select("id")
+            .eq("media_id",post.id)
+            .eq("user_id",currentUser.id)
+            .maybeSingle();
+
+        if(existingLikeError){
+            console.error("Media like lookup error:",existingLikeError);
+        }
+
+        liked=!!existingLike;
+    }
+
+    const {data:comments,error:commentsError}=await supabaseClient
+        .from("dougtube_media_comments")
+        .select("id, username, comment, created_at")
+        .eq("media_id",post.id)
+        .order("created_at",{ascending:true});
+
+    if(commentsError){
+        console.error("Media comments error:",commentsError);
+    }
+
+    const commentHtml=(comments||[]).length
+        ?comments.map(function(comment){
+            return '<div class="media-comment">'+
+                '<div class="media-comment-user">'+escapeHtml(comment.username||"User")+'</div>'+
+                '<div class="media-comment-text">'+escapeHtml(comment.comment||"")+'</div>'+
+                '</div>';
+        }).join("")
+        :'<div class="media-note">No comments yet.</div>';
+
+    const commentArea=currentUser
+        ?'<div class="media-comment-form">'+
+          '<input class="media-comment-input" data-media-comment="'+escapeHtml(post.id)+'" maxlength="1000" placeholder="Write a comment..." autocomplete="off">'+
+          '<button class="media-comment-submit" data-media-comment-submit="'+escapeHtml(post.id)+'" type="button">Comment</button>'+
+          '</div>'
+        :'<div class="media-note">Log in to comment.</div>';
+
+    return '<article class="media-card">'+
+        '<div class="media-image-wrap">'+
+        '<img class="media-image" src="'+escapeHtml(post.media_url)+'" alt="'+escapeHtml(post.title||"DougTube photo")+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';">'+
+        '<div class="media-image-fallback" style="display:none;">This photo could not be displayed.</div>'+
+        '</div>'+
+        '<div class="media-info">'+
+        '<h3 class="media-title">'+escapeHtml(post.title||"Untitled Photo")+'</h3>'+
+        '<p class="media-description">'+escapeHtml(post.description||"No description.")+'</p>'+
+        '<div class="media-meta"><span>'+formatDate(post.created_at)+'</span><span>Photo</span></div>'+
+        '<div class="media-actions">'+
+        '<button class="media-like-button'+(liked?" liked":"")+'" data-media-like="'+escapeHtml(post.id)+'" type="button">'+(liked?"👍 Liked":"👍 Like")+'</button>'+
+        '<span class="media-like-count" data-media-like-count="'+escapeHtml(post.id)+'">'+Number(likeCount||0).toLocaleString()+" likes</span>"+
+        '</div>'+
+        '<div class="media-comments"><div class="media-comment-list">'+commentHtml+'</div>'+commentArea+'</div>'+
+        '</div></article>';
+}
+
+function attachMediaEvents(){
+    document.querySelectorAll("[data-media-like]").forEach(function(button){
+        button.addEventListener("click",function(){
+            toggleMediaLike(button.dataset.mediaLike);
+        });
+    });
+
+    document.querySelectorAll("[data-media-comment-submit]").forEach(function(button){
+        button.addEventListener("click",function(){
+            submitMediaComment(button.dataset.mediaCommentSubmit);
+        });
+    });
+
+    document.querySelectorAll("[data-media-comment]").forEach(function(input){
+        input.addEventListener("keydown",function(event){
+            if(event.key==="Enter"){
+                event.preventDefault();
+                submitMediaComment(input.dataset.mediaComment);
+            }
+        });
+    });
+}
+
+async function toggleMediaLike(mediaId){
+    if(!currentUser){
+        window.location.href="log-in.html";
+        return;
+    }
+
+    const button=document.querySelector('[data-media-like="'+CSS.escape(mediaId)+'"]');
+    if(!button) return;
+
+    button.disabled=true;
+
+    try{
+        const {data:existingLike}=await supabaseClient
+            .from("dougtube_media_likes")
+            .select("id")
+            .eq("media_id",mediaId)
+            .eq("user_id",currentUser.id)
+            .maybeSingle();
+
+        if(existingLike){
+            const {error}=await supabaseClient
+                .from("dougtube_media_likes")
+                .delete()
+                .eq("id",existingLike.id);
+            if(error) throw error;
+        }else{
+            const {error}=await supabaseClient
+                .from("dougtube_media_likes")
+                .insert({
+                    media_id:mediaId,
+                    user_id:currentUser.id
+                });
+            if(error) throw error;
+        }
+
+        await loadMediaPosts();
+
+    }catch(error){
+        console.error("Media like error:",error);
+        alert(error.message||"Could not update the like.");
+    }finally{
+        button.disabled=false;
+    }
+}
+
+async function submitMediaComment(mediaId){
+    if(!currentUser){
+        window.location.href="log-in.html";
+        return;
+    }
+
+    const input=document.querySelector('[data-media-comment="'+CSS.escape(mediaId)+'"]');
+    if(!input) return;
+
+    const comment=input.value.trim();
+    if(!comment) return;
+
+    const username=currentProfile?.username||currentUser.email?.split("@")[0]||"User";
+
+    const button=document.querySelector('[data-media-comment-submit="'+CSS.escape(mediaId)+'"]');
+    if(button){
+        button.disabled=true;
+        button.textContent="Posting...";
+    }
+
+    try{
+        const {error}=await supabaseClient
+            .from("dougtube_media_comments")
+            .insert({
+                media_id:mediaId,
+                user_id:currentUser.id,
+                username:username,
+                comment:comment
+            });
+
+        if(error) throw error;
+
+        await loadMediaPosts();
+
+    }catch(error){
+        console.error("Media comment error:",error);
+        alert(error.message||"Could not post comment.");
+    }finally{
+        if(button){
+            button.disabled=false;
+            button.textContent="Comment";
+        }
+    }
+}
+
+
+/* =========================================
+   LOAD VIDEOS
+========================================= */
+
+async function loadVideos() {
+
+    const feed =
+        document.getElementById(
+            "videoFeed"
+        );
+
+
+    feed.innerHTML =
+        `<div class="empty">
+            Loading DougTube...
+        </div>`;
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "dougtube_videos"
+            )
+            .select(
+                "id, creator_id, title, description, video_url, created_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Video loading error:",
+            error
+        );
+
+        feed.innerHTML =
+            `<div class="empty">
+                Could not load DougTube videos.
+            </div>`;
+
+        return;
+    }
+
+
+    videos =
+        data || [];
+
+
+    renderVideos();
+
+}
+
+
+/* =========================================
+   RENDER VIDEOS
+========================================= */
+
+function renderVideos() {
+
+    const feed =
+        document.getElementById(
+            "videoFeed"
+        );
+
+
+    const search =
+        videoSearch.value
+            .toLowerCase()
+            .trim();
+
+
+    const filtered =
+        videos.filter(
+            function(video) {
+
+                return (
+
+                    (video.title || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    (video.description || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                );
+
+            }
+        );
+
+
+    if (!filtered.length) {
+
+        feed.innerHTML =
+            `<div class="empty">
+                No videos found.
+            </div>`;
+
+        return;
+    }
+
+
+    feed.innerHTML =
+        filtered
+            .map(
+                function(video) {
+
+                    return `
+
+                        <div
+                            class="video-card"
+                            data-video-id="${escapeHtml(video.id)}"
+                        >
+
+                            <div class="thumbnail">
+
+                                <video
+                                    src="${escapeHtml(video.video_url)}"
+                                    preload="metadata"
+                                ></video>
+
+                            </div>
+
+
+                            <div class="video-info">
+
+                                <h2>
+                                    ${escapeHtml(
+                                        video.title ||
+                                        "Untitled Video"
+                                    )}
+                                </h2>
+
+                                <div class="video-description">
+                                    ${escapeHtml(
+                                        video.description ||
+                                        "No description."
+                                    )}
+                                </div>
+
+                                <div class="video-meta">
+
+                                    <span>
+                                        ${formatDate(
+                                            video.created_at
+                                        )}
+                                    </span>
+
+                                    <span>
+                                        Click to watch
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    feed
+        .querySelectorAll(
+            ".video-card"
+        )
+        .forEach(
+            function(card) {
+
+                card.addEventListener(
+                    "click",
+                    function() {
+
+                        openVideo(
+                            card.dataset.videoId
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+videoSearch.addEventListener(
+    "focus",
+    function() {
+
+        videoSearch.readOnly =
+            false;
+
+    }
+);
+
+
+videoSearch.addEventListener(
+    "click",
+    function() {
+
+        videoSearch.readOnly =
+            false;
+
+    }
+);
+
+
+videoSearch.addEventListener(
+    "input",
+    function() {
+
+        renderVideos();
+
+    }
+);
+
+
+/* =========================================
+   OPEN VIDEO
+========================================= */
+
+async function openVideo(videoId) {
+
+    selectedVideo =
+        videos.find(
+            function(video) {
+
+                return video.id === videoId;
+
+            }
+        );
+
+
+    if (!selectedVideo) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "viewerVideo"
+        )
+        .src =
+            selectedVideo.video_url;
+
+
+    document
+        .getElementById(
+            "viewerTitle"
+        )
+        .textContent =
+            selectedVideo.title;
+
+
+    document
+        .getElementById(
+            "viewerDescription"
+        )
+        .textContent =
+            selectedVideo.description ||
+            "No description.";
+
+
+    document
+        .getElementById(
+            "viewer"
+        )
+        .classList.add(
+            "show"
+        );
+
+
+    await loadLikes();
+
+    await loadComments();
+
+}
+
+
+/* =========================================
+   CLOSE VIDEO
+========================================= */
+
+document
+    .getElementById(
+        "closeViewer"
+    )
+    .addEventListener(
+        "click",
+        closeViewer
+    );
+
+
+document
+    .getElementById(
+        "viewer"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target.id ===
+                "viewer"
+            ) {
+
+                closeViewer();
+
+            }
+
+        }
+    );
+
+
+function closeViewer() {
+
+    document
+        .getElementById(
+            "viewerVideo"
+        )
+        .pause();
+
+    document
+        .getElementById(
+            "viewerVideo"
+        )
+        .src =
+            "";
+
+    document
+        .getElementById(
+            "viewer"
+        )
+        .classList.remove(
+            "show"
+        );
+
+    selectedVideo =
+        null;
+
+}
+
+
+/* =========================================
+   LIKES
+========================================= */
+
+async function loadLikes() {
+
+    if (!selectedVideo) {
+        return;
+    }
+
+
+    const {
+        count,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "dougtube_likes"
+            )
+            .select(
+                "id",
+                {
+                    count:
+                        "exact",
+
+                    head:
+                        true
+                }
+            )
+            .eq(
+                "video_id",
+                selectedVideo.id
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Like count error:",
+            error
+        );
+
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "likeCount"
+        )
+        .textContent =
+            `${Number(count || 0).toLocaleString()} likes`;
+
+
+    const button =
+        document.getElementById(
+            "likeButton"
+        );
+
+
+    button.classList.remove(
+        "liked"
+    );
+
+
+    if (!currentUser) {
+
+        button.textContent =
+            "👍 Like";
+
+        return;
+    }
+
+
+    const {
+        data: existingLike
+    } =
+        await supabaseClient
+            .from(
+                "dougtube_likes"
+            )
+            .select(
+                "id"
+            )
+            .eq(
+                "video_id",
+                selectedVideo.id
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    if (existingLike) {
+
+        button.classList.add(
+            "liked"
+        );
+
+        button.textContent =
+            "👍 Liked";
+
+    } else {
+
+        button.textContent =
+            "👍 Like";
+
+    }
+
+}
+
+
+/* =========================================
+   LIKE BUTTON
+========================================= */
+
+document
+    .getElementById(
+        "likeButton"
+    )
+    .addEventListener(
+        "click",
+        async function() {
+
+            if (!currentUser) {
+
+                window.location.href =
+                    "log-in.html";
+
+                return;
+            }
+
+
+            if (!selectedVideo) {
+                return;
+            }
+
+
+            const button =
+                document.getElementById(
+                    "likeButton"
+                );
+
+
+            button.disabled =
+                true;
+
+
+            try {
+
+                const {
+                    data: existingLike
+                } =
+                    await supabaseClient
+                        .from(
+                            "dougtube_likes"
+                        )
+                        .select(
+                            "id"
+                        )
+                        .eq(
+                            "video_id",
+                            selectedVideo.id
+                        )
+                        .eq(
+                            "user_id",
+                            currentUser.id
+                        )
+                        .maybeSingle();
+
+
+                if (existingLike) {
+
+                    const {
+                        error
+                    } =
+                        await supabaseClient
+                            .from(
+                                "dougtube_likes"
+                            )
+                            .delete()
+                            .eq(
+                                "id",
+                                existingLike.id
+                            );
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+                } else {
+
+                    const {
+                        error
+                    } =
+                        await supabaseClient
+                            .from(
+                                "dougtube_likes"
+                            )
+                            .insert({
+
+                                video_id:
+                                    selectedVideo.id,
+
+                                user_id:
+                                    currentUser.id
+
+                            });
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+                }
+
+
+                await loadLikes();
+
+            } catch (error) {
+
+                console.error(
+                    "Like error:",
+                    error
+                );
+
+            } finally {
+
+                button.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+/* =========================================
+   COMMENTS
+========================================= */
+
+async function loadComments() {
+
+    if (!selectedVideo) {
+        return;
+    }
+
+
+    const list =
+        document.getElementById(
+            "commentsList"
+        );
+
+
+    list.innerHTML =
+        `<div class="empty">
+            Loading comments...
+        </div>`;
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "dougtube_comments"
+            )
+            .select(
+                "id, user_id, username, comment, created_at"
+            )
+            .eq(
+                "video_id",
+                selectedVideo.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:
+                        true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Comments error:",
+            error
+        );
+
+        list.innerHTML =
+            `<div class="empty">
+                Could not load comments.
+            </div>`;
+
+        return;
+    }
+
+
+    if (!data?.length) {
+
+        list.innerHTML =
+            `<div class="empty">
+                No comments yet.
+            </div>`;
+
+        return;
+    }
+
+
+    list.innerHTML =
+        data
+            .map(
+                function(comment) {
+
+                    return `
+
+                        <div class="comment">
+
+                            <div class="comment-header">
+
+                                <span class="comment-user">
+                                    ${escapeHtml(
+                                        comment.username ||
+                                        "User"
+                                    )}
+                                </span>
+
+                                <span class="comment-date">
+                                    ${formatDate(
+                                        comment.created_at
+                                    )}
+                                </span>
+
+                            </div>
+
+                            <div class="comment-text">
+                                ${escapeHtml(
+                                    comment.comment
+                                )}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+}
+
+
+/* =========================================
+   COMMENT AREA
+========================================= */
+
+function renderCommentArea() {
+
+    const area =
+        document.getElementById(
+            "commentArea"
+        );
+
+
+    if (!currentUser) {
+
+        area.innerHTML =
+            `<div class="login-note">
+                You must be logged in to comment.
+            </div>`;
+
+        return;
+    }
+
+
+    area.innerHTML = `
+
+        <div class="comment-form">
+
+            <input
+                id="commentInput"
+                class="comment-input"
+                type="text"
+                maxlength="1000"
+                placeholder="Write a comment..."
+                autocomplete="off"
+            >
+
+            <button
+                id="commentSubmit"
+                class="comment-submit"
+                type="button"
+            >
+                Comment
+            </button>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "commentSubmit"
+        )
+        .addEventListener(
+            "click",
+            submitComment
+        );
+
+
+    document
+        .getElementById(
+            "commentInput"
+        )
+        .addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    submitComment();
+
+                }
+
+            }
+        );
+
+}
+
+
+async function submitComment() {
+
+    if (!currentUser) {
+
+        window.location.href =
+            "log-in.html";
+
+        return;
+    }
+
+
+    if (!selectedVideo) {
+        return;
+    }
+
+
+    const input =
+        document.getElementById(
+            "commentInput"
+        );
+
+
+    const comment =
+        input.value.trim();
+
+
+    if (!comment) {
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "commentSubmit"
+        );
+
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Posting...";
+
+
+    try {
+
+        const username =
+            currentProfile?.username ||
+            currentUser.email
+                ?.split("@")[0] ||
+            "User";
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from(
+                    "dougtube_comments"
+                )
+                .insert({
+
+                    video_id:
+                        selectedVideo.id,
+
+                    user_id:
+                        currentUser.id,
+
+                    username:
+                        username,
+
+                    comment:
+                        comment
+
+                });
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        input.value =
+            "";
+
+        await loadComments();
+
+
+    } catch (error) {
+
+        console.error(
+            "Comment error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Could not post comment."
+        );
+
+    } finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Comment";
+
+    }
+
+}
+
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+
+function formatDate(date) {
+
+    if (!date) {
+        return "";
+    }
+
+
+    return new Date(date)
+        .toLocaleDateString(
+            undefined,
+            {
+                year:
+                    "numeric",
+
+                month:
+                    "short",
+
+                day:
+                    "numeric"
+            }
+        );
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+async function start() {
+
+    await loadAccount();
+
+    renderCommentArea();
+
+    await loadVideos();
+    await loadMediaPosts();
+}
+
+start();
+
+</script>
+
+</body>
+</html>
