@@ -3,56 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DougHub - Moved</title>
+<title>DougHub — Moved</title>
 <link rel="icon" href="https://doughub.online/DougHub.ico" type="image/x-icon">
 
 <style>
-* { box-sizing: border-box; }
-html, body { margin: 0; min-height: 100%; }
-body {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: Inter, Arial, Helvetica, sans-serif;
-    background: #05060b;
-    color: #fff;
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  overflow:hidden;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#fff;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(99,102,241,.24),transparent 42%),
+    radial-gradient(circle at 100% 100%,rgba(168,85,247,.10),transparent 35%),
+    #03040a;
 }
-.card {
-    width: min(440px, 100%);
-    padding: 28px 30px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,.09);
-    border-radius: 18px;
-    background: rgba(15,18,32,.82);
-    box-shadow: 0 20px 60px rgba(0,0,0,.35);
-    backdrop-filter: blur(20px);
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(to bottom,black,transparent 85%);
 }
-h1 {
-    margin: 0 0 10px;
-    font-size: 24px;
-    line-height: 1.2;
-    letter-spacing: -.6px;
+.card{
+  position:relative;
+  width:min(500px,100%);
+  padding:34px 34px 30px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:22px;
+  background:linear-gradient(145deg,rgba(18,22,45,.90),rgba(9,11,23,.88));
+  box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 70px rgba(99,102,241,.08);
+  backdrop-filter:blur(24px);
 }
-p {
-    margin: 0;
-    color: #8f96ad;
-    font-size: 13px;
+.card:before{
+  content:"";
+  position:absolute;
+  left:15%;
+  right:15%;
+  top:-1px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#818cf8,transparent);
+  opacity:.9;
 }
-a {
-    color: #8b8ff8;
-    font-weight: 700;
-    text-decoration: none;
+.logo{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:22px;
+  padding:7px 12px;
+  border:1px solid rgba(129,140,248,.18);
+  border-radius:999px;
+  background:rgba(99,102,241,.08);
+  color:#aeb5ff;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.3px;
 }
-a:hover { color: #b38cff; }
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#818cf8;
+  box-shadow:0 0 12px #818cf8;
+}
+h1{
+  margin:0;
+  font-size:clamp(28px,6vw,38px);
+  line-height:1.08;
+  letter-spacing:-1.5px;
+}
+h1 span{
+  background:linear-gradient(90deg,#fff,#c4c7ff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.description{
+  max-width:380px;
+  margin:14px auto 24px;
+  color:#969db7;
+  font-size:14px;
+  line-height:1.6;
+}
+.button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-width:190px;
+  padding:12px 18px;
+  border:1px solid rgba(129,140,248,.32);
+  border-radius:12px;
+  background:linear-gradient(135deg,#6366f1,#7c3aed);
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  text-decoration:none;
+  box-shadow:0 10px 30px rgba(99,102,241,.22);
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.button:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.08);
+  box-shadow:0 14px 35px rgba(99,102,241,.32);
+}
+.arrow{font-size:16px;line-height:1}
+.small{
+  margin-top:14px;
+  color:#626981;
+  font-size:11px;
+}
 </style>
 </head>
 
 <body>
-    <main class="card">
-        <h1>This website has permanently moved to a new domain.</h1>
-        <p>Go to new domain <a href="https://doughub.online/">HERE</a></p>
-    </main>
+  <main class="card">
+    <div class="logo"><span class="dot"></span> DOUGHUB</div>
+
+    <h1>This website has <span>moved.</span></h1>
+
+    <p class="description">
+      This domain is no longer being used. DougHub now lives at its new home.
+    </p>
+
+    <a class="button" href="https://doughub.online/">
+      Go to the new domain
+      <span class="arrow">→</span>
+    </a>
+
+    <div class="small">doughub.online</div>
+  </main>
 </body>
 </html>
