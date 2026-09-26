@@ -1270,7 +1270,7 @@ homeBtn.addEventListener(
       );
     } else {
       window.location.href =
-        'DougHub.html';
+        '../index.html';
     }
   }
 );
