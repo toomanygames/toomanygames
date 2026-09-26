@@ -474,6 +474,16 @@ button:disabled {
         gap: 6px;
     }
 }
+
+/* MODERN ADMIN CONTENT SLIDER */
+#adminArea.admin-ready{display:flex !important;flex-direction:row;gap:20px;overflow-x:auto;overflow-y:hidden;padding:4px 4px 22px;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:rgba(129,140,248,.6) rgba(255,255,255,.04)}
+#adminArea.admin-ready::-webkit-scrollbar{height:9px}
+#adminArea.admin-ready::-webkit-scrollbar-track{background:rgba(255,255,255,.035);border-radius:999px}
+#adminArea.admin-ready::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:999px}
+#adminArea.admin-ready>.card{flex:0 0 min(100%,1150px);width:min(100%,1150px);margin-bottom:0;scroll-snap-align:start;scroll-snap-stop:always}
+#usersList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#usersList .user-item{margin-bottom:0}
+@media(max-width:700px){#adminArea.admin-ready>.card{flex-basis:100%}#usersList{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -869,7 +879,9 @@ async function checkAdmin() {
         "none";
 
     adminArea.style.display =
-        "block";
+        "flex";
+
+    adminArea.classList.add("admin-ready");
 
     return true;
 }
