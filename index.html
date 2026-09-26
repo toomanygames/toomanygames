@@ -999,6 +999,7 @@ main {
 
     scrollbar-width:
         thin;
+    scrollbar-color: rgba(129,140,248,.6) rgba(255,255,255,.04);
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 8px;
     mask-image: linear-gradient(to right, transparent 0, black 18px, black calc(100% - 18px), transparent 100%);
@@ -1006,6 +1007,10 @@ main {
     scroll-behavior: smooth;
     overscroll-behavior-x: contain;
 }
+
+.community-games::-webkit-scrollbar{height:9px}
+.community-games::-webkit-scrollbar-track{background:rgba(255,255,255,.035);border-radius:999px}
+.community-games::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:999px}
 
 .community-card {
     flex:
