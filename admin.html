@@ -454,6 +454,65 @@ button:disabled {
     background: rgba(239,68,68,.22);
 }
 
+/* MODERN ADMIN SLIDERS */
+#usersList,
+#activityList,
+#warningsList,
+#chatMessages,
+#communityGames,
+#dougTubeVideos {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 4px 14px;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #6366f1 rgba(255,255,255,.07);
+}
+
+#usersList::-webkit-scrollbar,
+#activityList::-webkit-scrollbar,
+#warningsList::-webkit-scrollbar,
+#chatMessages::-webkit-scrollbar,
+#communityGames::-webkit-scrollbar,
+#dougTubeVideos::-webkit-scrollbar {
+    height: 8px;
+}
+
+#usersList::-webkit-scrollbar-track,
+#activityList::-webkit-scrollbar-track,
+#warningsList::-webkit-scrollbar-track,
+#chatMessages::-webkit-scrollbar-track,
+#communityGames::-webkit-scrollbar-track,
+#dougTubeVideos::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.045);
+    border-radius: 99px;
+}
+
+#usersList::-webkit-scrollbar-thumb,
+#activityList::-webkit-scrollbar-thumb,
+#warningsList::-webkit-scrollbar-thumb,
+#chatMessages::-webkit-scrollbar-thumb,
+#communityGames::-webkit-scrollbar-thumb,
+#dougTubeVideos::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg,#6366f1,#a855f7);
+    border-radius: 99px;
+}
+
+#usersList > .user-item,
+#activityList > .activity-item,
+#warningsList > .warning-item,
+#chatMessages > .message,
+#communityGames > .game,
+#dougTubeVideos > .video-moderation-item {
+    flex: 0 0 min(520px, 82%);
+    margin-bottom: 0;
+    scroll-snap-align: start;
+}
+
 @media (max-width: 700px) {
     body {
         padding: 15px;
@@ -472,6 +531,15 @@ button:disabled {
     .video-moderation-stats {
         flex-direction: column;
         gap: 6px;
+    }
+
+    #usersList > .user-item,
+    #activityList > .activity-item,
+    #warningsList > .warning-item,
+    #chatMessages > .message,
+    #communityGames > .game,
+    #dougTubeVideos > .video-moderation-item {
+        flex-basis: 88%;
     }
 }
 </style>
