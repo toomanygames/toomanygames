@@ -2522,13 +2522,22 @@ async function updateGameCount() {
         return;
     }
 
+    /* Keep this number in one place: these are the built-in games. */
+    const BUILT_IN_GAME_COUNT = 4;
+
     const {
-        data,
+        count,
         error
     } =
         await supabaseClient
             .from("community_games")
-            .select("id");
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
+            );
 
     if (error) {
 
@@ -2537,16 +2546,17 @@ async function updateGameCount() {
             error
         );
 
+        /* Still show the built-in games if Supabase is unavailable. */
         gameCount.textContent =
-            "4";
+            BUILT_IN_GAME_COUNT.toLocaleString();
 
         return;
     }
 
     gameCount.textContent =
         (
-            4 +
-            (data?.length || 0)
+            BUILT_IN_GAME_COUNT +
+            Number(count || 0)
         ).toLocaleString();
 
 }
