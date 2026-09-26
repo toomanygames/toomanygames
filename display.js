@@ -171,7 +171,7 @@
 
         document.head.appendChild(
             style
-        ); 
+        );
 
     }
 
@@ -826,58 +826,6 @@
     }
 
 
-
-    /* =========================================
-       SIDE SLIDER
-    ========================================= */
-
-    async function createSideSlider() {
-        if (document.getElementById("dougHubSideSlider")) return;
-
-        const slider=document.createElement("aside");
-        slider.id="dougHubSideSlider";
-        slider.innerHTML=[
-            '<button id="dougHubSideTab" type="button" aria-label="Open DougHub side panel" aria-expanded="false">☰</button>',
-            '<div id="dougHubSidePanel">',
-            '<div class="dh-side-head"><div><div class="dh-side-title">DougHub Pulse</div><div class="dh-side-sub">Quick stats and recent activity</div></div><button class="dh-side-close" id="dougHubSideClose" type="button">×</button></div>',
-            '<div class="dh-side-grid">',
-            '<a class="dh-side-card" href="/chat.html"><div class="dh-side-icon">💬</div><div class="dh-side-label">Chat Messages</div><div class="dh-side-value" id="dhChatCount">—</div></a>',
-            '<a class="dh-side-card" href="/index.html#users"><div class="dh-side-icon">👥</div><div class="dh-side-label">Users</div><div class="dh-side-value" id="dhUserCount">—</div></a>',
-            '<a class="dh-side-card" href="/douggames.html"><div class="dh-side-icon">🎮</div><div class="dh-side-label">Games</div><div class="dh-side-value" id="dhGameCount">—</div></a>',
-            '<a class="dh-side-card" href="/DougTube.html"><div class="dh-side-icon">▶️</div><div class="dh-side-label">DougTube Videos</div><div class="dh-side-value" id="dhVideoCount">—</div></a>',
-            '</div>',
-            '<div class="dh-side-latest"><div class="dh-side-latest-title">Latest Chat</div><div id="dhLatestChat"><div class="dh-side-item"><div class="dh-side-item-text">Loading…</div></div></div></div>',
-            '<div class="dh-side-latest"><div class="dh-side-latest-title">Latest DougTube</div><div id="dhLatestVideos"><div class="dh-side-item"><div class="dh-side-item-text">Loading…</div></div></div></div>',
-            '</div>'
-        ].join("");
-        document.body.appendChild(slider);
-
-        const tab=document.getElementById("dougHubSideTab"), close=document.getElementById("dougHubSideClose");
-        function setOpen(open){slider.classList.toggle("open",open);tab.setAttribute("aria-expanded",String(open));tab.textContent=open?"›":"☰";}
-        tab.addEventListener("click",()=>setOpen(!slider.classList.contains("open")));
-        close.addEventListener("click",()=>setOpen(false));
-
-        const builtInGames=6;
-        try{const r=await supabaseClient.from("profiles").select("id",{count:"exact",head:true});if(!r.error)document.getElementById("dhUserCount").textContent=Number(r.count||0).toLocaleString();}catch(e){}
-        try{const r=await supabaseClient.from("community_games").select("id",{count:"exact",head:true});if(!r.error)document.getElementById("dhGameCount").textContent=(builtInGames+Number(r.count||0)).toLocaleString();}catch(e){}
-        try{const r=await supabaseClient.from("chat_messages").select("id",{count:"exact",head:true});if(!r.error)document.getElementById("dhChatCount").textContent=Number(r.count||0).toLocaleString();}catch(e){}
-        try{const r=await supabaseClient.from("dougtube_videos").select("id",{count:"exact",head:true});if(!r.error)document.getElementById("dhVideoCount").textContent=Number(r.count||0).toLocaleString();}catch(e){}
-
-        const esc=s=>String(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-        try{
-            const r=await supabaseClient.from("chat_messages").select("message,username,created_at").order("created_at",{ascending:false}).limit(5);
-            const box=document.getElementById("dhLatestChat");
-            if(r.error||!r.data?.length) box.innerHTML='<div class="dh-side-item"><div class="dh-side-item-text">No recent messages.</div></div>';
-            else box.innerHTML=r.data.map(x=>'<div class="dh-side-item"><div class="dh-side-item-icon">💬</div><div class="dh-side-item-text">'+esc(String(x.message||"").slice(0,120))+'<div class="dh-side-item-meta">by '+esc(String(x.username||"User").slice(0,40))+'</div></div></div>').join("");
-        }catch(e){}
-        try{
-            const r=await supabaseClient.from("dougtube_videos").select("title,created_at").order("created_at",{ascending:false}).limit(5);
-            const box=document.getElementById("dhLatestVideos");
-            if(r.error||!r.data?.length) box.innerHTML='<div class="dh-side-item"><div class="dh-side-item-text">No videos yet.</div></div>';
-            else box.innerHTML=r.data.map(x=>'<div class="dh-side-item"><div class="dh-side-item-icon">▶️</div><div class="dh-side-item-text">'+esc(String(x.title||"Untitled Video").slice(0,80))+'</div></div>').join("");
-        }catch(e){}
-    }
-
     /* =========================================
        PAGE VISIBILITY
     ========================================= */
@@ -929,7 +877,6 @@
 
             createStyles();
 
-            await createSideSlider();
 
             await checkAccount();
 
