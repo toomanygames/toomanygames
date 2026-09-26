@@ -633,6 +633,10 @@ main {
         18px;
 }
 
+.game-card-wide {
+    grid-column: span 2;
+}
+
 .game-card {
     position:
         relative;
@@ -761,11 +765,16 @@ main {
 
     scrollbar-width:
         thin;
+    scrollbar-color: rgba(129,140,248,.6) rgba(255,255,255,.04);
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
 }
 
 .community-card {
     flex:
         0 0 270px;
+    scroll-snap-align: start;
     scroll-snap-align: start;
 
     min-height:
@@ -1298,6 +1307,8 @@ footer {
 
 @media (max-width: 900px) {
 
+    .game-card-wide { grid-column: span 1; }
+
     .games-grid {
         grid-template-columns:
             repeat(2, 1fr);
@@ -1711,7 +1722,7 @@ footer {
 
             <a
                 href="Games/drive-pig.html"
-                class="game-card"
+                class="game-card game-card-wide"
             >
                 <div class="game-icon">🐷</div>
                 <h3>Drive Pig</h3>
@@ -1721,7 +1732,7 @@ footer {
 
             <a
                 href="Games/smack-n-punch.html"
-                class="game-card"
+                class="game-card game-card-wide"
             >
                 <div class="game-icon">💥</div>
                 <h3>Smack 'n Punch</h3>
