@@ -7,63 +7,45 @@
 <link rel="icon" href="https://doughub.online/DougHub.ico" type="image/x-icon">
 
 <style>
-* {
-    box-sizing: border-box;
-}
-
-html, body {
-    margin: 0;
-    min-height: 100%;
-    font-family: Arial, Helvetica, sans-serif;
-    background:
-        radial-gradient(circle at top, rgba(99,102,241,.18), transparent 45%),
-        #02040a;
-    color: white;
-}
-
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
 body {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 20px;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    background: #05060b;
+    color: #fff;
 }
-
 .card {
-    width: min(700px, 100%);
+    width: min(440px, 100%);
+    padding: 28px 30px;
     text-align: center;
-    padding: 55px 40px;
-    border: 1px solid rgba(129,140,248,.22);
-    border-radius: 24px;
-    background: rgba(13,17,39,.78);
-    box-shadow: 0 25px 80px rgba(0,0,0,.45);
-    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 18px;
+    background: rgba(15,18,32,.82);
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    backdrop-filter: blur(20px);
 }
-
 h1 {
-    margin: 0 0 16px;
-    font-size: clamp(30px, 6vw, 52px);
-    font-weight: 800;
-    letter-spacing: -1.5px;
+    margin: 0 0 10px;
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -.6px;
 }
-
 p {
     margin: 0;
-    color: #aeb5d4;
-    font-size: 15px;
+    color: #8f96ad;
+    font-size: 13px;
 }
-
 a {
-    color: #818cf8;
+    color: #8b8ff8;
     font-weight: 700;
     text-decoration: none;
-    transition: .2s;
 }
-
-a:hover {
-    color: #a855f7;
-    text-decoration: underline;
-}
+a:hover { color: #b38cff; }
 </style>
 </head>
 
