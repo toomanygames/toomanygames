@@ -763,6 +763,7 @@ main {
 
     transition:
         0.2s;
+    scroll-snap-align: start;
 }
 
 .hero-create-button:hover {
@@ -983,6 +984,7 @@ main {
 /* COMMUNITY */
 
 .community-games {
+    position: relative;
     display:
         flex;
 
@@ -997,6 +999,9 @@ main {
 
     scrollbar-width:
         thin;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
 }
 
 .community-card {
@@ -1877,6 +1882,9 @@ footer {
                     <li><span class="feature-check">✓</span>DougTube</li>
                     <li><span class="feature-check">✓</span>DMail</li>
                     <li><span class="feature-check">✓</span>Community Chat</li>
+                    <li><span class="feature-check">✓</span>DougMedia</li>
+                    <li><span class="feature-check">✓</span>DougBank</li>
+                    <li><span class="feature-check">✓</span>DougAI</li>
                     <li><span class="feature-check">✓</span>Game Publishing</li>
                     <li><span class="feature-check">✓</span>User Accounts</li>
                 </ul>
@@ -2523,7 +2531,7 @@ async function updateGameCount() {
     }
 
     /* Keep this number in one place: these are the built-in games. */
-    const BUILT_IN_GAME_COUNT = 4;
+    const BUILT_IN_GAME_COUNT = 6;
 
     const {
         count,
