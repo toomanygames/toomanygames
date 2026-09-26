@@ -389,6 +389,136 @@ button:disabled {
     font-weight: 700;
 }
 
+
+/* MODERN SCROLL AREAS */
+.admin-scroll-area {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(129,140,248,.75) rgba(255,255,255,.04);
+}
+
+.admin-scroll-area::-webkit-scrollbar {
+    width: 9px;
+}
+
+.admin-scroll-area::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.035);
+    border-radius: 999px;
+    margin: 4px 0;
+}
+
+.admin-scroll-area::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+    border-radius: 999px;
+    border: 2px solid rgba(13,17,39,.7);
+    min-height: 45px;
+}
+
+.admin-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #818cf8, #a78bfa);
+}
+
+.admin-scroll-area::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+@media (max-width: 700px) {
+    .admin-scroll-area {
+        max-height: 420px;
+        padding-right: 6px;
+    }
+}
+
+
+
+/* USERS GRID + SCROLL */
+#usersList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2px 8px 2px 2px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(129,140,248,.75) rgba(255,255,255,.04);
+}
+
+#usersList::-webkit-scrollbar {
+    width: 9px;
+}
+
+#usersList::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.035);
+    border-radius: 999px;
+    margin: 4px 0;
+}
+
+#usersList::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+    border-radius: 999px;
+    border: 2px solid rgba(13,17,39,.7);
+    min-height: 45px;
+}
+
+#usersList::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #818cf8, #a78bfa);
+}
+
+#usersList::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+#usersList .user-item {
+    margin-bottom: 0;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    #usersList {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        max-height: 420px;
+    }
+}
+
+/* MODERN COMMUNITY GAMES SCROLLBAR */
+#communityGames {
+    scrollbar-width: thin;
+    scrollbar-color: #7c83ff rgba(255,255,255,.045);
+    scroll-behavior: smooth;
+}
+
+#communityGames::-webkit-scrollbar {
+    width: 10px;
+}
+
+#communityGames::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 999px;
+    margin: 6px 0;
+}
+
+#communityGames::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6366f1, #a855f7);
+    border: 2px solid rgba(13,17,39,.8);
+    border-radius: 999px;
+    min-height: 55px;
+    box-shadow: 0 0 12px rgba(99,102,241,.2);
+}
+
+#communityGames::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #818cf8, #c084fc);
+    box-shadow: 0 0 16px rgba(139,92,246,.35);
+}
+
+#communityGames::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
 /* DOUGTUBE MODERATION */
 
 .video-moderation-item {
@@ -454,65 +584,6 @@ button:disabled {
     background: rgba(239,68,68,.22);
 }
 
-/* MODERN ADMIN SLIDERS */
-#usersList,
-#activityList,
-#warningsList,
-#chatMessages,
-#communityGames,
-#dougTubeVideos {
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 4px 4px 14px;
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-    scrollbar-color: #6366f1 rgba(255,255,255,.07);
-}
-
-#usersList::-webkit-scrollbar,
-#activityList::-webkit-scrollbar,
-#warningsList::-webkit-scrollbar,
-#chatMessages::-webkit-scrollbar,
-#communityGames::-webkit-scrollbar,
-#dougTubeVideos::-webkit-scrollbar {
-    height: 8px;
-}
-
-#usersList::-webkit-scrollbar-track,
-#activityList::-webkit-scrollbar-track,
-#warningsList::-webkit-scrollbar-track,
-#chatMessages::-webkit-scrollbar-track,
-#communityGames::-webkit-scrollbar-track,
-#dougTubeVideos::-webkit-scrollbar-track {
-    background: rgba(255,255,255,.045);
-    border-radius: 99px;
-}
-
-#usersList::-webkit-scrollbar-thumb,
-#activityList::-webkit-scrollbar-thumb,
-#warningsList::-webkit-scrollbar-thumb,
-#chatMessages::-webkit-scrollbar-thumb,
-#communityGames::-webkit-scrollbar-thumb,
-#dougTubeVideos::-webkit-scrollbar-thumb {
-    background: linear-gradient(90deg,#6366f1,#a855f7);
-    border-radius: 99px;
-}
-
-#usersList > .user-item,
-#activityList > .activity-item,
-#warningsList > .warning-item,
-#chatMessages > .message,
-#communityGames > .game,
-#dougTubeVideos > .video-moderation-item {
-    flex: 0 0 min(520px, 82%);
-    margin-bottom: 0;
-    scroll-snap-align: start;
-}
-
 @media (max-width: 700px) {
     body {
         padding: 15px;
@@ -531,15 +602,6 @@ button:disabled {
     .video-moderation-stats {
         flex-direction: column;
         gap: 6px;
-    }
-
-    #usersList > .user-item,
-    #activityList > .activity-item,
-    #warningsList > .warning-item,
-    #chatMessages > .message,
-    #communityGames > .game,
-    #dougTubeVideos > .video-moderation-item {
-        flex-basis: 88%;
     }
 }
 </style>
@@ -742,7 +804,7 @@ button:disabled {
         Loading...
     </div>
 
-    <div id="chatMessages"></div>
+    <div id="chatMessages" class="admin-scroll-area"></div>
 
 </div>
 
@@ -754,7 +816,7 @@ button:disabled {
         Loading...
     </div>
 
-    <div id="communityGames"></div>
+    <div id="communityGames" class="admin-scroll-area"></div>
 
 </div>
 
@@ -771,7 +833,7 @@ button:disabled {
         Loading DougTube videos...
     </div>
 
-    <div id="dougTubeVideos"></div>
+    <div id="dougTubeVideos" class="admin-scroll-area"></div>
 
 </div>
 
@@ -1900,6 +1962,33 @@ async function loadWarnings() {
         buttons.className =
             "buttons";
 
+        if (!warning.read_at) {
+            const readButton =
+                document.createElement("button");
+
+            readButton.type =
+                "button";
+
+            readButton.className =
+                "edit-button";
+
+            readButton.textContent =
+                "✓ Mark Read";
+
+            readButton.addEventListener(
+                "click",
+                function() {
+                    markWarningRead(
+                        warning.id
+                    );
+                }
+            );
+
+            buttons.appendChild(
+                readButton
+            );
+        }
+
         const deleteButton =
             document.createElement("button");
 
@@ -1966,6 +2055,38 @@ async function deleteWarning(id) {
 
         alert(
             "Could not delete the warning:\n\n" +
+            error.message
+        );
+
+        return;
+    }
+
+    await loadWarnings();
+}
+
+
+async function markWarningRead(id) {
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("user_warnings")
+            .update({
+                read_at:
+                    new Date().toISOString()
+            })
+            .eq(
+                "id",
+                id
+            );
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not mark the warning as read:\n\n" +
             error.message
         );
 
@@ -2126,12 +2247,6 @@ async function loadChatMessages() {
 
 
 async function deleteMessage(id) {
-
-    if (!confirm(
-        "Are you sure you want to delete this message?"
-    )) {
-        return;
-    }
 
     const {
         error
