@@ -508,7 +508,9 @@ button:disabled {
 #chatMessages > .message,
 #communityGames > .game,
 #dougTubeVideos > .video-moderation-item {
-    flex: 0 0 min(520px, 82%);
+    flex: 0 0 calc(50% - 7px);
+    width: calc(50% - 7px);
+    min-width: 0;
     margin-bottom: 0;
     scroll-snap-align: start;
 }
@@ -539,7 +541,8 @@ button:disabled {
     #chatMessages > .message,
     #communityGames > .game,
     #dougTubeVideos > .video-moderation-item {
-        flex-basis: 88%;
+        flex-basis: 92%;
+        width: 92%;
     }
 }
 
@@ -977,11 +980,11 @@ function setupAdminSliders() {
         }
 
         left.addEventListener("click", function() {
-            move(-(slider.clientWidth * 0.82));
+            move(-slider.clientWidth);
         });
 
         right.addEventListener("click", function() {
-            move(slider.clientWidth * 0.82);
+            move(slider.clientWidth);
         });
 
         slider.addEventListener("scroll", updateButtons, { passive: true });
