@@ -233,6 +233,31 @@ button {
     min-height: 0;
     overflow-y: auto;
     border-right: 1px solid rgba(255,255,255,.07);
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(129,140,248,.78) rgba(255,255,255,.035);
+    scrollbar-gutter: stable;
+}
+
+.user-list::-webkit-scrollbar {
+    width: 9px;
+}
+
+.user-list::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.035);
+    border-radius: 999px;
+    margin: 8px 0;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6366f1, #a855f7);
+    border-radius: 999px;
+    border: 2px solid rgba(10,7,22,.82);
+    min-height: 42px;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #818cf8, #c084fc);
 }
 
 .search-box {
