@@ -766,6 +766,7 @@ main {
 .community-card {
     flex:
         0 0 270px;
+    scroll-snap-align: start;
 
     min-height:
         190px;
@@ -786,7 +787,8 @@ main {
         pointer;
 
     transition:
-        0.2s;
+        transform 0.2s, border-color 0.2s, background 0.2s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.14);
 }
 
 .community-card:hover {
